@@ -3,31 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test de Positionnement FR - Collèges Pionniers (2026-2027)</title>
+    <title>Test de Positionnement FR - Collèges Pionniers</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        rose: {
-                            50: '#fff1f2',
-                            100: '#ffe4e6',
-                            200: '#fecdd3',
-                            300: '#fda4af',
-                            400: '#fb7185',
-                            500: '#f43f5e',
-                            600: '#e11d48',
-                            700: '#be123c',
-                            800: '#9f1239',
-                            900: '#881337',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
     <!-- Google Fonts: Inter & Cairo -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
     <!-- FontAwesome for icons -->
@@ -35,37 +13,22 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #fff8f9;
+            background-color: #f8fafc;
         }
         .arabic-text {
             font-family: 'Cairo', sans-serif;
-        }
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #fff1f2;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #fda4af;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #f43f5e;
         }
         .word-clickable {
             cursor: pointer;
             transition: all 0.15s ease;
             user-select: none;
             display: inline-block;
-            padding: 2px 5px;
-            margin: 2px;
+            padding: 2px 4px;
+            margin: 1px;
             border-radius: 4px;
         }
         .word-clickable:hover {
-            background-color: #ffe4e6;
+            background-color: #f1f5f9;
         }
         .word-error {
             background-color: #fecdd3 !important;
@@ -74,11 +37,10 @@
             font-weight: 700;
         }
 
-        /* Print styles optimized for A4 page with 40 rows max */
         @media print {
             @page {
                 size: A4 portrait;
-                margin: 6mm 8mm;
+                margin: 8mm;
             }
             body {
                 background: white !important;
@@ -91,47 +53,41 @@
             .print-only {
                 display: block !important;
             }
-            .page-break {
-                page-break-before: always;
-            }
             table {
                 width: 100% !important;
                 border-collapse: collapse !important;
             }
             th, td {
-                padding: 3px 4px !important;
+                padding: 4px 6px !important;
                 border: 1px solid #cbd5e1 !important;
                 font-size: 9px !important;
-            }
-            .print-table tr {
-                height: 20px !important;
             }
         }
     </style>
 </head>
-<body class="bg-rose-50/30 text-slate-800 min-h-screen flex flex-col">
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
 
-    <!-- HEADER / NAVIGATION (NO-PRINT) -->
-    <header class="bg-white border-b border-rose-200 shadow-sm sticky top-0 z-30 no-print">
+    <!-- HEADER / NAVIGATION -->
+    <header class="bg-white border-b border-slate-200 shadow-sm sticky top-0 z-30 no-print">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
             <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
                 <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 rounded-xl bg-rose-500 text-white flex items-center justify-center font-bold text-xl shadow-md shadow-rose-200">
+                    <div class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold text-xl shadow-md shadow-blue-200">
                         <i class="fa-solid font-bold">FR</i>
                     </div>
                     <div>
                         <h1 class="text-lg font-bold text-slate-900 leading-tight">Test de Positionnement - Langue Française</h1>
-                        <p class="text-xs text-rose-600 font-medium">Collèges Pionniers 2026-2027 • Programme de Remédiation Intensive</p>
+                        <p class="text-xs text-blue-600 font-medium">Collèges Pionniers • Programme de Remédiation Intensive</p>
                     </div>
                 </div>
 
                 <!-- Navigation Tabs -->
-                <div class="flex items-center bg-rose-100/60 p-1 rounded-xl text-sm font-medium">
-                    <button id="btn-tab-eval" onclick="switchTab('eval')" class="flex items-center space-x-2 px-4 py-2 rounded-lg transition shadow-sm bg-white text-rose-700 font-semibold">
+                <div class="flex items-center bg-slate-100 p-1 rounded-xl text-sm font-medium">
+                    <button id="btn-tab-eval" onclick="switchTab('eval')" class="flex items-center space-x-2 px-4 py-2 rounded-lg transition shadow-sm bg-white text-blue-700 font-semibold">
                         <i class="fa-solid fa-user-check"></i>
                         <span>Évaluation Individuelle</span>
                     </button>
-                    <button id="btn-tab-grid" onclick="switchTab('grid')" class="flex items-center space-x-2 px-4 py-2 rounded-lg transition text-slate-600 hover:text-rose-700">
+                    <button id="btn-tab-grid" onclick="switchTab('grid')" class="flex items-center space-x-2 px-4 py-2 rounded-lg transition text-slate-600 hover:text-blue-700">
                         <i class="fa-solid fa-table"></i>
                         <span>Grille Collective & Impression</span>
                     </button>
@@ -149,12 +105,12 @@
         <div id="tab-eval" class="space-y-6">
             
             <!-- Top Controls & Student Info -->
-            <div class="bg-white rounded-2xl p-5 shadow-sm border border-rose-100">
+            <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200">
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                     
                     <div>
                         <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Classe</label>
-                        <select id="student-class" class="w-full bg-rose-50/50 border border-rose-200 text-slate-800 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-rose-400 focus:outline-none">
+                        <select id="student-class" class="w-full bg-slate-50 border border-slate-200 text-slate-800 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none">
                             <option value="1/1">1/1</option>
                             <option value="1/2">1/2</option>
                             <option value="1/3">1/3</option>
@@ -178,59 +134,59 @@
 
                     <div>
                         <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Nom complet de l'élève</label>
-                        <input type="text" id="student-name" placeholder="Ex: Amina Alami" class="w-full bg-rose-50/50 border border-rose-200 text-slate-800 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-rose-400 focus:outline-none">
+                        <input type="text" id="student-name" placeholder="Ex: Amina Alami" class="w-full bg-slate-50 border border-slate-200 text-slate-800 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none">
                     </div>
 
                     <div>
                         <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">N° d'ordre / Ordre</label>
-                        <input type="number" id="student-num" min="1" max="50" placeholder="1" class="w-full bg-rose-50/50 border border-rose-200 text-slate-800 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-rose-400 focus:outline-none">
+                        <input type="number" id="student-num" min="1" max="50" placeholder="1" class="w-full bg-slate-50 border border-slate-200 text-slate-800 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none">
                     </div>
 
                     <div class="flex gap-2">
-                        <button onclick="startNewEvaluation()" class="flex-1 bg-rose-600 hover:bg-rose-700 text-white font-semibold py-2 px-4 rounded-xl shadow-md shadow-rose-200 transition flex items-center justify-center space-x-2 text-sm">
+                        <button onclick="startNewEvaluation()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-xl shadow-md shadow-blue-200 transition flex items-center justify-center space-x-2 text-sm">
                             <i class="fa-solid fa-rotate-left"></i>
-                            <span>Réinitialiser</span>
+                            <span>Réinitialiser / Enregistrer</span>
                         </button>
                     </div>
                 </div>
             </div>
 
             <!-- Stage Navigation Progress Bar -->
-            <div class="bg-white rounded-2xl p-4 shadow-sm border border-rose-100 flex items-center justify-between overflow-x-auto">
+            <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 flex items-center justify-between overflow-x-auto">
                 <div class="flex items-center space-x-2 min-w-max">
-                    <button id="step-btn-L-PS" class="step-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-rose-500 text-white">Étape 1: L-PS</button>
+                    <button id="step-btn-L-PS" class="step-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-blue-600 text-white">Étape 1: L-PS</button>
                     <i class="fa-solid fa-chevron-right text-xs text-slate-300"></i>
-                    <button id="step-btn-L-M" class="step-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-100 text-slate-400" disabled>Étape 2: L-M</button>
+                    <button id="step-btn-L-M" class="step-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-100 text-slate-400">Étape 2: L-M</button>
                     <i class="fa-solid fa-chevron-right text-xs text-slate-300"></i>
-                    <button id="step-btn-C-PS" class="step-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-100 text-slate-400" disabled>Étape 3: C-PS</button>
+                    <button id="step-btn-C-PS" class="step-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-100 text-slate-400">Étape 3: C-PS</button>
                     <i class="fa-solid fa-chevron-right text-xs text-slate-300"></i>
-                    <button id="step-btn-L-PE" class="step-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-100 text-slate-400" disabled>Étape 4: L-PE</button>
+                    <button id="step-btn-L-PE" class="step-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-100 text-slate-400">Étape 4: L-PE</button>
                     <i class="fa-solid fa-chevron-right text-xs text-slate-300"></i>
-                    <button id="step-btn-C-PE" class="step-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-100 text-slate-400" disabled>Étape 5: C-PE</button>
+                    <button id="step-btn-C-PE" class="step-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-100 text-slate-400">Étape 5: C-PE</button>
                     <i class="fa-solid fa-chevron-right text-xs text-slate-300"></i>
-                    <button id="step-btn-L-P" class="step-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-100 text-slate-400" disabled>Étape 6: L-P</button>
+                    <button id="step-btn-L-P" class="step-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-100 text-slate-400">Étape 6: L-P</button>
                 </div>
-                <div class="ml-4 flex items-center gap-2">
+                <div class="ml-4 flex items-center gap-2 min-w-max">
                     <span class="text-xs text-slate-500 font-medium">Palier Actuel:</span>
                     <span id="current-palier-badge" class="px-3 py-1 rounded-full text-xs font-extrabold bg-slate-200 text-slate-700">En cours...</span>
                 </div>
             </div>
 
             <!-- Dynamic Evaluation Card Area -->
-            <div id="evaluation-card-container" class="bg-white rounded-2xl shadow-sm border border-rose-100 p-6">
+            <div id="evaluation-card-container" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
                 <!-- Dynamic Content Injected via JavaScript -->
             </div>
 
             <!-- Bottom Navigation Controls -->
-            <div class="flex items-center justify-between bg-white rounded-2xl p-4 shadow-sm border border-rose-100">
+            <div class="flex items-center justify-between bg-white rounded-2xl p-4 shadow-sm border border-slate-200">
                 <button id="btn-prev-stage" onclick="navigateStage(-1)" class="px-4 py-2 rounded-xl text-sm font-semibold bg-slate-100 hover:bg-slate-200 text-slate-600 transition flex items-center space-x-2">
                     <i class="fa-solid fa-arrow-left"></i>
                     <span>Étape Précédente</span>
                 </button>
-                <div id="stage-status-msg" class="text-xs font-medium text-rose-600">
+                <div id="stage-status-msg" class="text-xs font-medium text-blue-600">
                     <!-- Status or guidance message -->
                 </div>
-                <button id="btn-next-stage" onclick="navigateStage(1)" class="px-4 py-2 rounded-xl text-sm font-semibold bg-rose-600 hover:bg-rose-700 text-white transition flex items-center space-x-2 shadow-sm shadow-rose-200">
+                <button id="btn-next-stage" onclick="navigateStage(1)" class="px-4 py-2 rounded-xl text-sm font-semibold bg-blue-600 hover:bg-blue-700 text-white transition flex items-center space-x-2 shadow-sm shadow-blue-200">
                     <span>Étape Suivante</span>
                     <i class="fa-solid fa-arrow-right"></i>
                 </button>
@@ -243,15 +199,15 @@
         <!-- ================================================================================= -->
         <div id="tab-grid" class="space-y-6 hidden">
             
-            <!-- Custom Header Controls for Teacher Info (Saved locally) -->
-            <div class="bg-white rounded-2xl p-5 shadow-sm border border-rose-100 no-print">
-                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4 pb-4 border-b border-rose-100">
+            <!-- Custom Header Controls for Teacher Info -->
+            <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 no-print">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4 pb-4 border-b border-slate-100">
                     <div>
-                        <h2 class="text-base font-bold text-slate-800">En-tête de la Grille Collective (Modifiable)</h2>
+                        <h2 class="text-base font-bold text-slate-800">En-tête de la Grille Collective</h2>
                         <p class="text-xs text-slate-500">Ces informations seront affichées en haut du document lors de l'impression A4.</p>
                     </div>
                     <div class="flex items-center gap-2">
-                        <button onclick="window.print()" class="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white text-sm font-semibold rounded-xl shadow-md shadow-rose-200 transition flex items-center space-x-2">
+                        <button onclick="window.print()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl shadow-md shadow-blue-200 transition flex items-center space-x-2">
                             <i class="fa-solid fa-print"></i>
                             <span>Imprimer la Grille (A4)</span>
                         </button>
@@ -260,27 +216,27 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                        <label class="block text-xs font-semibold text-slate-500 mb-1">Direction Provinciale (Direction)</label>
-                        <input type="text" id="cfg-direction" value="Chichaoua" onchange="saveHeaderConfig()" class="w-full bg-rose-50/50 border border-rose-200 text-slate-800 rounded-xl px-3 py-1.5 text-sm">
+                        <label class="block text-xs font-semibold text-slate-500 mb-1">Direction Provinciale</label>
+                        <input type="text" id="cfg-direction" value="Chichaoua" onchange="saveHeaderConfig()" class="w-full bg-slate-50 border border-slate-200 text-slate-800 rounded-xl px-3 py-1.5 text-sm">
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-slate-500 mb-1">Établissement (Collège)</label>
-                        <input type="text" id="cfg-school" value="Collège Pionnier Anas Bno Malik" onchange="saveHeaderConfig()" class="w-full bg-rose-50/50 border border-rose-200 text-slate-800 rounded-xl px-3 py-1.5 text-sm">
+                        <input type="text" id="cfg-school" value="Collège Pionnier Anas Bno Malik" onchange="saveHeaderConfig()" class="w-full bg-slate-50 border border-slate-200 text-slate-800 rounded-xl px-3 py-1.5 text-sm">
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-slate-500 mb-1">Nom de l'Enseignant(e)</label>
-                        <input type="text" id="cfg-teacher" value="Brahim Soubki" onchange="saveHeaderConfig()" class="w-full bg-rose-50/50 border border-rose-200 text-slate-800 rounded-xl px-3 py-1.5 text-sm">
+                        <input type="text" id="cfg-teacher" value="Brahim Soubki" onchange="saveHeaderConfig()" class="w-full bg-slate-50 border border-slate-200 text-slate-800 rounded-xl px-3 py-1.5 text-sm">
                     </div>
                 </div>
             </div>
 
             <!-- PRINTABLE A4 CONTENT START -->
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-rose-100 print:shadow-none print:border-none print:p-0">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 print:shadow-none print:border-none print:p-0">
                 
                 <!-- Print Header -->
-                <div class="text-center pb-3 mb-3 border-b border-rose-300">
-                    <h1 class="text-lg font-bold text-rose-900 tracking-wide uppercase">Grille de Positionnement Collectif - Langue Française</h1>
-                    <p class="text-xs font-semibold text-slate-700 mt-0.5">Collèges Pionniers (2026-2027) • Année Scolaire 2026/2027</p>
+                <div class="text-center pb-3 mb-3 border-b border-slate-300">
+                    <h1 class="text-lg font-bold text-slate-900 tracking-wide uppercase">Grille de Positionnement Collectif - Langue Française</h1>
+                    <p class="text-xs font-semibold text-slate-600 mt-0.5">Collèges Pionniers • Année Scolaire 2026/2027</p>
                     <div class="flex justify-between items-center text-xs text-slate-600 mt-2 px-2 font-medium">
                         <span>Établissement : <strong id="disp-school">Collège Pionnier Anas Bno Malik</strong></span>
                         <span>Direction : <strong id="disp-direction">Chichaoua</strong></span>
@@ -290,44 +246,44 @@
 
                 <!-- Stats Bar -->
                 <div class="grid grid-cols-5 gap-2 mb-4 text-center">
-                    <div class="bg-rose-50 border border-rose-200 rounded-xl p-2 print:border-slate-300 print:bg-slate-50">
+                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-2">
                         <span class="block text-[10px] text-slate-500 uppercase font-semibold">Effectif Total</span>
                         <span id="stat-total" class="text-sm font-extrabold text-slate-800">0</span>
                     </div>
-                    <div class="bg-red-50 border border-red-200 rounded-xl p-2 print:border-slate-300">
+                    <div class="bg-red-50 border border-red-200 rounded-xl p-2">
                         <span class="block text-[10px] text-red-600 uppercase font-semibold">Palier 1 (L-M)</span>
                         <span id="stat-p1" class="text-sm font-extrabold text-red-700">0</span>
                     </div>
-                    <div class="bg-amber-50 border border-amber-200 rounded-xl p-2 print:border-slate-300">
+                    <div class="bg-amber-50 border border-amber-200 rounded-xl p-2">
                         <span class="block text-[10px] text-amber-600 uppercase font-semibold">Palier 2 (C-PS)</span>
                         <span id="stat-p2" class="text-sm font-extrabold text-amber-700">0</span>
                     </div>
-                    <div class="bg-blue-50 border border-blue-200 rounded-xl p-2 print:border-slate-300">
+                    <div class="bg-blue-50 border border-blue-200 rounded-xl p-2">
                         <span class="block text-[10px] text-blue-600 uppercase font-semibold">Palier 3 (C-PE)</span>
                         <span id="stat-p3" class="text-sm font-extrabold text-blue-700">0</span>
                     </div>
-                    <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-2 print:border-slate-300">
+                    <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-2">
                         <span class="block text-[10px] text-emerald-600 uppercase font-semibold">Palier 4 (Avancé)</span>
                         <span id="stat-p4" class="text-sm font-extrabold text-emerald-700">0</span>
                     </div>
                 </div>
 
-                <!-- Table: Maximum 40 Rows for A4 Page -->
+                <!-- Table -->
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse print-table">
+                    <table class="w-full text-left border-collapse">
                         <thead>
-                            <tr class="bg-rose-600 text-white text-[11px] uppercase font-bold text-center">
-                                <th class="py-2 px-1 w-8 border border-rose-700">#</th>
-                                <th class="py-2 px-2 text-left border border-rose-700">Nom et Prénom de l'élève</th>
-                                <th class="py-2 px-1 w-12 border border-rose-700">Classe</th>
-                                <th class="py-2 px-1 border border-rose-700">L-PS <br><span class="text-[9px] font-normal">(14/20)</span></th>
-                                <th class="py-2 px-1 border border-rose-700">L-M <br><span class="text-[9px] font-normal">(7/10)</span></th>
-                                <th class="py-2 px-1 border border-rose-700">C-PS <br><span class="text-[9px] font-normal">(1/2)</span></th>
-                                <th class="py-2 px-1 border border-rose-700">L-PE <br><span class="text-[9px] font-normal">(24/30)</span></th>
-                                <th class="py-2 px-1 border border-rose-700">C-PE <br><span class="text-[9px] font-normal">(1/2)</span></th>
-                                <th class="py-2 px-1 border border-rose-700">L-P <br><span class="text-[9px] font-normal">(60/70)</span></th>
-                                <th class="py-2 px-2 border border-rose-700 w-28">Palier Final</th>
-                                <th class="py-2 px-1 w-12 border border-rose-700 no-print">Actions</th>
+                            <tr class="bg-slate-800 text-white text-[11px] uppercase font-bold text-center">
+                                <th class="py-2 px-1 w-8 border border-slate-700">#</th>
+                                <th class="py-2 px-2 text-left border border-slate-700">Nom et Prénom de l'élève</th>
+                                <th class="py-2 px-1 w-12 border border-slate-700">Classe</th>
+                                <th class="py-2 px-1 border border-slate-700">L-PS <br><span class="text-[9px] font-normal">(14/20)</span></th>
+                                <th class="py-2 px-1 border border-slate-700">L-M <br><span class="text-[9px] font-normal">(7/10)</span></th>
+                                <th class="py-2 px-1 border border-slate-700">C-PS <br><span class="text-[9px] font-normal">(1/2)</span></th>
+                                <th class="py-2 px-1 border border-slate-700">L-PE <br><span class="text-[9px] font-normal">(24/30)</span></th>
+                                <th class="py-2 px-1 border border-slate-700">C-PE <br><span class="text-[9px] font-normal">(1/2)</span></th>
+                                <th class="py-2 px-1 border border-slate-700">L-P <br><span class="text-[9px] font-normal">(60/70)</span></th>
+                                <th class="py-2 px-2 border border-slate-700 w-28">Palier Final</th>
+                                <th class="py-2 px-1 w-12 border border-slate-700 no-print">Actions</th>
                             </tr>
                         </thead>
                         <tbody id="grid-students-body" class="text-xs divide-y divide-slate-200">
@@ -336,9 +292,8 @@
                     </table>
                 </div>
 
-                <!-- Print Footer with Developer Rights -->
                 <div class="mt-4 pt-2 border-t border-slate-200 flex justify-between items-center text-[10px] text-slate-500">
-                    <span>Généré automatiquement par l'Application de Positionnement FR 2026</span>
+                    <span>Généré par l'Application de Positionnement FR</span>
                     <span>Conception et Développement : <strong>Brahim Soubki</strong></span>
                 </div>
 
@@ -349,19 +304,18 @@
 
     </main>
 
-    <!-- FOOTER (NO-PRINT) -->
-    <footer class="bg-white border-t border-rose-200 py-3 text-center text-xs text-slate-500 no-print mt-auto">
-        <span>Application de Positionnement - Langue Française (Collèges Pionniers 2026-2027) • Conception et Développement : <strong>Brahim Soubki</strong></span>
+    <!-- FOOTER -->
+    <footer class="bg-white border-t border-slate-200 py-3 text-center text-xs text-slate-500 no-print mt-auto">
+        <span>Application de Positionnement - Langue Française • Conception et Développement : <strong>Brahim Soubki</strong></span>
     </footer>
 
     <!-- JAVASCRIPT LOGIC -->
     <script>
         /* ================================================================================= */
-        /* DATA STRUCTURES & OFFICIAL TEST CONTENT                                            */
+        /* DATA STRUCTURES WITH QUESTIONS & MODEL ANSWERS                                   */
         /* ================================================================================= */
 
         const DATA = {
-            // Stage 1: L-PS (Lecture - Phrases Simples)
             L_PS: {
                 title: "Étape 1: Lecture de Phrases Simples (L-PS)",
                 threshold: 14,
@@ -410,7 +364,6 @@
                 ]
             },
 
-            // Stage 2: L-M (Lecture - Mots)
             L_M: {
                 title: "Étape 2: Lecture de Mots Isolés (L-M)",
                 threshold: 7,
@@ -423,34 +376,32 @@
                 ]
             },
 
-            // Stage 3: C-PS (Compréhension – Phrases Simples)
             C_PS: {
                 title: "Étape 3: Compréhension de Phrases Simples (C-PS)",
                 questionsByGroup: {
                     1: [
-                        "1. Qui écrit la leçon ?",
-                        "2. Que font les élèves ?",
-                        "3. Où les élèves écrivent-ils ?"
+                        { q: "1. Qui écrit la leçon ?", a: "Le professeur." },
+                        { q: "2. Que font les élèves ?", a: "Ils regardent le tableau / Ils écrivent dans leurs cahiers." },
+                        { q: "3. Où les élèves écrivent-ils ?", a: "Dans leurs petits cahiers bleus." }
                     ],
                     2: [
-                        "1. Qui vend des fruits ?",
-                        "2. Comment sont les fruits ?",
-                        "3. Où est la boutique ?"
+                        { q: "1. Qui vend des fruits ?", a: "Le marchand." },
+                        { q: "2. Comment sont les fruits ?", a: "Ils sont frais." },
+                        { q: "3. Où est la boutique ?", a: "Près de la grande rue." }
                     ],
                     3: [
-                        "1. À quelle heure arrive le train ?",
-                        "2. Qui prend les bagages ?",
-                        "3. Comment marchent-ils ?"
+                        { q: "1. À quelle heure arrive le train ?", a: "À midi." },
+                        { q: "2. Qui prend les bagages ?", a: "Les voyageurs." },
+                        { q: "3. Comment marchent-ils ?", a: "Ils marchent vite." }
                     ],
                     4: [
-                        "1. Qui cultive des légumes ?",
-                        "2. Quand est-ce qu'il travaille ?",
-                        "3. Que vend la femme ?"
+                        { q: "1. Qui cultive des légumes ?", a: "Le voisin (Notre voisin)." },
+                        { q: "2. Quand est-ce qu'il travaille ?", a: "Tous les matins." },
+                        { q: "3. Que vend la femme ?", a: "Les légumes (au marché)." }
                     ]
                 }
             },
 
-            // Stage 4: L-PE (Lecture Phrases Enrichies)
             L_PE: {
                 title: "Étape 4: Lecture de Phrases Enrichies (L-PE)",
                 threshold: 24,
@@ -499,42 +450,40 @@
                 ]
             },
 
-            // Stage 5: C-PE (Compréhension – Phrases Enrichies)
             C_PE: {
                 title: "Étape 5: Compréhension de Phrases Enrichies (C-PE)",
                 questionsByGroup: {
                     1: [
-                        "1. D'où revient le pêcheur ?",
-                        "2. Qu'est-ce qu'il rapporte avec lui?",
-                        "3. Qui attend le pêcheur ?",
-                        "4. Où attendent-ils le pêcheur ?",
-                        "5. Que font-ils ensemble ?"
+                        { q: "1. D'où revient le pêcheur ?", a: "Du port." },
+                        { q: "2. Qu'est-ce qu'il rapporte avec lui?", a: "Des filets remplis de poissons." },
+                        { q: "3. Qui attend le pêcheur ?", a: "Les autres pêcheurs." },
+                        { q: "4. Où attendent-ils le pêcheur ?", a: "Sur la plage." },
+                        { q: "5. Que font-ils ensemble ?", a: "Ils déchargent les poissons frais." }
                     ],
                     2: [
-                        "1. Quel est le métier de cette femme ?",
-                        "2. Où met-elle ces livres ?",
-                        "3. Quel genre de livres cherchent les garçons ?",
-                        "4. Dans quel rayon se trouvent-ils ?",
-                        "5. Combien de livres la vieille dame emprunte-t-elle ?"
+                        { q: "1. Quel est le métier de cette femme ?", a: "Bibliothécaire." },
+                        { q: "2. Où met-elle ces livres ?", a: "Sur les grandes étagères." },
+                        { q: "3. Quel genre de livres cherchent les garçons ?", a: "Des bandes dessinées." },
+                        { q: "4. Dans quel rayon se trouvent-ils ?", a: "Le rayon réservé aux enfants." },
+                        { q: "5. Combien de livres la vieille dame emprunte-t-elle ?", a: "Trois livres." }
                     ],
                     3: [
-                        "1. Qui cuisine le repas ?",
-                        "2. Pour qui prépare-t-elle ce repas?",
-                        "3. Comment mangent les enfants ?",
-                        "4. À qui sourient-ils pendant le repas?",
-                        "5. Quand repartent-ils heureux ?"
+                        { q: "1. Qui cuisine le repas ?", a: "Grand-mère." },
+                        { q: "2. Pour qui prépare-t-elle ce repas?", a: "Pour toute la famille." },
+                        { q: "3. Comment mangent les enfants ?", a: "Avec appétit." },
+                        { q: "4. À qui sourient-ils pendant le repas?", a: "À leurs parents." },
+                        { q: "5. Quand repartent-ils heureux ?", a: "Après le repas / ce moment de partage." }
                     ],
                     4: [
-                        "1. Quel sport pratiquent les enfants ?",
-                        "2. Où se déroule cette scène ?",
-                        "3. Où la maîtresse est-elle assise?",
-                        "4. Comment les surveille-t-elle ?",
-                        "5. Dans quel endroit sautent-ils ?"
+                        { q: "1. Quel sport pratiquent les enfants ?", a: "Le football." },
+                        { q: "2. Où se déroule cette scène ?", a: "Dans le grand jardin / dans la cour de l'école." },
+                        { q: "3. Où la maîtresse est-elle assise?", a: "Sur son banc." },
+                        { q: "4. Comment les surveille-t-elle ?", a: "Avec attention." },
+                        { q: "5. Dans quel endroit sautent-ils ?", a: "Dans la grande cour de l'école." }
                     ]
                 }
             },
 
-            // Stage 6: L-P (Lecture - Paragraphe)
             L_P: {
                 title: "Étape 6: Lecture d'un Paragraphe (L-P - Indicateur Complémentaire)",
                 threshold: 60,
@@ -550,29 +499,27 @@
         let currentStageKey = 'L-PS';
         let currentSelectedGroup = 1;
 
-        // Current Active Student Assessment State
         let currentStudent = {
             id: null,
             name: '',
             classNum: '1/1',
             orderNum: 1,
             scores: {
-                'L-PS': null, // { count: 18, valid: 1, group: 1 }
-                'L-M': null,  // { count: 8, valid: 1 }
-                'C-PS': null, // { score: 1, valid: 1 } -> options: 0/2, 1/2, 2/2
-                'L-PE': null, // { count: 26, valid: 1, group: 1 }
-                'C-PE': null, // { score: 1, valid: 1 } -> options: 0/2, 1/2, 2/2
-                'L-P': null   // { count: 64, valid: 1, time: 52 }
+                'L-PS': null,
+                'L-M': null,
+                'C-PS': null,
+                'L-PE': null,
+                'C-PE': null,
+                'L-P': null
             },
             palierFinal: null
         };
 
-        // Saved Students DB
         let studentsList = [];
 
-        // Timer State
+        // Countdown Timer State
         let timerInterval = null;
-        let timerSeconds = 0;
+        let timerSecondsLeft = 60;
 
         /* ================================================================================= */
         /* INITIALIZATION & LOCALSTORAGE                                                    */
@@ -620,7 +567,7 @@
         }
 
         /* ================================================================================= */
-        /* TAB & STAGE NAVIGATION                                                            */
+        /* NAVIGATION                                                                        */
         /* ================================================================================= */
 
         function switchTab(tab) {
@@ -631,11 +578,11 @@
             const btnGrid = document.getElementById('btn-tab-grid');
 
             if (tab === 'eval') {
-                btnEval.className = "flex items-center space-x-2 px-4 py-2 rounded-lg transition shadow-sm bg-white text-rose-700 font-semibold";
-                btnGrid.className = "flex items-center space-x-2 px-4 py-2 rounded-lg transition text-slate-600 hover:text-rose-700";
+                btnEval.className = "flex items-center space-x-2 px-4 py-2 rounded-lg transition shadow-sm bg-white text-blue-700 font-semibold";
+                btnGrid.className = "flex items-center space-x-2 px-4 py-2 rounded-lg transition text-slate-600 hover:text-blue-700";
             } else {
-                btnGrid.className = "flex items-center space-x-2 px-4 py-2 rounded-lg transition shadow-sm bg-white text-rose-700 font-semibold";
-                btnEval.className = "flex items-center space-x-2 px-4 py-2 rounded-lg transition text-slate-600 hover:text-rose-700";
+                btnGrid.className = "flex items-center space-x-2 px-4 py-2 rounded-lg transition shadow-sm bg-white text-blue-700 font-semibold";
+                btnEval.className = "flex items-center space-x-2 px-4 py-2 rounded-lg transition text-slate-600 hover:text-blue-700";
             }
         }
 
@@ -656,32 +603,26 @@
         }
 
         /* ================================================================================= */
-        /* DECISION TREE & PALIER CALCULATION                                                 */
+        /* PALIER CALCULATION                                                                */
         /* ================================================================================= */
 
         function calculatePalier() {
             const s = currentStudent.scores;
 
-            // Decision Tree official rules:
-            // 1. L-PS
             if (s['L-PS']) {
                 if (s['L-PS'].valid === 0) {
-                    // Non validé L-PS -> Pass to L-M
                     if (s['L-M']) {
                         if (s['L-M'].valid === 1) return 'Palier 2';
                         else return 'Palier 1';
                     }
                     return 'Palier 1 (En attente L-M)';
                 } else {
-                    // Validé L-PS -> Pass to C-PS
                     if (s['C-PS']) {
                         if (s['C-PS'].valid === 0) return 'Palier 2';
                         else {
-                            // Validé C-PS -> Pass to L-PE
                             if (s['L-PE']) {
                                 if (s['L-PE'].valid === 0) return 'Palier 3';
                                 else {
-                                    // Validé L-PE -> Pass to C-PE
                                     if (s['C-PE']) {
                                         if (s['C-PE'].valid === 0) return 'Palier 3';
                                         else return 'Palier 4';
@@ -705,7 +646,7 @@
                 if (!btn) return;
 
                 if (stg === currentStageKey) {
-                    btn.className = "step-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-rose-600 text-white shadow-sm shadow-rose-200";
+                    btn.className = "step-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-blue-600 text-white shadow-sm shadow-blue-200";
                 } else if (currentStudent.scores[stg] !== null) {
                     const isValid = currentStudent.scores[stg].valid === 1;
                     btn.className = `step-btn px-3 py-1.5 rounded-lg text-xs font-bold ${isValid ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' : 'bg-red-100 text-red-800 border border-red-300'}`;
@@ -727,7 +668,7 @@
         }
 
         /* ================================================================================= */
-        /* STAGE RENDERING FUNCTIONS                                                         */
+        /* STAGE RENDERING                                                                  */
         /* ================================================================================= */
 
         function renderCurrentStageCard() {
@@ -735,24 +676,12 @@
             stopTimer();
 
             switch (currentStageKey) {
-                case 'L-PS':
-                    renderLPSStage(container);
-                    break;
-                case 'L-M':
-                    renderLMStage(container);
-                    break;
-                case 'C-PS':
-                    renderCPSStage(container);
-                    break;
-                case 'L-PE':
-                    renderLPEStage(container);
-                    break;
-                case 'C-PE':
-                    renderCPEStage(container);
-                    break;
-                case 'L-P':
-                    renderLPStage(container);
-                    break;
+                case 'L-PS': renderLPSStage(container); break;
+                case 'L-M': renderLMStage(container); break;
+                case 'C-PS': renderCPSStage(container); break;
+                case 'L-PE': renderLPEStage(container); break;
+                case 'C-PE': renderCPEStage(container); break;
+                case 'L-P': renderLPStage(container); break;
             }
         }
 
@@ -762,25 +691,25 @@
             
             let phrasesHTML = grp.phrases.map((phrase, pIdx) => {
                 const words = phrase.split(' ');
-                const wordsHTML = words.map((w, wIdx) => `<span class="word-clickable" onclick="toggleWordError(this)">${w}</span>`).join(' ');
+                const wordsHTML = words.map(w => `<span class="word-clickable" onclick="toggleWordError(this)">${w}</span>`).join(' ');
                 return `
-                    <div class="flex items-center justify-between p-3 bg-rose-50/40 rounded-xl border border-rose-100 mb-2">
+                    <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-200 mb-2">
                         <div class="text-base font-semibold text-slate-800">${pIdx + 1}. ${wordsHTML}</div>
-                        <span class="text-xs font-bold text-rose-500 bg-white px-2 py-1 rounded-md border border-rose-200">| ${grp.counts[pIdx]} mots</span>
+                        <span class="text-xs font-bold text-blue-600 bg-white px-2 py-1 rounded-md border border-slate-200">| ${grp.counts[pIdx]} mots</span>
                     </div>
                 `;
             }).join('');
 
             container.innerHTML = `
                 <div class="space-y-4">
-                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 pb-3 border-b border-rose-100">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 pb-3 border-b border-slate-200">
                         <div>
                             <h2 class="text-base font-bold text-slate-800">${DATA.L_PS.title}</h2>
                             <p class="text-xs text-slate-500">Consigne: Lis à voix haute les phrases suivantes. (Cliquez sur les mots erronés)</p>
                         </div>
                         <div class="flex items-center space-x-2">
-                            <span class="text-xs font-medium text-slate-600">Choisir le bloc:</span>
-                            <select onchange="changeGroup(this.value)" class="bg-rose-50 border border-rose-200 text-xs font-bold rounded-lg px-2 py-1.5 text-rose-800">
+                            <span class="text-xs font-medium text-slate-600">Bloc:</span>
+                            <select onchange="changeGroup(this.value)" class="bg-slate-50 border border-slate-200 text-xs font-bold rounded-lg px-2 py-1.5 text-blue-800">
                                 ${DATA.L_PS.groups.map(g => `<option value="${g.id}" ${g.id === currentSelectedGroup ? 'selected' : ''}>${g.name}</option>`).join('')}
                             </select>
                         </div>
@@ -788,15 +717,13 @@
 
                     <div>${phrasesHTML}</div>
 
-                    <div class="bg-white border border-rose-200 rounded-xl p-4 flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div class="bg-white border border-slate-200 rounded-xl p-4 flex flex-col md:flex-row items-center justify-between gap-4">
                         <div class="flex items-center space-x-3">
                             <span class="text-sm font-semibold text-slate-700">Mots correctement lus :</span>
-                            <input type="number" id="lps-count" min="0" max="20" value="${currentStudent.scores['L-PS'] ? currentStudent.scores['L-PS'].count : 20}" onchange="updateLPSScore()" class="w-20 bg-rose-50 border border-rose-300 text-center font-bold text-lg rounded-xl py-1 text-rose-900 focus:outline-none">
+                            <input type="number" id="lps-count" min="0" max="20" value="${currentStudent.scores['L-PS'] ? currentStudent.scores['L-PS'].count : 20}" onchange="updateLPSScore()" class="w-20 bg-slate-50 border border-slate-300 text-center font-bold text-lg rounded-xl py-1 text-blue-900 focus:outline-none">
                             <span class="text-sm text-slate-500">/ 20 (Seuil: 14/20)</span>
                         </div>
-                        <div id="lps-status-tag" class="text-xs font-bold px-4 py-2 rounded-xl">
-                            <!-- Injected Tag -->
-                        </div>
+                        <div id="lps-status-tag" class="text-xs font-bold px-4 py-2 rounded-xl"></div>
                     </div>
                 </div>
             `;
@@ -815,11 +742,8 @@
 
         function recountErrors() {
             const errors = document.querySelectorAll('.word-error').length;
-            const total = 20;
-            const correct = Math.max(0, total - errors);
-            
             if (currentStageKey === 'L-PS') {
-                document.getElementById('lps-count').value = correct;
+                document.getElementById('lps-count').value = Math.max(0, 20 - errors);
                 updateLPSScore();
             } else if (currentStageKey === 'L-PE') {
                 document.getElementById('lpe-count').value = Math.max(0, 30 - errors);
@@ -848,28 +772,24 @@
 
         // --- 2. STAGE L-M ---
         function renderLMStage(container) {
-            let colsHTML = DATA.L_M.columns.map((col, cIdx) => {
+            let colsHTML = DATA.L_M.columns.map(col => {
                 const wordsHTML = col.map(w => `<span class="word-clickable text-sm" onclick="toggleLMWordError(this)">• ${w}</span>`).join('<br>');
-                return `
-                    <div class="bg-rose-50/40 p-3 rounded-xl border border-rose-100 text-slate-800 font-medium">
-                        ${wordsHTML}
-                    </div>
-                `;
+                return `<div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-slate-800 font-medium">${wordsHTML}</div>`;
             }).join('');
 
             container.innerHTML = `
                 <div class="space-y-4">
-                    <div class="pb-3 border-b border-rose-100">
+                    <div class="pb-3 border-b border-slate-200">
                         <h2 class="text-base font-bold text-slate-800">${DATA.L_M.title}</h2>
                         <p class="text-xs text-slate-500">Consigne: Lis à voix haute 10 mots parmi ceux-ci. (Seuil: 7/10)</p>
                     </div>
 
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-3">${colsHTML}</div>
 
-                    <div class="bg-white border border-rose-200 rounded-xl p-4 flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div class="bg-white border border-slate-200 rounded-xl p-4 flex flex-col md:flex-row items-center justify-between gap-4">
                         <div class="flex items-center space-x-3">
                             <span class="text-sm font-semibold text-slate-700">Mots correctement lus :</span>
-                            <input type="number" id="lm-count" min="0" max="10" value="${currentStudent.scores['L-M'] ? currentStudent.scores['L-M'].count : 10}" onchange="updateLMScore()" class="w-20 bg-rose-50 border border-rose-300 text-center font-bold text-lg rounded-xl py-1 text-rose-900 focus:outline-none">
+                            <input type="number" id="lm-count" min="0" max="10" value="${currentStudent.scores['L-M'] ? currentStudent.scores['L-M'].count : 10}" onchange="updateLMScore()" class="w-20 bg-slate-50 border border-slate-300 text-center font-bold text-lg rounded-xl py-1 text-blue-900 focus:outline-none">
                             <span class="text-sm text-slate-500">/ 10 (Seuil: 7/10)</span>
                         </div>
                         <div id="lm-status-tag" class="text-xs font-bold px-4 py-2 rounded-xl"></div>
@@ -902,27 +822,35 @@
             updateProgressBadges();
         }
 
-        // --- 3. STAGE C-PS ---
+        // --- 3. STAGE C-PS (WITH ANSWERS) ---
         function renderCPSStage(container) {
             const questions = DATA.C_PS.questionsByGroup[currentSelectedGroup] || DATA.C_PS.questionsByGroup[1];
-            const qHTML = questions.map(q => `<div class="p-2 bg-rose-50/50 border border-rose-100 rounded-lg text-sm font-semibold text-slate-800">${q}</div>`).join('');
+            
+            const qHTML = questions.map(item => `
+                <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-1">
+                    <div class="text-sm font-semibold text-slate-800">${item.q}</div>
+                    <div class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-200 inline-block">
+                        <i class="fa-solid fa-check mr-1"></i> Réponse attendue : ${item.a}
+                    </div>
+                </div>
+            `).join('');
 
             container.innerHTML = `
                 <div class="space-y-4">
-                    <div class="pb-3 border-b border-rose-100">
+                    <div class="pb-3 border-b border-slate-200">
                         <h2 class="text-base font-bold text-slate-800">${DATA.C_PS.title}</h2>
-                        <p class="text-xs text-slate-500">Consigne: Relis silencieusement les phrases et réponds à mes questions (Poser 2 questions au choix parmi les 3 ci-dessous).</p>
+                        <p class="text-xs text-slate-500">Consigne: Relis silencieusement les phrases et réponds à 2 questions au choix.</p>
                     </div>
 
                     <div class="space-y-2">
-                        <label class="block text-xs font-bold text-rose-700 uppercase">Questions Orales de Compréhension pour le Groupe ${currentSelectedGroup} :</label>
+                        <label class="block text-xs font-bold text-blue-700 uppercase">Questions & Réponses pour le Groupe ${currentSelectedGroup} :</label>
                         ${qHTML}
                     </div>
 
-                    <div class="bg-white border border-rose-200 rounded-xl p-4 flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div class="bg-white border border-slate-200 rounded-xl p-4 flex flex-col md:flex-row items-center justify-between gap-4">
                         <div class="flex items-center space-x-3 w-full md:w-auto">
-                            <span class="text-sm font-semibold text-slate-700">Évaluation des réponses de l'élève :</span>
-                            <select id="cps-eval-select" onchange="updateCPSScore()" class="bg-rose-50 border border-rose-300 text-slate-800 font-bold rounded-xl px-3 py-2 text-sm focus:outline-none">
+                            <span class="text-sm font-semibold text-slate-700">Évaluation des réponses :</span>
+                            <select id="cps-eval-select" onchange="updateCPSScore()" class="bg-slate-50 border border-slate-300 text-slate-800 font-bold rounded-xl px-3 py-2 text-sm focus:outline-none">
                                 <option value="0" ${currentStudent.scores['C-PS'] && currentStudent.scores['C-PS'].score === 0 ? 'selected' : ''}>0 réponse correcte sur 2 (Non Validé - Score 0)</option>
                                 <option value="1" ${!currentStudent.scores['C-PS'] || currentStudent.scores['C-PS'].score === 1 ? 'selected' : ''}>1 réponse correcte sur 2 (Validé - Score 1) ✅</option>
                                 <option value="2" ${currentStudent.scores['C-PS'] && currentStudent.scores['C-PS'].score === 2 ? 'selected' : ''}>2 réponses correctes sur 2 (Validé - Score 1) ✅</option>
@@ -959,23 +887,23 @@
                 const words = phrase.split(' ');
                 const wordsHTML = words.map(w => `<span class="word-clickable" onclick="toggleWordError(this)">${w}</span>`).join(' ');
                 return `
-                    <div class="flex items-center justify-between p-3 bg-rose-50/40 rounded-xl border border-rose-100 mb-2">
+                    <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-200 mb-2">
                         <div class="text-base font-semibold text-slate-800">${pIdx + 1}. ${wordsHTML}</div>
-                        <span class="text-xs font-bold text-rose-500 bg-white px-2 py-1 rounded-md border border-rose-200">| ${grp.counts[pIdx]} mots</span>
+                        <span class="text-xs font-bold text-blue-600 bg-white px-2 py-1 rounded-md border border-slate-200">| ${grp.counts[pIdx]} mots</span>
                     </div>
                 `;
             }).join('');
 
             container.innerHTML = `
                 <div class="space-y-4">
-                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 pb-3 border-b border-rose-100">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 pb-3 border-b border-slate-200">
                         <div>
                             <h2 class="text-base font-bold text-slate-800">${DATA.L_PE.title}</h2>
                             <p class="text-xs text-slate-500">Consigne: Lis les 3 phrases suivantes. (Cliquez sur les mots erronés)</p>
                         </div>
                         <div class="flex items-center space-x-2">
                             <span class="text-xs font-medium text-slate-600">Bloc:</span>
-                            <select onchange="changeGroup(this.value)" class="bg-rose-50 border border-rose-200 text-xs font-bold rounded-lg px-2 py-1.5 text-rose-800">
+                            <select onchange="changeGroup(this.value)" class="bg-slate-50 border border-slate-200 text-xs font-bold rounded-lg px-2 py-1.5 text-blue-800">
                                 ${DATA.L_PE.groups.map(g => `<option value="${g.id}" ${g.id === currentSelectedGroup ? 'selected' : ''}>${g.name}</option>`).join('')}
                             </select>
                         </div>
@@ -983,10 +911,10 @@
 
                     <div>${phrasesHTML}</div>
 
-                    <div class="bg-white border border-rose-200 rounded-xl p-4 flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div class="bg-white border border-slate-200 rounded-xl p-4 flex flex-col md:flex-row items-center justify-between gap-4">
                         <div class="flex items-center space-x-3">
                             <span class="text-sm font-semibold text-slate-700">Mots correctement lus :</span>
-                            <input type="number" id="lpe-count" min="0" max="30" value="${currentStudent.scores['L-PE'] ? currentStudent.scores['L-PE'].count : 30}" onchange="updateLPEScore()" class="w-20 bg-rose-50 border border-rose-300 text-center font-bold text-lg rounded-xl py-1 text-rose-900 focus:outline-none">
+                            <input type="number" id="lpe-count" min="0" max="30" value="${currentStudent.scores['L-PE'] ? currentStudent.scores['L-PE'].count : 30}" onchange="updateLPEScore()" class="w-20 bg-slate-50 border border-slate-300 text-center font-bold text-lg rounded-xl py-1 text-blue-900 focus:outline-none">
                             <span class="text-sm text-slate-500">/ 30 (Seuil: 24/30)</span>
                         </div>
                         <div id="lpe-status-tag" class="text-xs font-bold px-4 py-2 rounded-xl"></div>
@@ -1012,27 +940,35 @@
             updateProgressBadges();
         }
 
-        // --- 5. STAGE C-PE ---
+        // --- 5. STAGE C-PE (WITH ANSWERS) ---
         function renderCPEStage(container) {
             const questions = DATA.C_PE.questionsByGroup[currentSelectedGroup] || DATA.C_PE.questionsByGroup[1];
-            const qHTML = questions.map(q => `<div class="p-2 bg-rose-50/50 border border-rose-100 rounded-lg text-sm font-semibold text-slate-800">${q}</div>`).join('');
+            
+            const qHTML = questions.map(item => `
+                <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-1">
+                    <div class="text-sm font-semibold text-slate-800">${item.q}</div>
+                    <div class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-200 inline-block">
+                        <i class="fa-solid fa-check mr-1"></i> Réponse attendue : ${item.a}
+                    </div>
+                </div>
+            `).join('');
 
             container.innerHTML = `
                 <div class="space-y-4">
-                    <div class="pb-3 border-b border-rose-100">
+                    <div class="pb-3 border-b border-slate-200">
                         <h2 class="text-base font-bold text-slate-800">${DATA.C_PE.title}</h2>
-                        <p class="text-xs text-slate-500">Consigne: Relis silencieusement les phrases et réponds à mes questions (Poser 2 questions au choix parmi les 5 ci-dessous).</p>
+                        <p class="text-xs text-slate-500">Consigne: Relis silencieusement les phrases et réponds à 2 questions au choix.</p>
                     </div>
 
                     <div class="space-y-2">
-                        <label class="block text-xs font-bold text-rose-700 uppercase">Questions Orales de Compréhension pour le Groupe ${currentSelectedGroup} :</label>
+                        <label class="block text-xs font-bold text-blue-700 uppercase">Questions & Réponses pour le Groupe ${currentSelectedGroup} :</label>
                         ${qHTML}
                     </div>
 
-                    <div class="bg-white border border-rose-200 rounded-xl p-4 flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div class="bg-white border border-slate-200 rounded-xl p-4 flex flex-col md:flex-row items-center justify-between gap-4">
                         <div class="flex items-center space-x-3 w-full md:w-auto">
-                            <span class="text-sm font-semibold text-slate-700">Évaluation des réponses de l'élève :</span>
-                            <select id="cpe-eval-select" onchange="updateCPEScore()" class="bg-rose-50 border border-rose-300 text-slate-800 font-bold rounded-xl px-3 py-2 text-sm focus:outline-none">
+                            <span class="text-sm font-semibold text-slate-700">Évaluation des réponses :</span>
+                            <select id="cpe-eval-select" onchange="updateCPEScore()" class="bg-slate-50 border border-slate-300 text-slate-800 font-bold rounded-xl px-3 py-2 text-sm focus:outline-none">
                                 <option value="0" ${currentStudent.scores['C-PE'] && currentStudent.scores['C-PE'].score === 0 ? 'selected' : ''}>0 réponse correcte sur 2 (Non Validé - Score 0)</option>
                                 <option value="1" ${!currentStudent.scores['C-PE'] || currentStudent.scores['C-PE'].score === 1 ? 'selected' : ''}>1 réponse correcte sur 2 (Validé - Score 1) ✅</option>
                                 <option value="2" ${currentStudent.scores['C-PE'] && currentStudent.scores['C-PE'].score === 2 ? 'selected' : ''}>2 réponses correctes sur 2 (Validé - Score 1) ✅</option>
@@ -1061,35 +997,39 @@
             updateProgressBadges();
         }
 
-        // --- 6. STAGE L-P ---
+        // --- 6. STAGE L-P (COUNTDOWN TIMER) ---
         function renderLPStage(container) {
             const words = DATA.L_P.paragraph.split(' ');
             const wordsHTML = words.map(w => `<span class="word-clickable" onclick="toggleWordError(this)">${w}</span>`).join(' ');
 
             container.innerHTML = `
                 <div class="space-y-4">
-                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 pb-3 border-b border-rose-100">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 pb-3 border-b border-slate-200">
                         <div>
                             <h2 class="text-base font-bold text-slate-800">${DATA.L_P.title}</h2>
-                            <p class="text-xs text-slate-500">Consigne: Lis le paragraphe suivant en 1 minute. (Seuil: 60/70 mots)</p>
+                            <p class="text-xs text-slate-500">Consigne: Lis le paragraphe suivant. Le temps est limité à 1 minute (60s).</p>
                         </div>
-                        <!-- Timer Control -->
-                        <div class="flex items-center space-x-2 bg-rose-50 p-2 rounded-xl border border-rose-200">
-                            <i class="fa-solid fa-stopwatch text-rose-600 text-lg"></i>
-                            <span id="timer-display" class="font-mono font-bold text-lg text-slate-800">00:00</span>
-                            <button id="timer-btn" onclick="toggleTimer()" class="px-3 py-1 bg-rose-600 text-white font-semibold text-xs rounded-lg shadow-sm">Démarrer 60s</button>
+                        
+                        <!-- COUNTDOWN TIMER CONTROL -->
+                        <div class="flex items-center space-x-3 bg-blue-50 p-2.5 rounded-xl border border-blue-200">
+                            <i class="fa-solid fa-stopwatch text-blue-600 text-xl"></i>
+                            <div class="text-left">
+                                <span class="block text-[10px] text-blue-600 font-bold uppercase tracking-wider">Temps restant</span>
+                                <span id="timer-display" class="font-mono font-extrabold text-xl text-blue-900 leading-none">01:00</span>
+                            </div>
+                            <button id="timer-btn" onclick="toggleTimer()" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs rounded-lg shadow-sm transition">Démarrer 60s</button>
                         </div>
                     </div>
 
-                    <div class="p-4 bg-rose-50/40 border border-rose-100 rounded-xl leading-relaxed text-base font-medium text-slate-800">
+                    <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl leading-relaxed text-base font-medium text-slate-800">
                         ${wordsHTML}
                     </div>
 
-                    <div class="bg-white border border-rose-200 rounded-xl p-4 flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div class="bg-white border border-slate-200 rounded-xl p-4 flex flex-col md:flex-row items-center justify-between gap-4">
                         <div class="flex items-center space-x-3">
                             <span class="text-sm font-semibold text-slate-700">Mots correctement lus :</span>
-                            <input type="number" id="lp-count" min="0" max="70" value="${currentStudent.scores['L-P'] ? currentStudent.scores['L-P'].count : 70}" onchange="updateLPScore()" class="w-20 bg-rose-50 border border-rose-300 text-center font-bold text-lg rounded-xl py-1 text-rose-900 focus:outline-none">
-                            <span class="text-sm text-slate-500">/ 70 (Seuil: 60/70 en ≤ 1 min)</span>
+                            <input type="number" id="lp-count" min="0" max="70" value="${currentStudent.scores['L-P'] ? currentStudent.scores['L-P'].count : 70}" onchange="updateLPScore()" class="w-20 bg-slate-50 border border-slate-300 text-center font-bold text-lg rounded-xl py-1 text-blue-900 focus:outline-none">
+                            <span class="text-sm text-slate-500">/ 70 (Seuil: 60/70)</span>
                         </div>
                         <div id="lp-status-tag" class="text-xs font-bold px-4 py-2 rounded-xl"></div>
                     </div>
@@ -1101,7 +1041,7 @@
         function updateLPScore() {
             const count = parseInt(document.getElementById('lp-count').value) || 0;
             const valid = count >= DATA.L_P.threshold ? 1 : 0;
-            currentStudent.scores['L-P'] = { count, valid, time: timerSeconds };
+            currentStudent.scores['L-P'] = { count, valid, timeLeft: timerSecondsLeft };
 
             const tag = document.getElementById('lp-status-tag');
             if (valid === 1) {
@@ -1114,31 +1054,33 @@
             updateProgressBadges();
         }
 
-        // --- TIMER FUNCTIONS ---
+        // --- COUNTDOWN TIMER LOGIC ---
         function toggleTimer() {
             if (timerInterval) {
                 stopTimer();
             } else {
-                startTimer();
+                startCountdownTimer();
             }
         }
 
-        function startTimer() {
-            timerSeconds = 0;
+        function startCountdownTimer() {
+            timerSecondsLeft = 60;
             const display = document.getElementById('timer-display');
             const btn = document.getElementById('timer-btn');
+            
             btn.innerText = "Arrêter";
-            btn.className = "px-3 py-1 bg-slate-700 text-white font-semibold text-xs rounded-lg shadow-sm";
+            btn.className = "px-3 py-1.5 bg-slate-700 hover:bg-slate-800 text-white font-semibold text-xs rounded-lg shadow-sm";
 
             timerInterval = setInterval(() => {
-                timerSeconds++;
-                const mins = String(Math.floor(timerSeconds / 60)).padStart(2, '0');
-                const secs = String(timerSeconds % 60).padStart(2, '0');
-                if (display) display.innerText = `${mins}:${secs}`;
+                timerSecondsLeft--;
+                
+                const secs = String(timerSecondsLeft).padStart(2, '0');
+                if (display) display.innerText = `00:${secs}`;
 
-                if (timerSeconds >= 60) {
+                if (timerSecondsLeft <= 0) {
                     stopTimer();
-                    alert("Chronomètre : 1 minute écoulée !");
+                    if (display) display.innerText = "00:00";
+                    alert("⏰ Temps écoulé ! Les 60 secondes sont terminées.");
                 }
             }, 1000);
         }
@@ -1151,7 +1093,7 @@
             const btn = document.getElementById('timer-btn');
             if (btn) {
                 btn.innerText = "Démarrer 60s";
-                btn.className = "px-3 py-1 bg-rose-600 text-white font-semibold text-xs rounded-lg shadow-sm";
+                btn.className = "px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs rounded-lg shadow-sm";
             }
         }
 
@@ -1165,11 +1107,10 @@
             const numVal = parseInt(document.getElementById('student-num').value) || (studentsList.length + 1);
 
             if (!nameInput) {
-                alert("Veuillez saisir le nom complet de l'élève avant de sauvegarder !");
+                alert("Veuillez saisir le nom complet de l'élève !");
                 return;
             }
 
-            // Save active student
             const studentToSave = {
                 id: Date.now(),
                 name: nameInput,
@@ -1179,7 +1120,6 @@
                 palierFinal: currentStudent.palierFinal
             };
 
-            // Check if existing student update or new
             const existingIdx = studentsList.findIndex(s => s.name.toLowerCase() === nameInput.toLowerCase() && s.classNum === classVal);
             if (existingIdx >= 0) {
                 studentsList[existingIdx] = studentToSave;
@@ -1189,7 +1129,6 @@
 
             saveStudentsList();
 
-            // Reset for next student
             document.getElementById('student-name').value = '';
             document.getElementById('student-num').value = numVal + 1;
             currentStudent.scores = { 'L-PS': null, 'L-M': null, 'C-PS': null, 'L-PE': null, 'C-PE': null, 'L-P': null };
@@ -1197,7 +1136,7 @@
             renderCurrentStageCard();
             updateProgressBadges();
 
-            alert(`Évaluation de ${nameInput} enregistrée avec succès dans la grille !`);
+            alert(`Évaluation de ${nameInput} enregistrée avec succès !`);
         }
 
         function renderGridTable() {
@@ -1209,7 +1148,6 @@
             studentsList.forEach((st, idx) => {
                 const s = st.scores;
 
-                // Stats tally
                 if (st.palierFinal.includes('Palier 1')) p1Count++;
                 else if (st.palierFinal.includes('Palier 2')) p2Count++;
                 else if (st.palierFinal.includes('Palier 3')) p3Count++;
@@ -1223,31 +1161,30 @@
                 };
 
                 const tr = document.createElement('tr');
-                tr.className = idx % 2 === 0 ? 'bg-white' : 'bg-rose-50/20';
+                tr.className = idx % 2 === 0 ? 'bg-white' : 'bg-slate-50';
 
                 tr.innerHTML = `
-                    <td class="py-1 px-1 text-center font-semibold text-slate-600 border border-slate-200">${idx + 1}</td>
-                    <td class="py-1 px-2 font-bold text-slate-800 border border-slate-200">${st.name}</td>
-                    <td class="py-1 px-1 text-center text-slate-600 border border-slate-200">${st.classNum}</td>
-                    <td class="py-1 px-1 text-center border border-slate-200">${formatScoreCell(s['L-PS'])}</td>
-                    <td class="py-1 px-1 text-center border border-slate-200">${formatScoreCell(s['L-M'])}</td>
-                    <td class="py-1 px-1 text-center border border-slate-200">${formatScoreCell(s['C-PS'])}</td>
-                    <td class="py-1 px-1 text-center border border-slate-200">${formatScoreCell(s['L-PE'])}</td>
-                    <td class="py-1 px-1 text-center border border-slate-200">${formatScoreCell(s['C-PE'])}</td>
-                    <td class="py-1 px-1 text-center border border-slate-200">${formatScoreCell(s['L-P'])}</td>
-                    <td class="py-1 px-2 text-center font-extrabold border border-slate-200">
+                    <td class="py-1.5 px-1 text-center font-semibold text-slate-600 border border-slate-200">${idx + 1}</td>
+                    <td class="py-1.5 px-2 font-bold text-slate-800 border border-slate-200">${st.name}</td>
+                    <td class="py-1.5 px-1 text-center text-slate-600 border border-slate-200">${st.classNum}</td>
+                    <td class="py-1.5 px-1 text-center border border-slate-200">${formatScoreCell(s['L-PS'])}</td>
+                    <td class="py-1.5 px-1 text-center border border-slate-200">${formatScoreCell(s['L-M'])}</td>
+                    <td class="py-1.5 px-1 text-center border border-slate-200">${formatScoreCell(s['C-PS'])}</td>
+                    <td class="py-1.5 px-1 text-center border border-slate-200">${formatScoreCell(s['L-PE'])}</td>
+                    <td class="py-1.5 px-1 text-center border border-slate-200">${formatScoreCell(s['C-PE'])}</td>
+                    <td class="py-1.5 px-1 text-center border border-slate-200">${formatScoreCell(s['L-P'])}</td>
+                    <td class="py-1.5 px-2 text-center font-extrabold border border-slate-200">
                         <span class="px-2 py-0.5 rounded-full text-[10px] ${st.palierFinal.includes('Palier 1') ? 'bg-red-100 text-red-800' : st.palierFinal.includes('Palier 2') ? 'bg-amber-100 text-amber-800' : st.palierFinal.includes('Palier 3') ? 'bg-blue-100 text-blue-800' : 'bg-emerald-100 text-emerald-800'}">
                             ${st.palierFinal}
                         </span>
                     </td>
-                    <td class="py-1 px-1 text-center border border-slate-200 no-print">
+                    <td class="py-1.5 px-1 text-center border border-slate-200 no-print">
                         <button onclick="deleteStudent(${st.id})" class="text-rose-500 hover:text-rose-700"><i class="fa-solid fa-trash"></i></button>
                     </td>
                 `;
                 tbody.appendChild(tr);
             });
 
-            // Update stats
             document.getElementById('stat-total').innerText = studentsList.length;
             document.getElementById('stat-p1').innerText = p1Count;
             document.getElementById('stat-p2').innerText = p2Count;
