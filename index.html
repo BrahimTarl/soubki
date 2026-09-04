@@ -236,7 +236,7 @@
     <!-- Header Section -->
     <header class="bg-gradient-to-r from-pink-600 via-rose-600 to-pink-700 text-white p-5 rounded-2xl shadow-lg text-center mb-6 no-print">
         <div class="inline-block bg-amber-300 text-pink-950 font-extrabold px-3 py-1 rounded-full text-xs mb-2">
-            Version Officielle 2026-2027 🌸
+            Version Officielle Conforme 2026-2027 🌸
         </div>
         <h1 class="text-xl md:text-2xl font-bold mb-1">Programme de Remédiation Intensive - Test de Positionnement (Français)</h1>
         <p class="text-pink-100 text-sm md:text-base">Année Scolaire 2026-2027 | Collèges Pionniers</p>
@@ -334,16 +334,26 @@
 
         <!-- Comprehension Section -->
         <div id="comprehension-section" class="hidden bg-pink-50/70 p-4 rounded-xl border-l-4 border-pink-600 mb-4">
-            <h3 class="font-bold text-pink-900 mb-2">Questions Orales de Compréhension :</h3>
-            <p class="text-xs text-slate-600 mb-3">📌 Posez les questions oralement à l'élève une par une. L'élève valide l'étape s'il répond correctement à **au moins 1 question sur 2 (1/2)**.</p>
+            <h3 class="font-bold text-pink-900 mb-1 text-base">Questions Orales de Compréhension :</h3>
+            <p id="comp-instruction-note" class="text-xs text-slate-700 mb-3 font-semibold bg-amber-50 p-2.5 rounded-lg border border-amber-200">
+                📌 <strong>Directive officielle :</strong> Posez <strong>2 questions oralement</strong> à l'élève (l'une après l'autre). Vous pouvez cocher les questions réussies pour mettre à jour la performance automatiquement sur 2.
+            </p>
+            
             <div id="questions-list" class="space-y-3 mb-4"></div>
-            <div class="bg-white p-3 rounded-lg border border-pink-200 flex flex-wrap items-center gap-3">
-                <label for="comp-score" class="font-bold text-slate-700 text-sm">Évaluation des réponses de l'élève :</label>
-                <select id="comp-score" class="p-2 border border-pink-300 rounded-lg bg-white text-sm font-bold text-pink-900">
-                    <option value="0">0 réponse correcte sur 2 (Non Validé - Score 0)</option>
-                    <option value="1" selected>1 réponse correcte sur 2 (Validé - Score 1) ✅</option>
-                    <option value="2">2 réponses correctes sur 2 (Validé - Score 1) ✅</option>
-                </select>
+
+            <div class="bg-white p-3.5 rounded-xl border border-pink-200 flex flex-wrap items-center justify-between gap-3 shadow-sm">
+                <div>
+                    <span class="text-xs text-slate-500 font-bold block">Performance calculée :</span>
+                    <span class="text-sm font-bold text-slate-800">Réponses correctes : <span id="comp-correct-count-display" class="text-pink-700 font-extrabold text-base">1</span> / 2</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <label for="comp-score" class="font-bold text-slate-700 text-xs md:text-sm">Évaluation du Score :</label>
+                    <select id="comp-score" class="p-2 border border-pink-300 rounded-lg bg-white text-sm font-bold text-pink-900">
+                        <option value="0">0 réponse correcte / 2 (Non Validé - Score 0)</option>
+                        <option value="1" selected>1 réponse correcte / 2 (Validé - Score 1) ✅</option>
+                        <option value="2">2 réponses correctes / 2 (Validé - Score 1) ✅</option>
+                    </select>
+                </div>
             </div>
         </div>
 
@@ -503,7 +513,7 @@
     const STORAGE_KEY = 'raez_french_official_2026_data';
     const SCHOOL_INFO_KEY = 'raez_french_school_info_key';
 
-    // Official French Database extracted directly from Guide & Test Positionnement FR 2026
+    // Official French Database extracted strictly from Official Guide & Test Positionnement FR 2026
     const OFFICIAL_DATABASE = {
         // L-PS (Lecture Phrases Simples) - 4 Blocks of 3 phrases (20 words total each block)
         L_PS: [
@@ -516,9 +526,11 @@
                     "Ils écrivent dans leurs petits cahiers bleus."
                 ],
                 text: "Le professeur écrit la leçon au tableau noir. Les élèves regardent le tableau. Ils écrivent dans leurs petits cahiers bleus.",
+                // Exactly 3 questions for C-PS Block 1
                 questions: [
                     { q: "1. Qui écrit la leçon ?", a: "Le professeur." },
-                    { q: "2. Que font les élèves ? / Où écrivent-ils ?", a: "Ils regardent le tableau / Ils écrivent dans leurs petits cahiers bleus." }
+                    { q: "2. Que font les élèves ?", a: "Ils regardent le tableau." },
+                    { q: "3. Où les élèves écrivent-ils ?", a: "Dans leurs petits cahiers bleus." }
                 ]
             },
             {
@@ -530,9 +542,11 @@
                     "Les enfants adorent manger des bananes jaunes."
                 ],
                 text: "Le marchand vend des fruits frais. Sa boutique est près de la grande rue. Les enfants adorent manger des bananes jaunes.",
+                // Exactly 3 questions for C-PS Block 2
                 questions: [
                     { q: "1. Qui vend des fruits ?", a: "Le marchand." },
-                    { q: "2. Où est la boutique ?", a: "Près de la grande rue." }
+                    { q: "2. Comment sont les fruits ?", a: "Frais." },
+                    { q: "3. Où est la boutique ?", a: "Près de la grande rue." }
                 ]
             },
             {
@@ -544,9 +558,11 @@
                     "Ils marchent vite vers la grande porte."
                 ],
                 text: "Le train arrive à la gare à midi. Les voyageurs prennent leurs bagages. Ils marchent vite vers la grande porte.",
+                // Exactly 3 questions for C-PS Block 3
                 questions: [
                     { q: "1. À quelle heure arrive le train ?", a: "À midi." },
-                    { q: "2. Qui prend les bagages ?", a: "Les voyageurs." }
+                    { q: "2. Qui prend les bagages ?", a: "Les voyageurs." },
+                    { q: "3. Comment marchent-ils ?", a: "Vite / vers la grande porte." }
                 ]
             },
             {
@@ -558,9 +574,11 @@
                     "Sa femme vend les légumes au marché."
                 ],
                 text: "Notre voisin cultive des légumes dans son jardin. Il travaille tous les matins. Sa femme vend les légumes au marché.",
+                // Exactly 3 questions for C-PS Block 4
                 questions: [
                     { q: "1. Qui cultive des légumes ?", a: "Notre voisin." },
-                    { q: "2. Que vend la femme au marché ?", a: "Les légumes." }
+                    { q: "2. Quand est-ce qu'il travaille ?", a: "Tous les matins." },
+                    { q: "3. Que vend la femme ?", a: "Les légumes (au marché)." }
                 ]
             }
         ],
@@ -592,9 +610,13 @@
                     "Ensemble, ils déchargent les poissons frais sur la plage déserte."
                 ],
                 text: "Le vieux pêcheur revient du port avec des filets remplis de poissons. Les autres pêcheurs attendent calmement sur la plage. Ensemble, ils déchargent les poissons frais sur la plage déserte.",
+                // Exactly 5 questions for C-PE Block 1
                 questions: [
-                    { q: "1. D'où revient le pêcheur et que rapporte-t-il ?", a: "Il revient du port avec des filets remplis de poissons." },
-                    { q: "2. Où les autres pêcheurs attendent-ils ?", a: "Ils attendent calmement sur la plage." }
+                    { q: "1. D'où revient le pêcheur ?", a: "Du port." },
+                    { q: "2. Qu'est-ce qu'il rapporte avec lui ?", a: "Des filets remplis de poissons." },
+                    { q: "3. Qui attend le pêcheur ?", a: "Les autres pêcheurs." },
+                    { q: "4. Où attendent-ils le pêcheur ?", a: "Sur la plage." },
+                    { q: "5. Que font-ils ensemble ?", a: "Ils déchargent les poissons frais sur la plage déserte." }
                 ]
             },
             {
@@ -606,9 +628,13 @@
                     "Une vieille dame emprunte trois livres à la bibliothèque du village."
                 ],
                 text: "La bibliothécaire range des romans sur les grandes étagères. Deux garçons cherchent des bandes dessinées dans le rayon réservé aux enfants. Une vieille dame emprunte trois livres à la bibliothèque du village.",
+                // Exactly 5 questions for C-PE Block 2
                 questions: [
-                    { q: "1. Quel est le métier de cette femme et que range-t-elle ?", a: "Elle est bibliothécaire et range des romans sur les étagères." },
-                    { q: "2. Combien de livres la vieille dame emprunte-t-elle ?", a: "Trois livres." }
+                    { q: "1. Quel est le métier de cette femme ?", a: "Bibliothécaire." },
+                    { q: "2. Où met-elle ces livres ?", a: "Sur les grandes étagères." },
+                    { q: "3. Quel genre de livres cherchent les garçons ?", a: "Des bandes dessinées." },
+                    { q: "4. Dans quel rayon se trouvent-ils ?", a: "Dans le rayon réservé aux enfants." },
+                    { q: "5. Combien de livres la vieille dame emprunte-t-elle ?", a: "Trois livres." }
                 ]
             },
             {
@@ -620,9 +646,13 @@
                     "Chacun repart heureux après ce beau moment de partage familial."
                 ],
                 text: "Grand-mère prépare un bon repas chaud pour toute la famille. Les enfants mangent avec appétit tout en souriant à leurs parents. Chacun repart heureux après ce beau moment de partage familial.",
+                // Exactly 5 questions for C-PE Block 3
                 questions: [
-                    { q: "1. Qui prépare le repas et pour qui ?", a: "Grand-mère pour toute la famille." },
-                    { q: "2. Comment les enfants mangent-ils ?", a: "Avec appétit tout en souriant à leurs parents." }
+                    { q: "1. Qui cuisine le repas ?", a: "Grand-mère." },
+                    { q: "2. Pour qui prépare-t-elle ce repas ?", a: "Pour toute la famille." },
+                    { q: "3. Comment mangent les enfants ?", a: "Avec appétit tout en souriant à leurs parents." },
+                    { q: "4. À qui sourient-ils pendant le repas ?", a: "À leurs parents." },
+                    { q: "5. Quand repartent-ils heureux ?", a: "Après ce beau moment de partage familial." }
                 ]
             },
             {
@@ -634,9 +664,13 @@
                     "Ils sautent très haut dans la grande cour de l'école."
                 ],
                 text: "Les enfants jouent joyeusement au football dans le grand jardin. Assise tranquillement sur son banc, la maîtresse les surveille avec attention. Ils sautent très haut dans la grande cour de l'école.",
+                // Exactly 5 questions for C-PE Block 4
                 questions: [
                     { q: "1. Quel sport pratiquent les enfants ?", a: "Le football." },
-                    { q: "2. Où la maîtresse est-elle assise et que fait-elle ?", a: "Assise sur son banc, elle les surveille avec attention." }
+                    { q: "2. Où se déroule cette scène ?", a: "Dans le grand jardin / la cour de l'école." },
+                    { q: "3. Où la maîtresse est-elle assise ?", a: "Sur son banc." },
+                    { q: "4. Comment les surveille-t-elle ?", a: "Avec attention / tranquillement." },
+                    { q: "5. Dans quel endroit sautent-ils ?", a: "Dans la grande cour de l'école." }
                 ]
             }
         ],
@@ -859,14 +893,14 @@
 
         } else if (stage === 'C-PS') {
             stageTitle.innerText = 'Étape 3: Compréhension de Phrases Simples (C-PS)';
-            stageInst.innerHTML = '📌 <strong>Public concerné :</strong> Élèves ayant validé L-PS.<br>📌 <strong>Consigne :</strong> Poser oralement les questions de compréhension.<br>🎯 <strong>Seuil de validation :</strong> <strong>Au moins 1 réponse correcte sur 2 (1/2)</strong>.<br>• Si non validé ➔ Affectation au <strong>Palier 2</strong>.';
+            stageInst.innerHTML = '📌 <strong>Public concerné :</strong> Élèves ayant validé L-PS.<br>📌 <strong>Consigne officielle :</strong> Poser oralement <strong>deux questions</strong> parmi les 3 proposées ci-dessous, l\'une après l\'autre.<br>🎯 <strong>Seuil de validation :</strong> <strong>Au moins 1 réponse correcte sur 2 (1/2)</strong>.<br>• Si non validé ➔ Affectation au <strong>Palier 2</strong>.';
 
             textSelectorBox.classList.add('hidden');
             timerContainer.classList.add('hidden');
             readingSection.classList.add('hidden');
             compSection.classList.remove('hidden');
 
-            renderComprehensionQuestions(OFFICIAL_DATABASE.L_PS[currentLPSIndex].questions);
+            renderComprehensionQuestions(OFFICIAL_DATABASE.L_PS[currentLPSIndex].questions, 3);
 
         } else if (stage === 'L-PE') {
             stageTitle.innerText = 'Étape 4: Lecture de Phrases Enrichies (L-PE)';
@@ -890,14 +924,14 @@
 
         } else if (stage === 'C-PE') {
             stageTitle.innerText = 'Étape 5: Compréhension de Phrases Enrichies (C-PE)';
-            stageInst.innerHTML = '📌 <strong>Public concerné :</strong> Élèves ayant validé L-PE.<br>📌 <strong>Consigne :</strong> Poser oralement les questions de compréhension.<br>🎯 <strong>Seuil de validation :</strong> <strong>Au moins 1 réponse correcte sur 2 (1/2)</strong>.<br>• Si non validé ➔ Affectation au <strong>Palier 3</strong>.<br>• Si validé ➔ Affectation au <strong>Palier 4</strong> (poursuite vers L-P pour mesure complémentaire).';
+            stageInst.innerHTML = '📌 <strong>Public concerné :</strong> Élèves ayant validé L-PE.<br>📌 <strong>Consigne officielle :</strong> Poser oralement <strong>deux questions</strong> parmi les 5 proposées ci-dessous, l\'une après l\'autre.<br>🎯 <strong>Seuil de validation :</strong> <strong>Au moins 1 réponse correcte sur 2 (1/2)</strong>.<br>• Si non validé ➔ Affectation au <strong>Palier 3</strong>.<br>• Si validé ➔ Affectation au <strong>Palier 4</strong> (poursuite vers L-P pour mesure complémentaire).';
 
             textSelectorBox.classList.add('hidden');
             timerContainer.classList.add('hidden');
             readingSection.classList.add('hidden');
             compSection.classList.remove('hidden');
 
-            renderComprehensionQuestions(OFFICIAL_DATABASE.L_PE[currentLPEIndex].questions);
+            renderComprehensionQuestions(OFFICIAL_DATABASE.L_PE[currentLPEIndex].questions, 5);
 
         } else if (stage === 'L-P') {
             stageTitle.innerText = 'Étape 6: Lecture de Paragraphe (L-P) - Indicateur Complémentaire';
@@ -1027,23 +1061,51 @@
         }
     }
 
-    function renderComprehensionQuestions(questionsArr) {
+    function renderComprehensionQuestions(questionsArr, totalAvailableCount) {
         const container = document.getElementById('questions-list');
         container.innerHTML = '';
 
-        questionsArr.forEach((qObj) => {
+        const noteBox = document.getElementById('comp-instruction-note');
+        if (noteBox) {
+            noteBox.innerHTML = `📌 <strong>Directive officielle :</strong> Posez <strong>deux questions oralement</strong> à l'élève parmi les <strong>${totalAvailableCount} questions officielles</strong> ci-dessous. Cochez les questions réussies pour ajuster automatiquement la note sur 2.`;
+        }
+
+        questionsArr.forEach((qObj, idx) => {
             let div = document.createElement('div');
-            div.className = 'bg-white p-3 rounded-lg border border-pink-100 text-sm shadow-sm';
+            div.className = 'bg-white p-3.5 rounded-xl border border-pink-200 text-sm shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3';
             div.innerHTML = `
-                <p class="font-bold text-slate-800 mb-1">${qObj.q}</p>
-                <div class="bg-emerald-50 text-emerald-900 px-3 py-1.5 rounded border-l-2 border-emerald-600 text-xs font-semibold">
-                    💡 Repère de réponse : ${qObj.a}
+                <div class="flex-1">
+                    <p class="font-bold text-slate-800 text-sm mb-1">${qObj.q}</p>
+                    <div class="bg-emerald-50 text-emerald-900 px-3 py-1 rounded-lg border-l-3 border-emerald-600 text-xs font-medium inline-block">
+                        💡 Repère de réponse : <strong>${qObj.a}</strong>
+                    </div>
                 </div>
+                <label class="flex items-center gap-2 cursor-pointer bg-pink-50 hover:bg-pink-100 p-2 rounded-lg border border-pink-200 text-xs font-bold text-pink-900 select-none">
+                    <input type="checkbox" class="comp-check-item w-4 h-4 text-pink-600 rounded focus:ring-pink-500" onchange="recalculateCompScoreFromCheckboxes()">
+                    <span>Réponse correcte</span>
+                </label>
             `;
             container.appendChild(div);
         });
 
-        document.getElementById('comp-score').value = "1";
+        // Default score set to 1 (1/2 validé)
+        const compSelect = document.getElementById('comp-score');
+        compSelect.value = "1";
+        document.getElementById('comp-correct-count-display').innerText = "1";
+    }
+
+    function recalculateCompScoreFromCheckboxes() {
+        const checkboxes = document.querySelectorAll('.comp-check-item');
+        let count = 0;
+        checkboxes.forEach(cb => { if (cb.checked) count++; });
+        
+        const scoreVal = Math.min(count, 2);
+        document.getElementById('comp-correct-count-display').innerText = count;
+        
+        const compSelect = document.getElementById('comp-score');
+        if (scoreVal >= 2) compSelect.value = "2";
+        else if (scoreVal === 1) compSelect.value = "1";
+        else compSelect.value = "0";
     }
 
     // Decision tree processing according to Official Guide 2026
@@ -1057,7 +1119,7 @@
             gridScores.L_PS = passedLPS ? 1 : 0;
 
             if (passedLPS) {
-                showToast('✅ Étape L-PS Validée (≥ 14/20 mots). Passsage à la Compréhension (C-PS)...');
+                showToast('✅ Étape L-PS Validée (≥ 14/20 mots). Passage à la Compréhension (C-PS)...');
                 loadStage('C-PS');
             } else {
                 showToast('⚠️ Étape L-PS Non Validée (< 14/20 mots). Orientation vers la Lecture de Mots (L-M)...');
@@ -1191,7 +1253,7 @@
         let desc = "";
         if (level === 1) desc = "Niveau Débutant : Difficulté majeure en lecture de mots isolés. Besoin de remédiation prioritaire (Palier 1).";
         else if (level === 2) desc = "Niveau Intermédiaire 1 : Maîtrise des mots simples, mais difficulté sur la compréhension des phrases (Palier 2).";
-        else if (level === 3) desc = "Niveau Intermédiaire 2 : Maîtrise des phrases simples, mais besoin de renforcer la lecture/compréhension des phrases enrichies (Palier 3).";
+        else if (level === 3) desc = "Niveau Intermédiaire 2 : Maîtrise des phrases simples, me besoin de renforcer la lecture/compréhension des phrases enrichies (Palier 3).";
         else if (level === 4) desc = "Niveau Avancé : Excellente maîtrise de la lecture et de la compréhension (Palier 4).";
 
         document.getElementById('final-summary').innerText = desc;
