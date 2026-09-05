@@ -6,6 +6,8 @@
     <title>Test de Positionnement - Langue Française (Collèges Pionniers 2026-2027)</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- SheetJS for Excel Export -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -45,7 +47,7 @@
         }
 
         .word-item {
-            padding: 5px 12px;
+            padding: 6px 14px;
             border-radius: 8px;
             cursor: pointer;
             user-select: none;
@@ -95,6 +97,27 @@
             background-color: #fff5f8;
         }
 
+        /* Faint Watermark for Grid Table */
+        .watermark-grid {
+            position: relative;
+        }
+
+        .watermark-grid::before {
+            content: "Développeur : M. Soubki Brahim";
+            position: absolute;
+            top: 55%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-12deg);
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: rgba(190, 24, 93, 0.08);
+            pointer-events: none;
+            z-index: 10;
+            white-space: nowrap;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
         .status-1 {
             background-color: #d1fae5;
             color: #065f46;
@@ -124,7 +147,7 @@
             font-size: 0.78rem;
         }
 
-        /* Optimization for A4 printing up to 40 students per page */
+        /* Optimization for A4 printing */
         @media print {
             .no-print { display: none !important; }
             body { 
@@ -145,6 +168,11 @@
             @page {
                 size: A4 portrait;
                 margin: 5mm 6mm 5mm 6mm;
+            }
+
+            .watermark-grid::before {
+                color: rgba(0, 0, 0, 0.08) !important;
+                font-size: 1.6rem !important;
             }
 
             .print-header-container {
@@ -177,17 +205,6 @@
                 border-radius: 4px !important;
             }
 
-            .stats-container div div:first-child {
-                font-size: 0.85rem !important;
-                line-height: 1 !important;
-                font-weight: bold !important;
-            }
-
-            .stats-container div div:last-child {
-                font-size: 0.58rem !important;
-                color: #555 !important;
-            }
-
             .grid-table {
                 width: 100% !important;
                 border-collapse: collapse !important;
@@ -195,8 +212,8 @@
 
             .grid-table th, .grid-table td {
                 padding: 3px 2px !important;
-                font-size: 0.72rem !important;
-                height: 20px !important;
+                font-size: 0.7rem !important;
+                height: 19px !important;
                 line-height: 1.1 !important;
                 border: 1px solid #f472b6 !important;
             }
@@ -206,21 +223,15 @@
                 color: white !important;
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
-                font-size: 0.7rem !important;
-                padding: 4px 2px !important;
+                font-size: 0.68rem !important;
             }
 
             .status-1, .status-0, .status-na {
                 padding: 1px 4px !important;
-                font-size: 0.68rem !important;
+                font-size: 0.65rem !important;
                 line-height: 1.1 !important;
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
-            }
-
-            .note-footer {
-                margin-top: 4px !important;
-                font-size: 0.58rem !important;
             }
 
             .grid-table tbody tr:nth-child(40n) {
@@ -235,22 +246,20 @@
 <div class="max-w-5xl mx-auto">
     <!-- Header Section -->
     <header class="bg-gradient-to-r from-pink-600 via-rose-600 to-pink-700 text-white p-5 rounded-2xl shadow-lg text-center mb-6 no-print">
-        <div class="inline-block bg-amber-300 text-pink-950 font-extrabold px-3 py-1 rounded-full text-xs mb-2">
+        <div class="inline-block bg-amber-300 text-pink-950 font-extrabold px-3 py-1 rounded-full text-xs mb-2 shadow-sm">
             Version Officielle Conforme 2026-2027 🌸
         </div>
         <h1 class="text-xl md:text-2xl font-bold mb-1">Programme de Remédiation Intensive - Test de Positionnement (Français)</h1>
         <p class="text-pink-100 text-sm md:text-base">Année Scolaire 2026-2027 | Collèges Pionniers</p>
-        <div id="main-header-school-info" class="mt-2 text-pink-200 font-semibold text-xs md:text-sm">🏫 Collège Pionnier : Anas Bno Malik</div>
-        <div class="inline-block bg-white/20 px-3 py-0.5 rounded-full text-[11px] md:text-xs mt-3 font-medium opacity-95">Développé par : Brahim Soubki</div>
+        <div id="main-header-school-info" class="mt-2 text-pink-200 font-semibold text-xs md:text-sm">🏫 Collège Pionnier : Saisir les informations ci-dessous</div>
         
         <div class="mt-4 flex flex-wrap justify-center gap-2">
-            <button onclick="showCollectiveGridDirectly()" class="bg-white text-pink-700 hover:bg-pink-50 font-bold px-4 py-2 rounded-xl shadow transition text-sm">
+            <button onclick="showCollectiveGridDirectly()" class="bg-white text-pink-700 hover:bg-pink-50 font-bold px-4 py-2 rounded-xl shadow transition text-sm flex items-center gap-2">
                 📊 Grille Collective Unifiée (<span id="header-student-count">0</span> élève<span id="plural-s">s</span>)
             </button>
         </div>
     </header>
 
-    <!-- Screen 1: Student Data Entry -->
     <div id="student-setup" class="bg-white p-6 rounded-2xl shadow-md border-t-4 border-pink-600 mb-6">
         <h2 class="text-lg font-bold text-pink-900 mb-4 border-b pb-2 flex items-center gap-2">
             <span>👤</span> Identification du Nouvel Élève
@@ -258,12 +267,12 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
                 <label for="student-name" class="block font-semibold text-slate-700 mb-1">Nom et Prénom de l'élève :</label>
-                <input type="text" id="student-name" class="w-full p-3 border-2 border-pink-100 rounded-xl focus:border-pink-500 outline-none transition" placeholder="Saisir le nom et prénom ici...">
+                <input type="text" id="student-name" class="w-full p-3 border-2 border-pink-100 rounded-xl focus:border-pink-500 outline-none transition text-sm" placeholder="Nom et Prénom...">
                 <div id="name-error" class="text-rose-600 text-xs mt-1 hidden">⚠️ Veuillez saisir le nom de l'élève avant de démarrer le test.</div>
             </div>
             <div>
-                <label for="student-class" class="block font-semibold text-slate-700 mb-1">Classe / Groupe (Sélectionner) :</label>
-                <select id="student-class" class="w-full p-3 border-2 border-pink-100 rounded-xl focus:border-pink-500 outline-none bg-white font-semibold text-slate-800">
+                <label for="student-class" class="block font-semibold text-slate-700 mb-1">Classe / Groupe :</label>
+                <select id="student-class" class="w-full p-3 border-2 border-pink-100 rounded-xl focus:border-pink-500 outline-none bg-white font-semibold text-slate-800 text-sm">
                     <option value="1/1">1/1</option><option value="1/2">1/2</option><option value="1/3">1/3</option><option value="1/4">1/4</option><option value="1/5">1/5</option><option value="1/6">1/6</option><option value="1/7">1/7</option>
                     <option value="2/1">2/1</option><option value="2/2">2/2</option><option value="2/3">2/3</option><option value="2/4">2/4</option><option value="2/5">2/5</option><option value="2/6">2/6</option><option value="2/7">2/7</option>
                     <option value="3/1">3/1</option><option value="3/2">3/2</option><option value="3/3">3/3</option><option value="3/4">3/4</option><option value="3/5">3/5</option><option value="3/6">3/6</option><option value="3/7">3/7</option>
@@ -275,9 +284,7 @@
         </button>
     </div>
 
-    <!-- Screen 2: Test Assessment View -->
     <div id="assessment-view" class="bg-white p-6 rounded-2xl shadow-md border-t-4 border-pink-600 mb-6 hidden">
-        <!-- Top Navigation Control Bar -->
         <div class="flex flex-wrap justify-between items-center gap-2 mb-4 pb-3 border-b border-pink-100">
             <div class="flex items-center gap-2">
                 <button onclick="goBackStage()" id="btn-back-stage" class="bg-amber-500 hover:bg-amber-600 text-white font-bold px-3 py-1.5 rounded-lg text-xs transition flex items-center gap-1 shadow">
@@ -295,14 +302,12 @@
         
         <div id="stage-instruction" class="bg-pink-50 border-l-4 border-pink-500 text-pink-900 p-3 rounded-lg text-sm font-medium mb-4"></div>
 
-        <!-- Choice Selector for Support Text / List -->
         <div id="text-selector-box" class="bg-pink-50/60 p-3 rounded-xl flex flex-wrap items-center gap-3 mb-4 border border-pink-100">
             <label for="text-choice" class="font-bold text-pink-900 text-sm">Choix du Support de Test :</label>
             <select id="text-choice" onchange="changeSubText()" class="flex-1 p-2 border border-pink-200 rounded-lg text-sm bg-white font-semibold text-slate-800">
             </select>
         </div>
 
-        <!-- Timer Bar (for reading tasks) -->
         <div id="timer-container" class="bg-pink-50 p-3 rounded-xl border border-pink-200 flex flex-wrap justify-between items-center gap-3 mb-4">
             <div class="flex gap-2">
                 <button id="start-timer-btn" onclick="toggleTimer()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-lg text-sm transition">
@@ -318,7 +323,6 @@
             </div>
         </div>
 
-        <!-- Reading Section (Words/Phrases Display) -->
         <div id="reading-section">
             <p class="text-xs text-slate-600 font-semibold mb-2">💡 Cliquez sur chaque mot mal lu ou omis par l'élève pour le barrer et déduire le score automatiquement :</p>
             <div id="word-container" class="bg-slate-50 p-4 rounded-xl border border-pink-200 min-h-[140px] max-h-[300px] overflow-y-auto mb-4"></div>
@@ -332,7 +336,6 @@
             <p id="stage-target-hint" class="text-xs text-pink-700 font-bold mt-2"></p>
         </div>
 
-        <!-- Comprehension Section -->
         <div id="comprehension-section" class="hidden bg-pink-50/70 p-4 rounded-xl border-l-4 border-pink-600 mb-4">
             <h3 class="font-bold text-pink-900 mb-1 text-base">Questions Orales de Compréhension :</h3>
             <p id="comp-instruction-note" class="text-xs text-slate-700 mb-3 font-semibold bg-amber-50 p-2.5 rounded-lg border border-amber-200">
@@ -367,9 +370,7 @@
         </div>
     </div>
 
-    <!-- Screen 3: Results and Collective Grid -->
     <div id="result-view" class="bg-white p-6 rounded-2xl shadow-md border-t-4 border-pink-600 mb-6 hidden">
-        <!-- School Header Configuration Panel for Print -->
         <div class="bg-pink-50 border border-pink-200 p-3.5 rounded-xl mb-4 no-print">
             <h4 class="text-xs font-bold text-pink-900 mb-2 flex items-center gap-1">
                 ⚙️ Personnaliser l'En-tête de l'Établissement (Sauvegarde Automatique) :
@@ -381,7 +382,7 @@
                 </div>
                 <div>
                     <label for="info-school" class="block text-[11px] font-semibold text-slate-700 mb-1">Établissement (Collège) :</label>
-                    <input type="text" id="info-school" oninput="updateSchoolInfo()" class="w-full p-2 text-xs border border-pink-200 rounded-lg outline-none focus:border-pink-500 font-medium bg-white" placeholder="Ex: Collège Anas Bno Malik">
+                    <input type="text" id="info-school" oninput="updateSchoolInfo()" class="w-full p-2 text-xs border border-pink-200 rounded-lg outline-none focus:border-pink-500 font-medium bg-white" placeholder="Ex: Collège Ibn Khaldoun">
                 </div>
                 <div>
                     <label for="info-teacher" class="block text-[11px] font-semibold text-slate-700 mb-1">Nom de l'Enseignant(e) :</label>
@@ -391,23 +392,19 @@
         </div>
 
         <div id="pdf-printable-area" class="print-area">
-            <!-- Printable Compact Header -->
             <div class="print-header-container border-b-2 border-pink-600 pb-1 mb-2 text-center">
                 <h2 class="print-header-title text-base font-bold text-pink-900">Grille Collective de Positionnement - Langue Française (2026-2027)</h2>
                 <p class="print-header-info text-xs font-semibold text-slate-700 mt-0.5">
-                    Établissement : <span id="display-school">Collège Anas Bno Malik</span> | Direction : <span id="display-directorate">...................</span> | Enseignant(e) : <span id="display-teacher">...................</span> | Collèges Pionniers
+                    Établissement : <span id="display-school">...................</span> | Direction : <span id="display-directorate">...................</span> | Enseignant(e) : <span id="display-teacher">...................</span> | Collèges Pionniers
                 </p>
-                <div class="text-[9px] text-slate-500 text-left px-2 mt-0.5 font-normal opacity-80">Conçu par : Brahim Soubki</div>
             </div>
 
-            <!-- Latest Student Final Badge Card -->
             <div id="latest-student-card" class="bg-pink-50 p-4 rounded-xl text-center mb-4 border border-pink-200 no-print">
                 <h3 id="student-final-info" class="font-bold text-pink-900 text-base mb-1"></h3>
                 <div class="text-sm text-slate-700">Palier de positionnement attribué : <strong id="final-level" class="text-pink-700 text-2xl font-black">Palier 1</strong></div>
                 <p id="final-summary" class="text-xs text-slate-600 mt-1 font-medium"></p>
             </div>
 
-            <!-- Statistics Summary Grid -->
             <div class="stats-container grid grid-cols-5 gap-2 bg-pink-50 p-2 rounded-lg border border-pink-200 mb-3 text-center">
                 <div>
                     <div id="stat-total" class="text-base font-bold text-pink-900">0</div>
@@ -431,7 +428,6 @@
                 </div>
             </div>
 
-            <!-- Class Filter Header -->
             <div class="flex flex-wrap justify-between items-center mb-2 gap-2 no-print">
                 <h3 class="font-bold text-pink-900 text-xs md:text-sm">Résultats collectifs des élèves enregistrés :</h3>
                 <div class="flex items-center gap-2">
@@ -445,30 +441,42 @@
                 </div>
             </div>
             
-            <!-- Table Layout for 40 students per page -->
-            <div class="overflow-x-auto w-full">
+            <!-- Official Grille de Notation Notice -->
+            <div class="text-xs font-semibold text-slate-700 italic mb-1.5 text-center">
+                <strong>Grille de notation</strong> — <i>NB/ La notation suit un code binaire : 0 = exercice non validé ; 1 = exercice validé ; N/A = exercice non administré à l'élève</i>
+            </div>
+
+            <!-- Table Layout Conforming to Official Reference Image with Developer Watermark -->
+            <div class="overflow-x-auto w-full watermark-grid">
                 <table class="grid-table text-xs md:text-sm w-full">
                     <thead>
                         <tr>
-                            <th style="width: 28px;">N°</th>
-                            <th style="text-align: left; padding-left: 8px;">Nom et Prénom de l'Élève</th>
-                            <th style="width: 50px;">Classe</th>
-                            <th style="width: 55px;">Étape 1<br>L-PS</th>
-                            <th style="width: 55px;">Étape 2<br>L-M</th>
-                            <th style="width: 55px;">Étape 3<br>C-PS</th>
-                            <th style="width: 55px;">Étape 4<br>L-PE</th>
-                            <th style="width: 55px;">Étape 5<br>C-PE</th>
-                            <th style="width: 55px;">Étape 6<br>L-P</th>
-                            <th style="width: 80px;">Palier Final</th>
-                            <th class="no-print" style="width: 35px;">Suppr.</th>
+                            <th rowspan="2" style="width: 28px;">N°</th>
+                            <th rowspan="2" style="text-align: left; padding-left: 8px;">Nom de l'élève</th>
+                            <th rowspan="2" style="width: 70px;">Classe</th>
+                            <th>Etape 1</th>
+                            <th colspan="2">Etape 2</th>
+                            <th>Etape 3</th>
+                            <th>Etape 4</th>
+                            <th>Etape 5</th>
+                            <th rowspan="2" style="width: 60px;">Palier</th>
+                            <th rowspan="2" class="no-print" style="width: 35px;">Suppr.</th>
+                        </tr>
+                        <tr>
+                            <th style="width: 50px;">L-PS</th>
+                            <th style="width: 50px;">L-M</th>
+                            <th style="width: 50px;">C-PS</th>
+                            <th style="width: 50px;">L-PE</th>
+                            <th style="width: 50px;">C-PE</th>
+                            <th style="width: 50px;">L-P</th>
                         </tr>
                     </thead>
                     <tbody id="all-students-tbody"></tbody>
                 </table>
             </div>
 
-            <p class="note-footer text-xs text-slate-500 mt-1.5 text-left">
-                * Légende : <strong>[1]</strong> Validé | <strong>[0]</strong> Non Validé | <strong>N/A</strong> Étape non effectuée selon l'arbre officiel. L-P = Indicateur complémentaire.
+            <p class="note-footer text-[10px] text-slate-500 mt-1.5 text-left">
+                * Légende : <strong>[1]</strong> Exercice validé | <strong>[0]</strong> Exercice non validé | <strong>N/A</strong> Exercice non administré à l'élève. L-P = Indicateur complémentaire.
             </p>
         </div>
 
@@ -476,8 +484,11 @@
             <button onclick="resetForNewStudent()" class="bg-pink-600 hover:bg-pink-700 text-white font-bold px-4 py-2 rounded-xl text-sm transition flex items-center gap-1">
                 ➕ Évaluer un autre élève
             </button>
-            <button onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-xl text-sm transition flex items-center gap-1">
-                🖨️ Imprimer la Grille (40 élèves/page)
+            <button onclick="exportToExcel()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-xl text-sm transition flex items-center gap-1 shadow">
+                📊 Exporter vers Excel (.xlsx)
+            </button>
+            <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 py-2 rounded-xl text-sm transition flex items-center gap-1">
+                🖨️ Imprimer la Grille (A4)
             </button>
             <button onclick="openClearModal()" class="bg-rose-600 hover:bg-rose-700 text-white font-bold px-4 py-2 rounded-xl text-sm transition flex items-center gap-1">
                 🗑️ Vider la liste
@@ -504,8 +515,9 @@
     <!-- Toast Notification -->
     <div id="toast-message" class="fixed bottom-5 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-5 py-3 rounded-xl shadow-2xl text-sm font-bold hidden z-50 transition-all"></div>
 
-    <footer class="mt-8 text-center text-xs text-slate-500 no-print">
-        <p>Conçu et développé par : Brahim Soubki - Langue Française | Collège Pionnier Anas Bno Malik</p>
+    <footer class="mt-8 text-center text-xs text-slate-500 border-t border-pink-200 pt-4">
+        <p class="font-bold text-pink-900 text-sm mb-1">Développeur : M. Soubki Brahim | Assistance : M. Slaoui Tayeb</p>
+        <p class="text-slate-500">Programme de Remédiation Intensive - Collèges Pionniers 2026-2027</p>
     </footer>
 </div>
 
@@ -515,695 +527,705 @@
 
     // Official French Database extracted strictly from Official Guide & Test Positionnement FR 2026
     const OFFICIAL_DATABASE = {
-        // L-PS (Lecture Phrases Simples) - 4 Blocks of 3 phrases (20 words total each block)
         L_PS: [
             {
                 id: 1,
-                title: "Bloc 1: Le professeur et les élèves (20 mots)",
+                title: "Bloc 1: La cuisine en famille (20 mots)",
                 phrases: [
-                    "Le professeur écrit la leçon au tableau noir.",
-                    "Les élèves regardent le tableau.",
-                    "Ils écrivent dans leurs petits cahiers bleus."
+                    "1. La maman prépare un bon repas.",
+                    "2. Les enfants mettent la table avec soin.",
+                    "3. Ils dégustent le poulet rôti avec plaisir."
                 ],
-                text: "Le professeur écrit la leçon au tableau noir. Les élèves regardent le tableau. Ils écrivent dans leurs petits cahiers bleus.",
-                // Exactly 3 questions for C-PS Block 1
+                text: "La maman prépare un bon repas. Les enfants mettent la table avec soin. Ils dégustent le poulet rôti avec plaisir.",
                 questions: [
-                    { q: "1. Qui écrit la leçon ?", a: "Le professeur." },
-                    { q: "2. Que font les élèves ?", a: "Ils regardent le tableau." },
-                    { q: "3. Où les élèves écrivent-ils ?", a: "Dans leurs petits cahiers bleus." }
+                    { q: "1. Qui prépare le repas ?", a: "La maman." },
+                    { q: "2. Comment les enfants mettent-ils la table ?", a: "Avec soin." },
+                    { q: "3. Que dégustent les enfants avec plaisir ?", a: "Le poulet rôti." }
                 ]
             },
             {
                 id: 2,
-                title: "Bloc 2: Le marchand de fruits (20 mots)",
+                title: "Bloc 2: Le boulanger (20 mots)",
                 phrases: [
-                    "Le marchand vend des fruits frais.",
-                    "Sa boutique est près de la grande rue.",
-                    "Les enfants adorent manger des bananes jaunes."
+                    "1. Le boulanger prépare du bon pain frais.",
+                    "2. Son magasin accueille beaucoup de clients.",
+                    "3. Ils achètent des croissants chauds et dorés."
                 ],
-                text: "Le marchand vend des fruits frais. Sa boutique est près de la grande rue. Les enfants adorent manger des bananes jaunes.",
-                // Exactly 3 questions for C-PS Block 2
+                text: "Le boulanger prépare du bon pain frais. Son magasin accueille beaucoup de clients. Ils achètent des croissants chauds et dorés.",
                 questions: [
-                    { q: "1. Qui vend des fruits ?", a: "Le marchand." },
-                    { q: "2. Comment sont les fruits ?", a: "Frais." },
-                    { q: "3. Où est la boutique ?", a: "Près de la grande rue." }
+                    { q: "1. Que fait le boulanger ?", a: "Il prépare du bon pain frais." },
+                    { q: "2. Combien de clients son magasin accueille-t-il ?", a: "Beaucoup de clients." },
+                    { q: "3. Les clients achètent quoi au magasin ?", a: "Des croissants chauds et dorés." }
                 ]
             },
             {
                 id: 3,
-                title: "Bloc 3: L'arrivée du train (20 mots)",
+                title: "Bloc 3: Les pêcheurs (20 mots)",
                 phrases: [
-                    "Le train arrive à la gare à midi.",
-                    "Les voyageurs prennent leurs bagages.",
-                    "Ils marchent vite vers la grande porte."
+                    "1. Les pêcheurs portent leurs grands filets solides.",
+                    "2. Ils se dirigent lentement vers le port.",
+                    "3. Le bateau arrive au port le soir."
                 ],
-                text: "Le train arrive à la gare à midi. Les voyageurs prennent leurs bagages. Ils marchent vite vers la grande porte.",
-                // Exactly 3 questions for C-PS Block 3
+                text: "Les pêcheurs portent leurs grands filets solides. Ils se dirigent lentement vers le port. Le bateau arrive au port le soir.",
                 questions: [
-                    { q: "1. À quelle heure arrive le train ?", a: "À midi." },
-                    { q: "2. Qui prend les bagages ?", a: "Les voyageurs." },
-                    { q: "3. Comment marchent-ils ?", a: "Vite / vers la grande porte." }
+                    { q: "1. Que portent les pêcheurs ?", a: "Leurs grands filets solides." },
+                    { q: "2. Vers où se dirigent-ils ?", a: "Lentement vers le port." },
+                    { q: "3. Quand le bateau arrive-t-il au port ?", a: "Le soir." }
                 ]
             },
             {
                 id: 4,
-                title: "Bloc 4: Le voisin jardinier (20 mots)",
+                title: "Bloc 4: Le fermier (20 mots)",
                 phrases: [
-                    "Notre voisin cultive des légumes dans son jardin.",
-                    "Il travaille tous les matins.",
-                    "Sa femme vend les légumes au marché."
+                    "1. Le fermier commence son travail tôt.",
+                    "2. Il élève des vaches dans son champ.",
+                    "3. Sa fille donne à manger aux poules."
                 ],
-                text: "Notre voisin cultive des légumes dans son jardin. Il travaille tous les matins. Sa femme vend les légumes au marché.",
-                // Exactly 3 questions for C-PS Block 4
+                text: "Le fermier commence son travail tôt. Il élève des vaches dans son champ. Sa fille donne à manger aux poules.",
                 questions: [
-                    { q: "1. Qui cultive des légumes ?", a: "Notre voisin." },
-                    { q: "2. Quand est-ce qu'il travaille ?", a: "Tous les matins." },
-                    { q: "3. Que vend la femme ?", a: "Les légumes (au marché)." }
+                    { q: "1. Quand le fermier commence-t-il son travail ?", a: "Tôt." },
+                    { q: "2. Quels animaux élève-t-il dans son champ ?", a: "Des vaches." },
+                    { q: "3. À quels animaux sa fille donne-t-elle à manger ?", a: "Aux poules." }
                 ]
             }
         ],
 
-        // L-M (Lecture Mots) - Lists of 10 isolated words (Seuil = 7 mots / 10)
         L_M: [
             {
                 id: 1,
-                title: "Liste 1 (10 mots)",
-                words: ["belles", "oiseau", "robot", "moment", "lointain", "rouge", "veille", "point", "maisonnette", "feuille"],
-                text: "belles oiseau robot moment lointain rouge veille point maisonnette feuille"
+                title: "Liste A (Colonnes 1 et 2 - 10 mots)",
+                words: ["tendresse", "famille", "nez", "papier", "lunettes", "galette", "cendrillon", "assez", "cahier", "robinet"],
+                text: "tendresse famille nez papier lunettes galette cendrillon assez cahier robinet"
             },
             {
                 id: 2,
-                title: "Liste 2 (10 mots)",
-                words: ["nourriture", "fourchette", "exemple", "policier", "jouet", "pilote", "science", "classe", "action", "garage"],
-                text: "nourriture fourchette exemple policier jouet pilote science classe action garage"
+                title: "Liste B (Colonnes 3 et 4 - 10 mots)",
+                words: ["terre", "fillette", "rentrez", "panier", "bouquet", "belle", "oreiller", "chez", "dernier", "gilet"],
+                text: "terre fillette rentrez panier bouquet belle oreiller chez dernier gilet"
             }
         ],
 
-        // L-PE (Lecture Phrases Enrichies) - 4 Blocks of 3 phrases (30 words total each block)
         L_PE: [
             {
                 id: 1,
-                title: "Bloc 1: Le vieux pêcheur (30 mots)",
+                title: "Bloc 1: Le berger et le troupeau (30 mots)",
                 phrases: [
-                    "Le vieux pêcheur revient du port avec des filets remplis de poissons.",
-                    "Les autres pêcheurs attendent calmement sur la plage.",
-                    "Ensemble, ils déchargent les poissons frais sur la plage déserte."
+                    "1. Le jeune berger ramène du champ un troupeau de moutons fatigués.",
+                    "2. Les autres bergers attendent patiemment près de la bergerie.",
+                    "3. Ensemble, ils ramènent les moutons dans l'enclos avant la nuit."
                 ],
-                text: "Le vieux pêcheur revient du port avec des filets remplis de poissons. Les autres pêcheurs attendent calmement sur la plage. Ensemble, ils déchargent les poissons frais sur la plage déserte.",
-                // Exactly 5 questions for C-PE Block 1
+                text: "Le jeune berger ramène du champ un troupeau de moutons fatigués. Les autres bergers attendent patiemment près de la bergerie. Ensemble, ils ramènent les moutons dans l'enclos avant la nuit.",
                 questions: [
-                    { q: "1. D'où revient le pêcheur ?", a: "Du port." },
-                    { q: "2. Qu'est-ce qu'il rapporte avec lui ?", a: "Des filets remplis de poissons." },
-                    { q: "3. Qui attend le pêcheur ?", a: "Les autres pêcheurs." },
-                    { q: "4. Où attendent-ils le pêcheur ?", a: "Sur la plage." },
-                    { q: "5. Que font-ils ensemble ?", a: "Ils déchargent les poissons frais sur la plage déserte." }
+                    { q: "1. Qui ramène le troupeau du champ ?", a: "Le jeune berger." },
+                    { q: "2. Combien de troupeaux ramène-t-il du champ ?", a: "Un troupeau." },
+                    { q: "3. Où les bergers attendent-ils ?", a: "Près de la bergerie." },
+                    { q: "4. Que font les bergers ?", a: "Ils attendent / ramènent les moutons dans l'enclos." },
+                    { q: "5. Quand les bergers ramènent-ils les moutons dans l'enclos ?", a: "Avant la nuit." }
                 ]
             },
             {
                 id: 2,
-                title: "Bloc 2: La bibliothèque du village (30 mots)",
+                title: "Bloc 2: La bibliothèque du quartier (30 mots)",
                 phrases: [
-                    "La bibliothécaire range des romans sur les grandes étagères.",
-                    "Deux garçons cherchent des bandes dessinées dans le rayon réservé aux enfants.",
-                    "Une vieille dame emprunte trois livres à la bibliothèque du village."
+                    "1. La bibliothécaire range des livres sur les longues étagères.",
+                    "2. Deux fillettes cherchent des histoires dans le coin des enfants.",
+                    "3. Une jeune maman emprunte deux albums à la bibliothèque du quartier."
                 ],
-                text: "La bibliothécaire range des romans sur les grandes étagères. Deux garçons cherchent des bandes dessinées dans le rayon réservé aux enfants. Une vieille dame emprunte trois livres à la bibliothèque du village.",
-                // Exactly 5 questions for C-PE Block 2
+                text: "La bibliothécaire range des livres sur les longues étagères. Deux fillettes cherchent des histoires dans le coin des enfants. Une jeune maman emprunte deux albums à la bibliothèque du quartier.",
                 questions: [
-                    { q: "1. Quel est le métier de cette femme ?", a: "Bibliothécaire." },
-                    { q: "2. Où met-elle ces livres ?", a: "Sur les grandes étagères." },
-                    { q: "3. Quel genre de livres cherchent les garçons ?", a: "Des bandes dessinées." },
-                    { q: "4. Dans quel rayon se trouvent-ils ?", a: "Dans le rayon réservé aux enfants." },
-                    { q: "5. Combien de livres la vieille dame emprunte-t-elle ?", a: "Trois livres." }
+                    { q: "1. Qui range les livres ?", a: "La bibliothécaire." },
+                    { q: "2. Où range-t-elle les livres ?", a: "Sur les longues étagères." },
+                    { q: "3. Comment sont les étagères ?", a: "Longues." },
+                    { q: "4. Qui cherche des histoires ?", a: "Deux fillettes." },
+                    { q: "5. Combien d'albums la jeune maman emprunte-t-elle ?", a: "Deux albums." }
                 ]
             },
             {
                 id: 3,
-                title: "Bloc 3: Le repas de grand-mère (30 mots)",
+                title: "Bloc 3: L'histoire de grand-père (30 mots)",
                 phrases: [
-                    "Grand-mère prépare un bon repas chaud pour toute la famille.",
-                    "Les enfants mangent avec appétit tout en souriant à leurs parents.",
-                    "Chacun repart heureux après ce beau moment de partage familial."
+                    "1. Grand-père raconte une belle histoire à toute la famille réunie.",
+                    "2. Les enfants écoutent avec attention leur grand-père raconter une histoire.",
+                    "3. Tous les enfants s'endorment paisiblement après ce moment de tendresse."
                 ],
-                text: "Grand-mère prépare un bon repas chaud pour toute la famille. Les enfants mangent avec appétit tout en souriant à leurs parents. Chacun repart heureux après ce beau moment de partage familial.",
-                // Exactly 5 questions for C-PE Block 3
+                text: "Grand-père raconte une belle histoire à toute la famille réunie. Les enfants écoutent avec attention leur grand-père raconter une histoire. Tous les enfants s'endorment paisiblement après ce moment de tendresse.",
                 questions: [
-                    { q: "1. Qui cuisine le repas ?", a: "Grand-mère." },
-                    { q: "2. Pour qui prépare-t-elle ce repas ?", a: "Pour toute la famille." },
-                    { q: "3. Comment mangent les enfants ?", a: "Avec appétit tout en souriant à leurs parents." },
-                    { q: "4. À qui sourient-ils pendant le repas ?", a: "À leurs parents." },
-                    { q: "5. Quand repartent-ils heureux ?", a: "Après ce beau moment de partage familial." }
+                    { q: "1. Qui raconte l'histoire ?", a: "Grand-père." },
+                    { q: "2. Que raconte grand-père ?", a: "Une belle histoire." },
+                    { q: "3. À qui raconte-t-il l'histoire ?", a: "À toute la famille réunie." },
+                    { q: "4. Comment les enfants écoutent-ils ?", a: "Avec attention." },
+                    { q: "5. Quand les enfants s'endorment-ils ?", a: "Après ce moment de tendresse." }
                 ]
             },
             {
                 id: 4,
-                title: "Bloc 4: La cour de l'école (30 mots)",
+                title: "Bloc 4: Une journée au grand parc (30 mots)",
                 phrases: [
-                    "Les enfants jouent joyeusement au football dans le grand jardin.",
-                    "Assise tranquillement sur son banc, la maîtresse les surveille avec attention.",
-                    "Ils sautent très haut dans la grande cour de l'école."
+                    "1. Les enfants courent joyeusement dans le grand parc.",
+                    "2. Le gardien est assis sur un banc et regarde les enfants attentivement.",
+                    "3. Ils grimpent courageusement tout en haut du grand toboggan coloré."
                 ],
-                text: "Les enfants jouent joyeusement au football dans le grand jardin. Assise tranquillement sur son banc, la maîtresse les surveille avec attention. Ils sautent très haut dans la grande cour de l'école.",
-                // Exactly 5 questions for C-PE Block 4
+                text: "Les enfants courent joyeusement dans le grand parc. Le gardien est assis sur un banc et regarde les enfants attentivement. Ils grimpent courageusement tout en haut du grand toboggan coloré.",
                 questions: [
-                    { q: "1. Quel sport pratiquent les enfants ?", a: "Le football." },
-                    { q: "2. Où se déroule cette scène ?", a: "Dans le grand jardin / la cour de l'école." },
-                    { q: "3. Où la maîtresse est-elle assise ?", a: "Sur son banc." },
-                    { q: "4. Comment les surveille-t-elle ?", a: "Avec attention / tranquillement." },
-                    { q: "5. Dans quel endroit sautent-ils ?", a: "Dans la grande cour de l'école." }
+                    { q: "1. Où courent les enfants ?", a: "Dans le grand parc." },
+                    { q: "2. Comment est le parc ?", a: "Grand." },
+                    { q: "3. Qui observe les enfants ?", a: "Le gardien." },
+                    { q: "4. Où est assis le gardien ?", a: "Sur un banc." },
+                    { q: "5. Comment est le toboggan ?", a: "Grand et coloré." }
                 ]
             }
         ],
 
-        // L-P (Lecture Paragraphe) - Complementary evaluation (70 words total)
-        L_P: [
-            {
-                id: 1,
-                title: "Paragraphe unique: La matinée d'hiver (70 mots)",
-                text: "Ce matin, il fait très froid et le thermomètre affiche zéro degré. Le ciel est gris et le vent souffle fort dans les arbres. Les enfants portent de gros bonnets et se dépêchent de rejoindre leur classe bien chauffée. La maîtresse les accueille avec un sourire chaleureux. Après l'école, ils rentrent chez eux. Le soir, toute la famille se retrouve autour de la table pour boire un bon chocolat chaud."
-            }
-        ]
+        L_P: {
+            text: "Ce dimanche, les enfants passent une belle journée au parc. Le soleil brille doucement et les oiseaux chantent dans les arbres. Ils jouent au ballon et partagent un pique-nique sur l'herbe. Ensuite, ils observent les canards près de l'étang. En fin d'après-midi, chacun rentre chez lui heureux d'avoir passé un bon moment dans ce lieu verdoyant et paisible. Le soir, ils s'endorment tôt pour être en forme le lendemain à l'école."
+        }
     };
 
-    let allStudentsList = [];
-    let currentStage = 'L-PS';
-    let stageHistoryStack = [];
-    
-    let currentLPSIndex = 0;
-    let currentLMIndex = 0;
-    let currentLPEIndex = 0;
-    let currentLPIndex = 0;
-
-    let currentStudentName = '';
-    let currentStudentClass = '1/1';
+    // Application Global State
+    let allStudents = [];
+    let currentStudent = null;
+    let currentStageIndex = 0;
+    let activeSubIndex = 0;
     let timerInterval = null;
-    let timeLeft = 60;
-    let timerRunning = false;
-    let wordsArray = [];
-    let errorIndices = new Set();
+    let secondsLeft = 60;
+    let isTimerRunning = false;
 
-    let gridScores = {
-        L_PS: null,
-        L_M: null,
-        C_PS: null,
-        L_PE: null,
-        C_PE: null,
-        L_P: null
-    };
+    const STAGE_KEYS = ['L-PS', 'L-M', 'C-PS', 'L-PE', 'C-PE', 'L-P'];
 
-    window.addEventListener('DOMContentLoaded', () => {
-        try {
-            const savedData = localStorage.getItem(STORAGE_KEY);
-            if (savedData) {
-                allStudentsList = JSON.parse(savedData);
-            }
-        } catch (e) {
-            console.warn("Storage restricted", e);
-            allStudentsList = [];
-        }
+    window.onload = function() {
         loadSchoolInfo();
+        loadStoredData();
         updateHeaderStudentCount();
-    });
-
-    function loadSchoolInfo() {
-        try {
-            const savedInfo = localStorage.getItem(SCHOOL_INFO_KEY);
-            if (savedInfo) {
-                const parsed = JSON.parse(savedInfo);
-                document.getElementById('info-directorate').value = parsed.directorate || '';
-                document.getElementById('info-school').value = parsed.school || '';
-                document.getElementById('info-teacher').value = parsed.teacher || '';
-            }
-        } catch (e) {
-            console.warn("Error loading school info", e);
-        }
-        updateSchoolInfo();
-    }
-
-    function updateSchoolInfo() {
-        const directorate = document.getElementById('info-directorate').value.trim();
-        const school = document.getElementById('info-school').value.trim();
-        const teacher = document.getElementById('info-teacher').value.trim();
-
-        document.getElementById('display-directorate').innerText = directorate || '...................';
-        document.getElementById('display-school').innerText = school || 'Collège Anas Bno Malik';
-        document.getElementById('display-teacher').innerText = teacher || '...................';
-
-        const mainInfoDiv = document.getElementById('main-header-school-info');
-        if (mainInfoDiv) {
-            if (school || directorate) {
-                mainInfoDiv.innerText = `🏫 ${school} ${directorate ? ' - ' + directorate : ''}`;
-            } else {
-                mainInfoDiv.innerText = '🏫 Collège Pionnier : Anas Bno Malik';
-            }
-        }
-
-        try {
-            localStorage.setItem(SCHOOL_INFO_KEY, JSON.stringify({ directorate, school, teacher }));
-        } catch (e) {
-            console.warn("Error saving school info", e);
-        }
-    }
+    };
 
     function showToast(msg) {
         const toast = document.getElementById('toast-message');
-        toast.innerText = msg;
+        toast.textContent = msg;
         toast.classList.remove('hidden');
-        setTimeout(() => { toast.classList.add('hidden'); }, 3200);
+        setTimeout(() => toast.classList.add('hidden'), 3000);
     }
 
-    function saveStudentsToStorage() {
-        try {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(allStudentsList));
-        } catch (e) {
-            console.warn("localStorage save error", e);
+    function loadSchoolInfo() {
+        const saved = localStorage.getItem(SCHOOL_INFO_KEY);
+        if (saved) {
+            try {
+                const info = JSON.parse(saved);
+                document.getElementById('info-directorate').value = info.directorate || '';
+                document.getElementById('info-school').value = info.school || '';
+                document.getElementById('info-teacher').value = info.teacher || '';
+                updateSchoolInfoDisplays(info);
+            } catch(e) {}
         }
+    }
+
+    function updateSchoolInfo() {
+        const info = {
+            directorate: document.getElementById('info-directorate').value.trim(),
+            school: document.getElementById('info-school').value.trim(),
+            teacher: document.getElementById('info-teacher').value.trim()
+        };
+        localStorage.setItem(SCHOOL_INFO_KEY, JSON.stringify(info));
+        updateSchoolInfoDisplays(info);
+    }
+
+    function updateSchoolInfoDisplays(info) {
+        document.getElementById('display-directorate').textContent = info.directorate || '...................';
+        document.getElementById('display-school').textContent = info.school || '...................';
+        document.getElementById('display-teacher').textContent = info.teacher || '...................';
+        
+        const mainHeaderInfo = document.getElementById('main-header-school-info');
+        if (info.school) {
+            mainHeaderInfo.textContent = `🏫 Établissement : ${info.school} ${info.teacher ? '| Enseignant(e) : ' + info.teacher : ''}`;
+        } else {
+            mainHeaderInfo.textContent = `🏫 Établissement : Non renseigné`;
+        }
+    }
+
+    function loadStoredData() {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        if (stored) {
+            try {
+                allStudents = JSON.parse(stored);
+            } catch (e) {
+                allStudents = [];
+            }
+        }
+    }
+
+    function saveData() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(allStudents));
         updateHeaderStudentCount();
     }
 
     function updateHeaderStudentCount() {
-        const countSpan = document.getElementById('header-student-count');
-        const pluralSpan = document.getElementById('plural-s');
-        if (countSpan) {
-            countSpan.innerText = allStudentsList.length;
-            if (pluralSpan) pluralSpan.innerText = allStudentsList.length > 1 ? 's' : '';
-        }
+        const count = allStudents.length;
+        document.getElementById('header-student-count').textContent = count;
+        document.getElementById('plural-s').textContent = count > 1 ? 's' : '';
     }
 
     function startAssessment() {
         const nameInput = document.getElementById('student-name');
         const classSelect = document.getElementById('student-class');
-        const errorMsg = document.getElementById('name-error');
+        const nameErr = document.getElementById('name-error');
 
-        currentStudentName = nameInput.value.trim();
-        currentStudentClass = classSelect.value;
-
-        if (!currentStudentName) {
-            errorMsg.classList.remove('hidden');
-            nameInput.focus();
+        const name = nameInput.value.trim();
+        if (!name) {
+            nameErr.classList.remove('hidden');
             return;
         }
+        nameErr.classList.add('hidden');
 
-        errorMsg.classList.add('hidden');
-        gridScores = { L_PS: null, L_M: null, C_PS: null, L_PE: null, C_PE: null, L_P: null };
-        stageHistoryStack = [];
-        
+        currentStudent = {
+            id: Date.now(),
+            name: name,
+            class: classSelect.value,
+            scores: {
+                'L-PS': 'N/A',
+                'L-M': 'N/A',
+                'C-PS': 'N/A',
+                'L-PE': 'N/A',
+                'C-PE': 'N/A',
+                'L-P': 'N/A'
+            },
+            selectedSubIndex: {
+                'L-PS': 0,
+                'L-M': 0,
+                'L-PE': 0
+            },
+            palier: null,
+            completed: false
+        };
+
+        currentStageIndex = 0;
         document.getElementById('student-setup').classList.add('hidden');
-        document.getElementById('assessment-view').classList.remove('hidden');
         document.getElementById('result-view').classList.add('hidden');
+        document.getElementById('assessment-view').classList.remove('hidden');
 
-        document.getElementById('current-student-display').innerText = `Élève: ${currentStudentName} (${currentStudentClass})`;
-
-        currentLPSIndex = 0;
-        currentLMIndex = 0;
-        currentLPEIndex = 0;
-        currentLPIndex = 0;
-
-        loadStage('L-PS', false);
+        renderStage();
     }
 
-    const STAGE_ORDER = ['L-PS', 'L-M', 'C-PS', 'L-PE', 'C-PE', 'L-P'];
-
-    function loadStage(stage, isBacking = false) {
-        if (!isBacking && currentStage && currentStage !== stage) {
-            stageHistoryStack.push(currentStage);
-        }
-        currentStage = stage;
+    function renderStage() {
         resetTimer();
-
-        const backBtn = document.getElementById('btn-back-stage');
-        if (stageHistoryStack.length > 0) {
-            backBtn.classList.remove('hidden');
-        } else {
-            backBtn.classList.add('hidden');
-        }
+        const stageKey = STAGE_KEYS[currentStageIndex];
+        
+        document.getElementById('current-student-display').textContent = `Élève : ${currentStudent.name} (${currentStudent.class})`;
+        document.getElementById('stage-badge').textContent = `Étape ${currentStageIndex + 1} / 6 : ${stageKey}`;
 
         const stageTitle = document.getElementById('stage-title');
-        const stageBadge = document.getElementById('stage-badge');
-        const stageInst = document.getElementById('stage-instruction');
+        const stageInstruction = document.getElementById('stage-instruction');
         const textSelectorBox = document.getElementById('text-selector-box');
-        const textSelect = document.getElementById('text-choice');
         const timerContainer = document.getElementById('timer-container');
         const readingSection = document.getElementById('reading-section');
         const compSection = document.getElementById('comprehension-section');
-        const stageTargetHint = document.getElementById('stage-target-hint');
+        const targetHint = document.getElementById('stage-target-hint');
 
-        textSelect.innerHTML = '';
-        stageBadge.innerText = stage;
+        document.getElementById('btn-back-stage').style.visibility = currentStageIndex > 0 ? 'visible' : 'hidden';
 
-        if (stage === 'L-PS') {
-            stageTitle.innerText = 'Étape 1: Lecture de Phrases Simples (L-PS)';
-            stageInst.innerHTML = '📌 <strong>Consigne :</strong> Donner à l\'élève un bloc de 3 phrases simples à lire à voix haute.<br>🎯 <strong>Seuil de validation :</strong> <strong>14 mots correctement lus sur 20</strong> (14 mots/20).';
-            stageTargetHint.innerText = '🎯 Seuil de validation (L-PS) : 14 mots sur 20 correctement lus.';
-
+        if (stageKey === 'L-PS') {
+            stageTitle.textContent = "Étape 1 : Lecture de Phrases Simples (L-PS)";
+            stageInstruction.innerHTML = "🎯 <strong>Consigne :</strong> Lis à voix haute les phrases suivantes.<br>• <strong>Seuil de validation :</strong> Réussir au moins <strong>14 mots sur 20</strong> (précision & prononciation).";
             textSelectorBox.classList.remove('hidden');
-            OFFICIAL_DATABASE.L_PS.forEach((item, idx) => {
-                let opt = document.createElement('option');
-                opt.value = idx;
-                opt.innerText = item.title;
-                if (idx === currentLPSIndex) opt.selected = true;
-                textSelect.appendChild(opt);
-            });
-
             timerContainer.classList.remove('hidden');
             readingSection.classList.remove('hidden');
             compSection.classList.add('hidden');
+            targetHint.textContent = "📌 Seuil NMCLM : 14/20 mots. Si l'élève valide (score 1) ➔ C-PS. Si non (score 0) ➔ L-M.";
 
-            renderReadingText(OFFICIAL_DATABASE.L_PS[currentLPSIndex].text);
+            setupSubTextOptions(OFFICIAL_DATABASE.L_PS, currentStudent.selectedSubIndex['L-PS'] || 0);
+            renderWordInteractive(OFFICIAL_DATABASE.L_PS[activeSubIndex].text);
 
-        } else if (stage === 'L-M') {
-            stageTitle.innerText = 'Étape 2: Lecture de Mots Isolés (L-M)';
-            stageInst.innerHTML = '📌 <strong>Public concerné :</strong> Élèves n\'ayant pas validé la lecture de phrases simples (L-PS &lt; 14/20).<br>🎯 <strong>Seuil de validation :</strong> <strong>7 mots correctement lus sur 10</strong> (7 mots/10).<br>• Si &lt; 7 mots ➔ Affectation directe au <strong>Palier 1</strong>.<br>• Si ≥ 7 mots ➔ Affectation directe au <strong>Palier 2</strong>.';
-            stageTargetHint.innerText = '🎯 Seuil de validation (L-M) : 7 mots sur 10 correctement lus.';
-
+        } else if (stageKey === 'L-M') {
+            stageTitle.textContent = "Étape 2 : Lecture de Mots (L-M)";
+            stageInstruction.innerHTML = "🎯 <strong>Consigne :</strong> Lis à voix haute les mots suivants.<br>• <strong>Seuil de validation :</strong> Réussir au moins <strong>7 mots sur 10</strong>.";
             textSelectorBox.classList.remove('hidden');
-            OFFICIAL_DATABASE.L_M.forEach((item, idx) => {
-                let opt = document.createElement('option');
-                opt.value = idx;
-                opt.innerText = item.title;
-                if (idx === currentLMIndex) opt.selected = true;
-                textSelect.appendChild(opt);
-            });
-
             timerContainer.classList.remove('hidden');
             readingSection.classList.remove('hidden');
             compSection.classList.add('hidden');
+            targetHint.textContent = "📌 Seuil NMCLM : 7/10 mots. Si non validé (0) ➔ Palier 1. Si validé (1) ➔ Palier 2.";
 
-            renderReadingText(OFFICIAL_DATABASE.L_M[currentLMIndex].text);
+            setupSubTextOptions(OFFICIAL_DATABASE.L_M, currentStudent.selectedSubIndex['L-M'] || 0);
+            renderWordInteractive(OFFICIAL_DATABASE.L_M[activeSubIndex].text);
 
-        } else if (stage === 'C-PS') {
-            stageTitle.innerText = 'Étape 3: Compréhension de Phrases Simples (C-PS)';
-            stageInst.innerHTML = '📌 <strong>Public concerné :</strong> Élèves ayant validé L-PS.<br>📌 <strong>Consigne officielle :</strong> Poser oralement <strong>deux questions</strong> parmi les 3 proposées ci-dessous, l\'une après l\'autre.<br>🎯 <strong>Seuil de validation :</strong> <strong>Au moins 1 réponse correcte sur 2 (1/2)</strong>.<br>• Si non validé ➔ Affectation au <strong>Palier 2</strong>.';
-
+        } else if (stageKey === 'C-PS') {
+            stageTitle.textContent = "Étape 3 : Compréhension de Phrases Simples (C-PS)";
+            stageInstruction.innerHTML = "🎯 <strong>Consigne :</strong> Relis silencieusement les phrases et réponds oralement à mes questions.<br>• <strong>Seuil de validation :</strong> Au moins <strong>1 réponse correcte sur 2</strong> (score 1).";
             textSelectorBox.classList.add('hidden');
             timerContainer.classList.add('hidden');
             readingSection.classList.add('hidden');
             compSection.classList.remove('hidden');
 
-            renderComprehensionQuestions(OFFICIAL_DATABASE.L_PS[currentLPSIndex].questions, 3);
+            const lpsBlockIndex = currentStudent.selectedSubIndex['L-PS'] || 0;
+            const currentBlock = OFFICIAL_DATABASE.L_PS[lpsBlockIndex];
+            renderQuestionsList(currentBlock.questions);
 
-        } else if (stage === 'L-PE') {
-            stageTitle.innerText = 'Étape 4: Lecture de Phrases Enrichies (L-PE)';
-            stageInst.innerHTML = '📌 <strong>Public concerné :</strong> Élèves ayant validé C-PS.<br>📌 <strong>Consigne :</strong> Donner à l\'élève 3 phrases enrichies à lire.<br>🎯 <strong>Seuil de validation :</strong> <strong>24 mots correctement lus sur 30</strong> (24 mots/30).<br>• Si non validé ➔ Affectation au <strong>Palier 3</strong>.';
-            stageTargetHint.innerText = '🎯 Seuil de validation (L-PE) : 24 mots sur 30 correctement lus.';
-
+        } else if (stageKey === 'L-PE') {
+            stageTitle.textContent = "Étape 4 : Lecture de Phrases Enrichies (L-PE)";
+            stageInstruction.innerHTML = "🎯 <strong>Consigne :</strong> Lis à voix haute les phrases suivantes.<br>• <strong>Seuil de validation :</strong> Réussir au moins <strong>24 mots sur 30</strong>.";
             textSelectorBox.classList.remove('hidden');
-            OFFICIAL_DATABASE.L_PE.forEach((item, idx) => {
-                let opt = document.createElement('option');
-                opt.value = idx;
-                opt.innerText = item.title;
-                if (idx === currentLPEIndex) opt.selected = true;
-                textSelect.appendChild(opt);
-            });
-
             timerContainer.classList.remove('hidden');
             readingSection.classList.remove('hidden');
             compSection.classList.add('hidden');
+            targetHint.textContent = "📌 Seuil NMCLM : 24/30 mots. Si non validé (0) ➔ Palier 3. Si validé (1) ➔ C-PE.";
 
-            renderReadingText(OFFICIAL_DATABASE.L_PE[currentLPEIndex].text);
+            setupSubTextOptions(OFFICIAL_DATABASE.L_PE, currentStudent.selectedSubIndex['L-PE'] || 0);
+            renderWordInteractive(OFFICIAL_DATABASE.L_PE[activeSubIndex].text);
 
-        } else if (stage === 'C-PE') {
-            stageTitle.innerText = 'Étape 5: Compréhension de Phrases Enrichies (C-PE)';
-            stageInst.innerHTML = '📌 <strong>Public concerné :</strong> Élèves ayant validé L-PE.<br>📌 <strong>Consigne officielle :</strong> Poser oralement <strong>deux questions</strong> parmi les 5 proposées ci-dessous, l\'une après l\'autre.<br>🎯 <strong>Seuil de validation :</strong> <strong>Au moins 1 réponse correcte sur 2 (1/2)</strong>.<br>• Si non validé ➔ Affectation au <strong>Palier 3</strong>.<br>• Si validé ➔ Affectation au <strong>Palier 4</strong> (poursuite vers L-P pour mesure complémentaire).';
-
+        } else if (stageKey === 'C-PE') {
+            stageTitle.textContent = "Étape 5 : Compréhension de Phrases Enrichies (C-PE)";
+            stageInstruction.innerHTML = "🎯 <strong>Consigne :</strong> Relis silencieusement les phrases et réponds oralement aux questions.<br>• <strong>Seuil de validation :</strong> Au moins <strong>1 réponse correcte sur 2</strong> (score 1).";
             textSelectorBox.classList.add('hidden');
             timerContainer.classList.add('hidden');
             readingSection.classList.add('hidden');
             compSection.classList.remove('hidden');
 
-            renderComprehensionQuestions(OFFICIAL_DATABASE.L_PE[currentLPEIndex].questions, 5);
+            const lpeBlockIndex = currentStudent.selectedSubIndex['L-PE'] || 0;
+            const currentBlock = OFFICIAL_DATABASE.L_PE[lpeBlockIndex];
+            renderQuestionsList(currentBlock.questions);
 
-        } else if (stage === 'L-P') {
-            stageTitle.innerText = 'Étape 6: Lecture de Paragraphe (L-P) - Indicateur Complémentaire';
-            stageInst.innerHTML = '📌 <strong>Remarque officielle :</strong> Le test de paragraphe n\'impacte pas le positionnement (l\'élève est déjà Palier 4). Il sert d\'indicateur complémentaire de remédiation.<br>🎯 <strong>Seuil indicatif :</strong> <strong>60 mots correctement lus sur 70 en 1 minute</strong>.';
-            stageTargetHint.innerText = '🎯 Seuil indicatif (L-P) : 60 mots sur 70 en 1 minute.';
-
+        } else if (stageKey === 'L-P') {
+            stageTitle.textContent = "Étape 6 : Lecture de Paragraphe (L-P)";
+            stageInstruction.innerHTML = "🎯 <strong>Consigne :</strong> Lis le paragraphe suivant en 1 minute (60s).<br>• <strong>Indicateur complémentaire :</strong> Réussir au moins <strong>60 mots sur 70</strong> en 1 min.";
             textSelectorBox.classList.add('hidden');
             timerContainer.classList.remove('hidden');
             readingSection.classList.remove('hidden');
             compSection.classList.add('hidden');
+            targetHint.textContent = "📌 Seuil NMCLM : 60/70 mots. Cet exercice n'impacte pas le positionnement (élève reste au Palier 4).";
 
-            renderReadingText(OFFICIAL_DATABASE.L_P[0].text);
+            renderWordInteractive(OFFICIAL_DATABASE.L_P.text);
         }
     }
 
-    function goBackStage() {
-        if (stageHistoryStack.length > 0) {
-            const previous = stageHistoryStack.pop();
-            loadStage(previous, true);
-            showToast(`⬅ Retour à l'étape : ${previous}`);
-        } else {
-            resetForNewStudent();
-        }
-    }
-
-    function goNextStageManual() {
-        const currIdx = STAGE_ORDER.indexOf(currentStage);
-        if (currIdx < STAGE_ORDER.length - 1) {
-            const nextStage = STAGE_ORDER[currIdx + 1];
-            loadStage(nextStage);
-            showToast(`➡ Navigation vers l'étape : ${nextStage}`);
-        } else {
-            showToast('⚠️ Vous êtes déjà à la dernière étape (L-P). Vous pouvez valider.');
-        }
+    function setupSubTextOptions(dataArray, defaultIdx) {
+        const select = document.getElementById('text-choice');
+        select.innerHTML = '';
+        dataArray.forEach((item, idx) => {
+            const opt = document.createElement('option');
+            opt.value = idx;
+            opt.textContent = item.title;
+            select.appendChild(opt);
+        });
+        activeSubIndex = defaultIdx < dataArray.length ? defaultIdx : 0;
+        select.value = activeSubIndex;
     }
 
     function changeSubText() {
-        const select = document.getElementById('text-choice');
-        const val = parseInt(select.value) || 0;
-        
-        if (currentStage === 'L-PS') {
-            currentLPSIndex = val;
-            renderReadingText(OFFICIAL_DATABASE.L_PS[currentLPSIndex].text);
-        } else if (currentStage === 'L-M') {
-            currentLMIndex = val;
-            renderReadingText(OFFICIAL_DATABASE.L_M[currentLMIndex].text);
-        } else if (currentStage === 'L-PE') {
-            currentLPEIndex = val;
-            renderReadingText(OFFICIAL_DATABASE.L_PE[currentLPEIndex].text);
+        activeSubIndex = parseInt(document.getElementById('text-choice').value, 10);
+        const stageKey = STAGE_KEYS[currentStageIndex];
+        currentStudent.selectedSubIndex[stageKey] = activeSubIndex;
+
+        if (stageKey === 'L-PS') {
+            renderWordInteractive(OFFICIAL_DATABASE.L_PS[activeSubIndex].text);
+        } else if (stageKey === 'L-M') {
+            renderWordInteractive(OFFICIAL_DATABASE.L_M[activeSubIndex].text);
+        } else if (stageKey === 'L-PE') {
+            renderWordInteractive(OFFICIAL_DATABASE.L_PE[activeSubIndex].text);
         }
     }
 
-    function renderReadingText(textStr) {
+    function renderWordInteractive(rawText) {
         const container = document.getElementById('word-container');
         container.innerHTML = '';
-        wordsArray = textStr.trim().split(/\s+/);
-        errorIndices.clear();
 
-        wordsArray.forEach((word, index) => {
-            let span = document.createElement('span');
+        const words = rawText.trim().split(/\s+/);
+        document.getElementById('total-text-words').textContent = words.length;
+        document.getElementById('words-read').value = words.length;
+
+        words.forEach((wordStr, idx) => {
+            const span = document.createElement('span');
             span.className = 'word-item';
-            span.innerText = word;
-            span.onclick = () => toggleWordError(index, span);
+            span.textContent = wordStr;
+            span.dataset.index = idx;
+            span.onclick = function() {
+                this.classList.toggle('error');
+                updateCounts();
+            };
             container.appendChild(span);
         });
 
-        document.getElementById('total-text-words').innerText = wordsArray.length;
-        document.getElementById('words-read').value = wordsArray.length;
-        updateCounts();
-    }
-
-    function toggleWordError(index, element) {
-        if (errorIndices.has(index)) {
-            errorIndices.delete(index);
-            element.classList.remove('error');
-        } else {
-            errorIndices.add(index);
-            element.classList.add('error');
-        }
         updateCounts();
     }
 
     function updateCounts() {
-        const totalRead = parseInt(document.getElementById('words-read').value) || 0;
-        const errCount = errorIndices.size;
-        const correctCount = Math.max(0, totalRead - errCount);
+        const total = parseInt(document.getElementById('total-text-words').textContent, 10) || 0;
+        const wordsRead = parseInt(document.getElementById('words-read').value, 10) || total;
+        const errorSpans = document.querySelectorAll('#word-container .word-item.error').length;
+        
+        const totalErrors = errorSpans + Math.max(0, total - wordsRead);
+        const correct = Math.max(0, total - totalErrors);
 
-        document.getElementById('error-count').innerText = errCount;
-        document.getElementById('correct-count').innerText = correctCount;
+        document.getElementById('error-count').textContent = totalErrors;
+        document.getElementById('correct-count').textContent = correct;
     }
 
-    function toggleTimer() {
-        const btn = document.getElementById('start-timer-btn');
-        if (timerRunning) {
-            clearInterval(timerInterval);
-            timerRunning = false;
-            btn.innerText = '▶ Reprendre le Chrono';
-            btn.className = 'bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-lg text-sm transition';
-        } else {
-            timerRunning = true;
-            btn.innerText = '⏸ Pause';
-            btn.className = 'bg-rose-600 hover:bg-rose-700 text-white font-bold px-4 py-2 rounded-lg text-sm transition';
-            
-            timerInterval = setInterval(() => {
-                timeLeft--;
-                document.getElementById('timer').innerText = timeLeft;
-                if (timeLeft <= 0) {
-                    clearInterval(timerInterval);
-                    timerRunning = false;
-                    btn.innerText = '⏰ Temps Écoulé (60s)';
-                    btn.className = 'bg-pink-600 hover:bg-pink-700 text-white font-bold px-4 py-2 rounded-lg text-sm transition';
-                    showToast('⏰ Fin du temps imparti (60 secondes) !');
-                }
-            }, 1000);
-        }
-    }
-
-    function resetTimer() {
-        clearInterval(timerInterval);
-        timerRunning = false;
-        timeLeft = 60;
-        document.getElementById('timer').innerText = '60';
-        const btn = document.getElementById('start-timer-btn');
-        if (btn) {
-            btn.innerText = '▶ Démarrer le Chrono (60s)';
-            btn.className = 'bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-lg text-sm transition';
-        }
-    }
-
-    function renderComprehensionQuestions(questionsArr, totalAvailableCount) {
+    function renderQuestionsList(questions) {
         const container = document.getElementById('questions-list');
         container.innerHTML = '';
 
-        const noteBox = document.getElementById('comp-instruction-note');
-        if (noteBox) {
-            noteBox.innerHTML = `📌 <strong>Directive officielle :</strong> Posez <strong>deux questions oralement</strong> à l'élève parmi les <strong>${totalAvailableCount} questions officielles</strong> ci-dessous. Cochez les questions réussies pour ajuster automatiquement la note sur 2.`;
-        }
-
-        questionsArr.forEach((qObj, idx) => {
-            let div = document.createElement('div');
-            div.className = 'bg-white p-3.5 rounded-xl border border-pink-200 text-sm shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3';
+        questions.forEach((qObj, idx) => {
+            const div = document.createElement('div');
+            div.className = "bg-white p-3 rounded-xl border border-pink-200 shadow-sm flex flex-col gap-1";
             div.innerHTML = `
-                <div class="flex-1">
-                    <p class="font-bold text-slate-800 text-sm mb-1">${qObj.q}</p>
-                    <div class="bg-emerald-50 text-emerald-900 px-3 py-1 rounded-lg border-l-3 border-emerald-600 text-xs font-medium inline-block">
-                        💡 Repère de réponse : <strong>${qObj.a}</strong>
-                    </div>
+                <div class="flex items-start justify-between gap-2">
+                    <span class="font-bold text-pink-900 text-sm md:text-base">${qObj.q}</span>
+                    <label class="flex items-center gap-2 cursor-pointer bg-pink-50 hover:bg-pink-100 px-2.5 py-1 rounded-lg border border-pink-200 transition">
+                        <input type="checkbox" class="comp-check w-4 h-4 text-pink-600 rounded focus:ring-pink-500" onchange="autoCalculateCompScore()">
+                        <span class="text-xs font-bold text-pink-900">Correcte</span>
+                    </label>
                 </div>
-                <label class="flex items-center gap-2 cursor-pointer bg-pink-50 hover:bg-pink-100 p-2 rounded-lg border border-pink-200 text-xs font-bold text-pink-900 select-none">
-                    <input type="checkbox" class="comp-check-item w-4 h-4 text-pink-600 rounded focus:ring-pink-500" onchange="recalculateCompScoreFromCheckboxes()">
-                    <span>Réponse correcte</span>
-                </label>
+                <div class="text-xs font-semibold text-emerald-700 bg-emerald-50/70 p-1.5 rounded-md border border-emerald-100">
+                    💡 Réponse attendue : ${qObj.a}
+                </div>
             `;
             container.appendChild(div);
         });
 
-        // Default score set to 1 (1/2 validé)
-        const compSelect = document.getElementById('comp-score');
-        compSelect.value = "1";
-        document.getElementById('comp-correct-count-display').innerText = "1";
+        autoCalculateCompScore();
     }
 
-    function recalculateCompScoreFromCheckboxes() {
-        const checkboxes = document.querySelectorAll('.comp-check-item');
-        let count = 0;
-        checkboxes.forEach(cb => { if (cb.checked) count++; });
-        
-        const scoreVal = Math.min(count, 2);
-        document.getElementById('comp-correct-count-display').innerText = count;
-        
-        const compSelect = document.getElementById('comp-score');
-        if (scoreVal >= 2) compSelect.value = "2";
-        else if (scoreVal === 1) compSelect.value = "1";
-        else compSelect.value = "0";
-    }
+    function autoCalculateCompScore() {
+        const checkboxes = document.querySelectorAll('.comp-check');
+        let checkedCount = 0;
+        checkboxes.forEach(cb => { if (cb.checked) checkedCount++; });
 
-    // Decision tree processing according to Official Guide 2026
-    function processStageResult() {
-        const totalRead = parseInt(document.getElementById('words-read').value) || 0;
-        const errs = errorIndices.size;
-        const correctWords = Math.max(0, totalRead - errs);
+        document.getElementById('comp-correct-count-display').textContent = checkedCount;
 
-        if (currentStage === 'L-PS') {
-            const passedLPS = correctWords >= 14;
-            gridScores.L_PS = passedLPS ? 1 : 0;
-
-            if (passedLPS) {
-                showToast('✅ Étape L-PS Validée (≥ 14/20 mots). Passage à la Compréhension (C-PS)...');
-                loadStage('C-PS');
-            } else {
-                showToast('⚠️ Étape L-PS Non Validée (< 14/20 mots). Orientation vers la Lecture de Mots (L-M)...');
-                loadStage('L-M');
-            }
-
-        } else if (currentStage === 'L-M') {
-            const passedLM = correctWords >= 7;
-            gridScores.L_M = passedLM ? 1 : 0;
-
-            if (passedLM) {
-                showToast('✅ Étape L-M Validée (≥ 7/10 mots) ➔ Affectation au Palier 2.');
-                gridScores.C_PS = 'N/A';
-                gridScores.L_PE = 'N/A';
-                gridScores.C_PE = 'N/A';
-                gridScores.L_P = 'N/A';
-                finalizeResult(2);
-            } else {
-                showToast('❌ Étape L-M Non Validée (< 7/10 mots) ➔ Affectation au Palier 1.');
-                gridScores.C_PS = 'N/A';
-                gridScores.L_PE = 'N/A';
-                gridScores.C_PE = 'N/A';
-                gridScores.L_P = 'N/A';
-                finalizeResult(1);
-            }
-
-        } else if (currentStage === 'C-PS') {
-            const score = parseInt(document.getElementById('comp-score').value) || 0;
-            const passedCPS = score >= 1;
-            gridScores.C_PS = passedCPS ? 1 : 0;
-
-            if (passedCPS) {
-                showToast('✅ Étape C-PS Validée (≥ 1/2). Passage aux Phrases Enrichies (L-PE)...');
-                loadStage('L-PE');
-            } else {
-                showToast('❌ Étape C-PS Non Validée ➔ Affectation au Palier 2.');
-                gridScores.L_M = 'N/A';
-                gridScores.L_PE = 'N/A';
-                gridScores.C_PE = 'N/A';
-                gridScores.L_P = 'N/A';
-                finalizeResult(2);
-            }
-
-        } else if (currentStage === 'L-PE') {
-            const passedLPE = correctWords >= 24;
-            gridScores.L_PE = passedLPE ? 1 : 0;
-
-            if (passedLPE) {
-                showToast('✅ Étape L-PE Validée (≥ 24/30 mots). Passage à la Compréhension C-PE...');
-                loadStage('C-PE');
-            } else {
-                showToast('❌ Étape L-PE Non Validée (< 24/30 mots) ➔ Affectation au Palier 3.');
-                gridScores.C_PE = 'N/A';
-                gridScores.L_P = 'N/A';
-                finalizeResult(3);
-            }
-
-        } else if (currentStage === 'C-PE') {
-            const score = parseInt(document.getElementById('comp-score').value) || 0;
-            const passedCPE = score >= 1;
-            gridScores.C_PE = passedCPE ? 1 : 0;
-
-            if (passedCPE) {
-                showToast('✅ Étape C-PE Validée ! Élève au Palier 4. Passage à l\'évaluation complémentaire du Paragraphe (L-P)...');
-                loadStage('L-P');
-            } else {
-                showToast('❌ Étape C-PE Non Validée ➔ Affectation au Palier 3.');
-                gridScores.L_P = 'N/A';
-                finalizeResult(3);
-            }
-
-        } else if (currentStage === 'L-P') {
-            const passedLP = correctWords >= 60;
-            gridScores.L_P = passedLP ? 1 : 0;
-            finalizeResult(4);
+        const select = document.getElementById('comp-score');
+        if (checkedCount >= 1) {
+            select.value = "1";
+        } else {
+            select.value = "0";
         }
     }
 
+    function toggleTimer() {
+        if (isTimerRunning) {
+            pauseTimer();
+        } else {
+            startTimer();
+        }
+    }
+
+    function startTimer() {
+        const btn = document.getElementById('start-timer-btn');
+        isTimerRunning = true;
+        btn.textContent = "⏸ Pause Chrono";
+        btn.className = "bg-amber-600 hover:bg-amber-700 text-white font-bold px-4 py-2 rounded-lg text-sm transition";
+
+        timerInterval = setInterval(() => {
+            if (secondsLeft > 0) {
+                secondsLeft--;
+                document.getElementById('timer').textContent = secondsLeft;
+            } else {
+                pauseTimer();
+                showToast("⏰ Temps écoulé (60 secondes) !");
+            }
+        }, 1000);
+    }
+
+    function pauseTimer() {
+        clearInterval(timerInterval);
+        isTimerRunning = false;
+        const btn = document.getElementById('start-timer-btn');
+        btn.textContent = "▶ Reprendre";
+        btn.className = "bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-lg text-sm transition";
+    }
+
+    function resetTimer() {
+        clearInterval(timerInterval);
+        isTimerRunning = false;
+        secondsLeft = 60;
+        document.getElementById('timer').textContent = "60";
+        const btn = document.getElementById('start-timer-btn');
+        if (btn) {
+            btn.textContent = "▶ Démarrer le Chrono (60s)";
+            btn.className = "bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-lg text-sm transition";
+        }
+    }
+
+    function processStageResult() {
+        const stageKey = STAGE_KEYS[currentStageIndex];
+        let passed = false;
+
+        if (['L-PS', 'L-M', 'L-PE', 'L-P'].includes(stageKey)) {
+            const correctWords = parseInt(document.getElementById('correct-count').textContent, 10) || 0;
+            
+            if (stageKey === 'L-PS') passed = correctWords >= 14;
+            else if (stageKey === 'L-M') passed = correctWords >= 7;
+            else if (stageKey === 'L-PE') passed = correctWords >= 24;
+            else if (stageKey === 'L-P') passed = correctWords >= 60;
+
+            currentStudent.scores[stageKey] = passed ? 1 : 0;
+
+        } else if (['C-PS', 'C-PE'].includes(stageKey)) {
+            const scoreVal = parseInt(document.getElementById('comp-score').value, 10);
+            passed = scoreVal >= 1;
+            currentStudent.scores[stageKey] = passed ? 1 : 0;
+        }
+
+        // Official Decision Tree Logic
+        if (stageKey === 'L-PS') {
+            if (!passed) {
+                currentStageIndex = 1; // Go to L-M
+                renderStage();
+            } else {
+                currentStageIndex = 2; // Go to C-PS
+                renderStage();
+            }
+        } else if (stageKey === 'L-M') {
+            if (!passed) {
+                finishStudentAssessment(1); // Palier 1
+            } else {
+                finishStudentAssessment(2); // Palier 2
+            }
+        } else if (stageKey === 'C-PS') {
+            if (!passed) {
+                finishStudentAssessment(2); // Palier 2
+            } else {
+                currentStageIndex = 3; // Go to L-PE
+                renderStage();
+            }
+        } else if (stageKey === 'L-PE') {
+            if (!passed) {
+                finishStudentAssessment(3); // Palier 3
+            } else {
+                currentStageIndex = 4; // Go to C-PE
+                renderStage();
+            }
+        } else if (stageKey === 'C-PE') {
+            if (!passed) {
+                finishStudentAssessment(3); // Palier 3
+            } else {
+                currentStudent.palier = 4;
+                currentStageIndex = 5; // Go to L-P
+                renderStage();
+            }
+        } else if (stageKey === 'L-P') {
+            finishStudentAssessment(4); // Palier 4
+        }
+    }
+
+    function goBackStage() {
+        if (currentStageIndex > 0) {
+            currentStageIndex--;
+            renderStage();
+        }
+    }
+
+    function goNextStageManual() {
+        processStageResult();
+    }
+
+    function finishStudentAssessment(assignedPalier) {
+        currentStudent.palier = assignedPalier;
+        currentStudent.completed = true;
+
+        const existingIdx = allStudents.findIndex(s => s.id === currentStudent.id);
+        if (existingIdx >= 0) {
+            allStudents[existingIdx] = currentStudent;
+        } else {
+            allStudents.push(currentStudent);
+        }
+
+        saveData();
+        displayResultsView();
+    }
+
+    function displayResultsView() {
+        document.getElementById('assessment-view').classList.add('hidden');
+        document.getElementById('student-setup').classList.add('hidden');
+        document.getElementById('result-view').classList.remove('hidden');
+
+        if (currentStudent) {
+            document.getElementById('latest-student-card').classList.remove('hidden');
+            document.getElementById('student-final-info').textContent = `${currentStudent.name} | Classe: ${currentStudent.class}`;
+            
+            const palierElem = document.getElementById('final-level');
+            palierElem.textContent = `Palier ${currentStudent.palier}`;
+
+            const descMap = {
+                1: "Élève orienté vers le Palier 1 (Besoins prioritaires en lecture élémentaire).",
+                2: "Élève orienté vers le Palier 2 (Décodage et déchiffrage acquis, renforcement nécessaire).",
+                3: "Élève orienté vers le Palier 3 (Lecture de phrases acquise, compréhension en consolidation).",
+                4: "Élève orienté vers le Palier 4 (Niveau avancé en lecture et compréhension)."
+            };
+            document.getElementById('final-summary').textContent = descMap[currentStudent.palier] || '';
+        } else {
+            document.getElementById('latest-student-card').classList.add('hidden');
+        }
+
+        renderAllStudentsTable();
+    }
+
     function showCollectiveGridDirectly() {
+        currentStudent = null;
         document.getElementById('student-setup').classList.add('hidden');
         document.getElementById('assessment-view').classList.add('hidden');
         document.getElementById('result-view').classList.remove('hidden');
         document.getElementById('latest-student-card').classList.add('hidden');
         renderAllStudentsTable();
+    }
+
+    function renderAllStudentsTable() {
+        const filterClass = document.getElementById('filter-class').value;
+        const tbody = document.getElementById('all-students-tbody');
+        tbody.innerHTML = '';
+
+        const filtered = filterClass === 'ALL' 
+            ? allStudents 
+            : allStudents.filter(s => s.class === filterClass);
+
+        let p1 = 0, p2 = 0, p3 = 0, p4 = 0;
+
+        filtered.forEach((st, idx) => {
+            if (st.palier === 1) p1++;
+            else if (st.palier === 2) p2++;
+            else if (st.palier === 3) p3++;
+            else if (st.palier === 4) p4++;
+
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td style="font-weight: bold;">${idx + 1}</td>
+                <td style="text-align: left; font-weight: 600; padding-left: 8px;">${st.name}</td>
+                <td style="font-weight: bold;">${st.class}</td>
+                <td>${renderScoreBadge(st.scores['L-PS'])}</td>
+                <td>${renderScoreBadge(st.scores['L-M'])}</td>
+                <td>${renderScoreBadge(st.scores['C-PS'])}</td>
+                <td>${renderScoreBadge(st.scores['L-PE'])}</td>
+                <td>${renderScoreBadge(st.scores['C-PE'])}</td>
+                <td>${renderScoreBadge(st.scores['L-P'])}</td>
+                <td><strong class="text-pink-900 font-extrabold">Palier ${st.palier}</strong></td>
+                <td class="no-print">
+                    <button onclick="deleteStudent(${st.id})" class="text-rose-600 hover:text-rose-800 font-bold px-1">✕</button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+
+        document.getElementById('stat-total').textContent = filtered.length;
+        document.getElementById('stat-p1').textContent = p1;
+        document.getElementById('stat-p2').textContent = p2;
+        document.getElementById('stat-p3').textContent = p3;
+        document.getElementById('stat-p4').textContent = p4;
+    }
+
+    function renderScoreBadge(val) {
+        if (val === 1) return `<span class="status-1">1</span>`;
+        if (val === 0) return `<span class="status-0">0</span>`;
+        return `<span class="status-na">N/A</span>`;
+    }
+
+    function deleteStudent(id) {
+        allStudents = allStudents.filter(s => s.id !== id);
+        saveData();
+        renderAllStudentsTable();
+        showToast("Élève supprimé de la liste.");
+    }
+
+    function resetForNewStudent() {
+        document.getElementById('student-name').value = '';
+        currentStudent = null;
+        document.getElementById('result-view').classList.add('hidden');
+        document.getElementById('assessment-view').classList.add('hidden');
+        document.getElementById('student-setup').classList.remove('hidden');
     }
 
     function openClearModal() {
@@ -1215,126 +1237,88 @@
     }
 
     function confirmExecuteClearAll() {
-        allStudentsList = [];
-        saveStudentsToStorage();
+        allStudents = [];
+        saveData();
         closeClearModal();
         renderAllStudentsTable();
-        showToast('🧹 La grille collective a été vidée.');
+        showToast("La grille collective a été intégralement vidée.");
     }
 
-    function deleteStudent(index) {
-        allStudentsList.splice(index, 1);
-        saveStudentsToStorage();
-        renderAllStudentsTable();
-        showToast('🗑️ Élève supprimé(e) de la liste.');
-    }
-
-    function finalizeResult(level) {
-        document.getElementById('assessment-view').classList.add('hidden');
-        document.getElementById('result-view').classList.remove('hidden');
-        document.getElementById('latest-student-card').classList.remove('hidden');
-
-        let newRecord = {
-            id: Date.now(),
-            name: currentStudentName,
-            className: currentStudentClass,
-            scores: { ...gridScores },
-            level: level,
-            date: new Date().toLocaleDateString('fr-FR')
-        };
-
-        allStudentsList.push(newRecord);
-        saveStudentsToStorage();
-        sortStudentsList();
-
-        document.getElementById('student-final-info').innerText = `Élève: ${currentStudentName} | Classe: ${currentStudentClass}`;
-        document.getElementById('final-level').innerText = "Palier " + level;
-
-        let desc = "";
-        if (level === 1) desc = "Niveau Débutant : Difficulté majeure en lecture de mots isolés. Besoin de remédiation prioritaire (Palier 1).";
-        else if (level === 2) desc = "Niveau Intermédiaire 1 : Maîtrise des mots simples, mais difficulté sur la compréhension des phrases (Palier 2).";
-        else if (level === 3) desc = "Niveau Intermédiaire 2 : Maîtrise des phrases simples, me besoin de renforcer la lecture/compréhension des phrases enrichies (Palier 3).";
-        else if (level === 4) desc = "Niveau Avancé : Excellente maîtrise de la lecture et de la compréhension (Palier 4).";
-
-        document.getElementById('final-summary').innerText = desc;
-
-        renderAllStudentsTable();
-        showToast(`✅ Résultat enregistré pour "${currentStudentName}" (Palier ${level}) !`);
-    }
-
-    function sortStudentsList() {
-        allStudentsList.sort((a, b) => {
-            if (a.className !== b.className) {
-                return a.className.localeCompare(b.className, 'fr', { numeric: true });
-            }
-            return a.name.localeCompare(b.name, 'fr');
-        });
-    }
-
-    function renderAllStudentsTable() {
-        const tbody = document.getElementById('all-students-tbody');
-        tbody.innerHTML = '';
-
-        const selectedClass = document.getElementById('filter-class').value;
-        let filteredList = allStudentsList;
-
-        if (selectedClass !== 'ALL') {
-            filteredList = filteredList.filter(st => st.className === selectedClass);
-        }
-
-        let total = filteredList.length;
-        let p1 = filteredList.filter(s => s.level === 1).length;
-        let p2 = filteredList.filter(s => s.level === 2).length;
-        let p3 = filteredList.filter(s => s.level === 3).length;
-        let p4 = filteredList.filter(s => s.level === 4).length;
-
-        document.getElementById('stat-total').innerText = total;
-        document.getElementById('stat-p1').innerText = p1;
-        document.getElementById('stat-p2').innerText = p2;
-        document.getElementById('stat-p3').innerText = p3;
-        document.getElementById('stat-p4').innerText = p4;
-
-        if (filteredList.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="11" class="py-6 text-slate-400">Aucune donnée enregistrée pour le moment.</td></tr>`;
+    function exportToExcel() {
+        if (allStudents.length === 0) {
+            showToast("⚠️ La liste des élèves est vide ! Impossible d'exporter.");
             return;
         }
 
-        filteredList.forEach((st, idx) => {
-            let originalIndex = allStudentsList.findIndex(item => item.id === st.id);
-            if (originalIndex === -1) originalIndex = idx;
+        const filterClass = document.getElementById('filter-class').value;
+        const filtered = filterClass === 'ALL' ? allStudents : allStudents.filter(s => s.class === filterClass);
 
-            let tr = document.createElement('tr');
+        if (filtered.length === 0) {
+            showToast("⚠️ Aucun élève ne correspond au filtre sélectionné.");
+            return;
+        }
 
-            tr.innerHTML = `
-                <td><strong>${idx + 1}</strong></td>
-                <td style="font-weight: bold; text-align: left; padding-left: 8px;">${st.name}</td>
-                <td><span class="bg-pink-600 text-white font-bold px-2 py-0.5 rounded text-xs">${st.className}</span></td>
-                <td>${formatCell(st.scores.L_PS)}</td>
-                <td>${formatCell(st.scores.L_M)}</td>
-                <td>${formatCell(st.scores.C_PS)}</td>
-                <td>${formatCell(st.scores.L_PE)}</td>
-                <td>${formatCell(st.scores.C_PE)}</td>
-                <td>${formatCell(st.scores.L_P)}</td>
-                <td class="font-bold text-pink-900">Palier ${st.level}</td>
-                <td class="no-print">
-                    <button class="bg-rose-100 hover:bg-rose-200 text-rose-700 font-bold px-2 py-1 rounded text-xs" title="Supprimer" onclick="deleteStudent(${originalIndex})">❌</button>
-                </td>
-            `;
-            tbody.appendChild(tr);
+        const schoolName = document.getElementById('display-school').textContent || 'Collège Pionnier';
+        const directorateName = document.getElementById('display-directorate').textContent || 'Non renseignée';
+        const teacherName = document.getElementById('display-teacher').textContent || 'Non renseigné';
+
+        const wsData = [];
+
+        wsData.push(["GRILLE COLLECTIVE DE POSITIONNEMENT - LANGUE FRANÇAISE (2026-2027)"]);
+        wsData.push([`Établissement : ${schoolName}`]);
+        wsData.push([`Direction Provinciale : ${directorateName}`]);
+        wsData.push([`Enseignant(e) : ${teacherName}`]);
+        wsData.push(["Grille de notation : 0 = exercice non validé ; 1 = exercice validé ; N/A = exercice non administré"]);
+        wsData.push([]);
+
+        wsData.push(["N°", "Nom de l'élève", "Classe", "Etape 1 (L-PS)", "Etape 2 (L-M)", "Etape 2 (C-PS)", "Etape 3 (L-PE)", "Etape 4 (C-PE)", "Etape 5 (L-P)", "Palier Final"]);
+
+        filtered.forEach((st, idx) => {
+            const formatScore = (val) => {
+                if (val === 1 || val === '1') return "1";
+                if (val === 0 || val === '0') return "0";
+                return "N/A";
+            };
+
+            const row = [
+                idx + 1,
+                st.name || '',
+                st.class || '',
+                formatScore(st.scores ? st.scores['L-PS'] : undefined),
+                formatScore(st.scores ? st.scores['L-M'] : undefined),
+                formatScore(st.scores ? st.scores['C-PS'] : undefined),
+                formatScore(st.scores ? st.scores['L-PE'] : undefined),
+                formatScore(st.scores ? st.scores['C-PE'] : undefined),
+                formatScore(st.scores ? st.scores['L-P'] : undefined),
+                st.palier ? `Palier ${st.palier}` : 'N/A'
+            ];
+            wsData.push(row);
         });
-    }
 
-    function formatCell(score) {
-        if (score === 1) return '<span class="status-1">1</span>';
-        if (score === 0) return '<span class="status-0">0</span>';
-        return '<span class="status-na">N/A</span>';
-    }
+        wsData.push([]);
+        wsData.push(["Développeur : M. Soubki Brahim | Assistance : M. Slaoui Tayeb"]);
 
-    function resetForNewStudent() {
-        document.getElementById('student-name').value = '';
-        document.getElementById('student-setup').classList.remove('hidden');
-        document.getElementById('result-view').classList.add('hidden');
-        document.getElementById('assessment-view').classList.add('hidden');
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.aoa_to_sheet(wsData);
+
+        ws['!cols'] = [
+            { wch: 8 },
+            { wch: 30 },
+            { wch: 14 },
+            { wch: 16 },
+            { wch: 16 },
+            { wch: 16 },
+            { wch: 16 },
+            { wch: 16 },
+            { wch: 16 },
+            { wch: 16 }
+        ];
+
+        XLSX.utils.book_append_sheet(wb, ws, "Grille_Positionnement");
+
+        const fileName = `Grille_Français_Pionniers_${filterClass.replace('/', '-')}_2026.xlsx`;
+        XLSX.writeFile(wb, fileName);
+        showToast("📊 Fichier Excel téléchargé avec succès !");
     }
 </script>
 </body>
