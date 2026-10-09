@@ -8,6 +8,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- SheetJS for Excel Export -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -493,7 +495,10 @@
             <button onclick="exportToExcel()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-xl text-sm transition flex items-center gap-1 shadow">
                 📊 Exporter vers Excel (.xlsx)
             </button>
-            <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 py-2 rounded-xl text-sm transition flex items-center gap-1">
+            <button id="btn-download-pdf" onclick="downloadGridPDF()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-4 py-2 rounded-xl text-sm transition flex items-center gap-1 shadow">
+                📄 Télécharger la Grille (PDF)
+            </button>
+            <button id="btn-print-grid" onclick="printGrid()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 py-2 rounded-xl text-sm transition flex items-center gap-1">
                 🖨️ Imprimer la Grille (A4)
             </button>
             <button onclick="openClearModal()" class="bg-rose-600 hover:bg-rose-700 text-white font-bold px-4 py-2 rounded-xl text-sm transition flex items-center gap-1">
@@ -1208,6 +1213,169 @@
         document.getElementById('stat-p2').textContent = p2;
         document.getElementById('stat-p3').textContent = p3;
         document.getElementById('stat-p4').textContent = p4;
+    }
+
+    // ===== Détection d'un aperçu intégré (iframe / visionneuse) qui bloque impression et téléchargement =====
+    function isEmbedded() {
+        try { return window.self !== window.top; } catch (e) { return true; }
+    }
+
+    function showEmbedWarning() {
+        if (document.getElementById('embed-warning')) return;
+        const box = document.createElement('div');
+        box.id = 'embed-warning';
+        box.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:99999;display:flex;align-items:center;justify-content:center;padding:16px;';
+        box.innerHTML = '<div style="background:#fff;max-width:440px;width:100%;border-radius:16px;padding:20px;text-align:center;font-family:sans-serif;box-shadow:0 10px 40px rgba(0,0,0,.3)">'
+            + '<div style="font-size:34px">⚠️</div>'
+            + '<h3 style="font-weight:800;color:#9d174d;margin:6px 0 8px;font-size:17px">Impression / PDF bloqués dans cet aperçu</h3>'
+            + '<p style="font-size:13px;color:#334155;line-height:1.6;margin-bottom:12px">Cette page est ouverte dans un <strong>aperçu intégré</strong> qui interdit l\'impression et le téléchargement.<br>'
+            + '👉 <strong>Téléchargez le fichier HTML</strong> sur votre appareil, puis ouvrez-le directement dans <strong>Chrome</strong> ou <strong>Safari</strong> (ou « Ouvrir dans le navigateur »). Les boutons PDF et Imprimer fonctionneront alors normalement.</p>'
+            + '<button onclick="this.closest(\'#embed-warning\').remove()" style="background:#db2777;color:#fff;font-weight:700;padding:8px 22px;border-radius:10px;border:0;cursor:pointer">Compris</button>'
+            + '</div>';
+        document.body.appendChild(box);
+    }
+
+    function printGrid() {
+        if (isEmbedded()) showEmbedWarning();
+        try { window.print(); }
+        catch (e) { console.error(e); showEmbedWarning(); }
+    }
+
+    // ===== Téléchargement direct de la grille collective en PDF (A4) =====
+    // Chargement dynamique d'un script avec plusieurs sources de secours (CDN)
+    function loadScriptOnce(urls) {
+        return new Promise((resolve, reject) => {
+            let i = 0;
+            const tryNext = () => {
+                if (i >= urls.length) { reject(new Error('Chargement impossible : ' + urls[0])); return; }
+                const el = document.createElement('script');
+                el.src = urls[i++];
+                el.onload = () => resolve();
+                el.onerror = () => { el.remove(); tryNext(); };
+                document.head.appendChild(el);
+            };
+            tryNext();
+        });
+    }
+
+    async function ensurePdfLibs() {
+        if (typeof html2canvas === 'undefined') {
+            await loadScriptOnce([
+                'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js',
+                'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js',
+                'https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.min.js'
+            ]);
+        }
+        if (!window.jspdf) {
+            await loadScriptOnce([
+                'https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js',
+                'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',
+                'https://unpkg.com/jspdf@2.5.1/dist/jspdf.umd.min.js'
+            ]);
+        }
+        if (typeof html2canvas === 'undefined' || !window.jspdf) throw new Error('Bibliothèques PDF indisponibles');
+    }
+
+    function savePdfBlob(pdf, filename) {
+        const blob = pdf.output('blob');
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = filename; a.style.display = 'none';
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(() => { a.remove(); }, 500);
+        // Si le téléchargement est bloqué (navigateur intégré), ouvrir le PDF dans un nouvel onglet
+        setTimeout(() => { try { window.open(url, '_blank'); } catch (e) {} }, 1200);
+        setTimeout(() => URL.revokeObjectURL(url), 60000);
+    }
+
+    async function downloadGridPDF() {
+        const filterClass = document.getElementById('filter-class').value;
+        const rows = Array.from(document.querySelectorAll('#all-students-tbody tr')).filter(r => r.children.length > 3);
+        if (rows.length === 0) { showToast('⚠️ Aucun élève dans la grille à exporter.', 3500); return; }
+
+        const btn = document.getElementById('btn-download-pdf');
+        const oldLabel = btn.textContent;
+        btn.disabled = true; btn.textContent = '⏳ Génération du PDF...';
+
+        // Écran de chargement (masque la zone de rendu temporaire)
+        const overlay = document.createElement('div');
+        overlay.style.cssText = 'position:fixed;inset:0;background:#fff;z-index:99998;display:flex;align-items:center;justify-content:center;font:bold 18px sans-serif;color:#9d174d;';
+        overlay.textContent = '⏳ Génération du PDF en cours...';
+        document.body.appendChild(overlay);
+
+        const host = document.createElement('div');
+        host.style.cssText = 'position:absolute;left:0;top:0;width:1000px;background:#fff;z-index:99990;';
+        document.body.appendChild(host);
+
+        try {
+            await ensurePdfLibs();
+
+            const ROWS_PER_PAGE = 30;
+            const area = document.getElementById('pdf-printable-area');
+            const header = area.querySelector('.print-header-container');
+            const stats = area.querySelector('.stats-container');
+            const theadSrc = area.querySelector('thead');
+            const footer = area.querySelector('.note-footer');
+
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+            const pageW = 210, pageH = 297, margin = 6;
+            const maxW = pageW - margin * 2, maxH = pageH - margin * 2;
+            const pages = Math.ceil(rows.length / ROWS_PER_PAGE);
+
+            for (let p = 0; p < pages; p++) {
+                const page = document.createElement('div');
+                page.style.cssText = 'width:1000px;padding:14px 16px;background:#fff;box-sizing:border-box;';
+
+                if (header) page.appendChild(header.cloneNode(true));
+                if (stats) page.appendChild(stats.cloneNode(true));
+
+                const wrap = document.createElement('div');
+                wrap.className = 'watermark-grid';
+                const table = document.createElement('table');
+                table.className = 'grid-table text-xs md:text-sm';
+                table.style.cssText = 'width:auto;margin:0 auto;';
+                table.appendChild(theadSrc.cloneNode(true));
+                const tb = document.createElement('tbody');
+                rows.slice(p * ROWS_PER_PAGE, (p + 1) * ROWS_PER_PAGE).forEach(r => tb.appendChild(r.cloneNode(true)));
+                table.appendChild(tb);
+                wrap.appendChild(table);
+                page.appendChild(wrap);
+
+                if (p === pages - 1 && footer) page.appendChild(footer.cloneNode(true));
+
+                // Retirer les éléments non imprimables (colonne Actions, boutons...)
+                page.querySelectorAll('.no-print').forEach(el => el.remove());
+                host.innerHTML = '';
+                host.appendChild(page);
+
+                // Laisser le navigateur appliquer les styles avant la capture
+                await new Promise(r => setTimeout(r, 80));
+
+                const canvas = await html2canvas(page, {
+                    scale: 2, backgroundColor: '#ffffff', useCORS: true, logging: false,
+                    scrollX: 0, scrollY: 0, windowWidth: 1000
+                });
+                const ratio = Math.min(maxW / canvas.width, maxH / canvas.height);
+                const w = canvas.width * ratio, h = canvas.height * ratio;
+                if (p > 0) pdf.addPage();
+                pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', (pageW - w) / 2, margin, w, h);
+            }
+
+            const suffix = filterClass === 'ALL' ? 'Toutes_classes' : filterClass.replace(/[^\w-]+/g, '_');
+            savePdfBlob(pdf, 'Grille_Post_Test_Francais_2026_' + suffix + '.pdf');
+            showToast('✅ PDF généré avec succès.', 3000);
+            if (isEmbedded()) setTimeout(showEmbedWarning, 1500);
+        } catch (err) {
+            console.error('Erreur PDF :', err);
+            showToast('❌ Échec du PDF (' + (err && err.message ? err.message : 'erreur') + '). Ouverture de l\'impression : choisissez « Enregistrer au format PDF ».', 6000);
+            setTimeout(printGrid, 900);
+        } finally {
+            host.remove();
+            overlay.remove();
+            btn.disabled = false; btn.textContent = oldLabel;
+        }
     }
 
     function renderScoreBadge(val) {
