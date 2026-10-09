@@ -318,13 +318,19 @@
                 <button id="start-timer-btn" onclick="toggleTimer()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-lg text-sm transition">
                     ▶ Démarrer le Chrono (60s)
                 </button>
-                <button onclick="resetTimer()" class="bg-pink-600 hover:bg-pink-700 text-white font-bold px-3 py-2 rounded-lg text-sm transition">
+                <button id="end-timer-btn" onclick="endTimerManual()" class="bg-rose-600 hover:bg-rose-700 text-white font-bold px-3 py-2 rounded-lg text-sm transition">
+                    ⏹ Terminer le Chrono
+                </button>
+                <button id="reset-timer-btn" onclick="resetTimer()" class="bg-pink-600 hover:bg-pink-700 text-white font-bold px-3 py-2 rounded-lg text-sm transition">
                     Réinitialiser
                 </button>
             </div>
             <div class="flex items-center gap-2">
                 <span class="text-xs font-semibold text-pink-800">Temps écoulé :</span>
                 <div id="timer" class="text-3xl font-black text-pink-900 min-w-[60px] text-center">60</div>
+            </div>
+            <div id="timer-lock-msg" class="basis-full text-xs font-bold p-2 rounded-lg border bg-amber-50 border-amber-300 text-amber-800">
+                🔒 Le positionnement de l'élève sera possible uniquement après la fin du chrono.
             </div>
         </div>
 
@@ -369,7 +375,7 @@
             <button onclick="goBackStage()" class="bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-5 rounded-xl shadow transition text-base">
                 ⬅ Étape Précédente
             </button>
-            <button onclick="processStageResult()" class="flex-1 bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 rounded-xl shadow transition text-lg">
+            <button id="btn-validate-stage" onclick="processStageResult()" class="flex-1 bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 rounded-xl shadow transition text-lg">
                 Valider et Passer à la Suite 🚀
             </button>
         </div>
@@ -552,6 +558,9 @@
     let timerInterval = null;
     let secondsLeft = 60;
     let isTimerRunning = false;
+    let timerStarted = false;
+    let timerFinished = false;
+    let toastTimeout = null;
 
     const STAGE_KEYS = ['L-PS', 'L-M', 'C-PS', 'L-PE', 'C-PE', 'L-P'];
 
@@ -564,11 +573,12 @@
         updateHeaderStudentCount();
     };
 
-    function showToast(msg) {
+    function showToast(msg, duration) {
         const toast = document.getElementById('toast-message');
         toast.textContent = msg;
         toast.classList.remove('hidden');
-        setTimeout(() => toast.classList.add('hidden'), 3000);
+        clearTimeout(toastTimeout);
+        toastTimeout = setTimeout(() => toast.classList.add('hidden'), duration || 3000);
     }
 
     function loadSchoolInfo() {
@@ -764,7 +774,7 @@
             stageTitle.textContent = "Étape 1 : Lecture de Phrases Simples (L-PS)";
             stageInstruction.innerHTML = "🎯 <strong>Consigne :</strong> Lis à voix haute les phrases suivantes.<br>• <strong>Seuil de validation :</strong> Réussir au moins <strong>14 mots sur 20</strong> (précision & prononciation).";
             textSelectorBox.classList.remove('hidden');
-            timerContainer.classList.remove('hidden');
+            timerContainer.classList.add('hidden');
             readingSection.classList.remove('hidden');
             compSection.classList.add('hidden');
             targetHint.textContent = "📌 Seuil NMCLM : 14/20 mots. Si l'élève valide (score 1) ➔ C-PS. Si non (score 0) ➔ L-M.";
@@ -776,7 +786,7 @@
             stageTitle.textContent = "Étape 2 : Lecture de Mots (L-M)";
             stageInstruction.innerHTML = "🎯 <strong>Consigne :</strong> Lis à voix haute les mots suivants.<br>• <strong>Seuil de validation :</strong> Réussir au moins <strong>7 mots sur 10</strong>.";
             textSelectorBox.classList.remove('hidden');
-            timerContainer.classList.remove('hidden');
+            timerContainer.classList.add('hidden');
             readingSection.classList.remove('hidden');
             compSection.classList.add('hidden');
             targetHint.textContent = "📌 Seuil NMCLM : 7/10 mots. Si non validé (0) ➔ Palier 1. Si validé (1) ➔ Palier 2.";
@@ -800,7 +810,7 @@
             stageTitle.textContent = "Étape 4 : Lecture de Phrases Enrichies (L-PE)";
             stageInstruction.innerHTML = "🎯 <strong>Consigne :</strong> Lis à voix haute les phrases suivantes.<br>• <strong>Seuil de validation :</strong> Réussir au moins <strong>24 mots sur 30</strong>.";
             textSelectorBox.classList.remove('hidden');
-            timerContainer.classList.remove('hidden');
+            timerContainer.classList.add('hidden');
             readingSection.classList.remove('hidden');
             compSection.classList.add('hidden');
             targetHint.textContent = "📌 Seuil NMCLM : 24/30 mots. Si non validé (0) ➔ Palier 3. Si validé (1) ➔ C-PE.";
@@ -822,7 +832,7 @@
 
         } else if (stageKey === 'L-P') {
             stageTitle.textContent = "Étape 6 : Lecture de Paragraphe (L-P)";
-            stageInstruction.innerHTML = "🎯 <strong>Consigne :</strong> Lis le paragraphe suivant en 1 minute (60s).<br>• <strong>Seuil :</strong> au moins <strong>60 mots sur 70</strong> en <strong>1 minute maximum</strong> (indicateur complémentaire, sans impact sur le positionnement).";
+            stageInstruction.innerHTML = "🎯 <strong>Consigne :</strong> Lis le paragraphe suivant en 1 minute (60s).<br>• <strong>Seuil :</strong> au moins <strong>60 mots sur 70</strong> en <strong>1 minute maximum</strong> (indicateur complémentaire, sans impact sur le positionnement).<br>⏱️ <strong>Important :</strong> le chrono doit être terminé (60 s écoulées ou bouton « Terminer ») avant de valider le positionnement de l'élève.";
             textSelectorBox.classList.add('hidden');
             timerContainer.classList.remove('hidden');
             readingSection.classList.remove('hidden');
@@ -831,6 +841,7 @@
 
             renderWordInteractive(OFFICIAL_DATABASE.L_P.text);
         }
+        updateTimerLockUI();
     }
 
     function setupSubTextOptions(dataArray, defaultIdx) {
@@ -936,6 +947,7 @@
     }
 
     function toggleTimer() {
+        if (timerFinished) return;
         if (isTimerRunning) {
             pauseTimer();
         } else {
@@ -944,8 +956,10 @@
     }
 
     function startTimer() {
+        if (timerFinished) return;
         const btn = document.getElementById('start-timer-btn');
         isTimerRunning = true;
+        timerStarted = true;
         btn.textContent = "⏸ Pause Chrono";
         btn.className = "bg-amber-600 hover:bg-amber-700 text-white font-bold px-4 py-2 rounded-lg text-sm transition";
 
@@ -953,9 +967,9 @@
             if (secondsLeft > 0) {
                 secondsLeft--;
                 document.getElementById('timer').textContent = secondsLeft;
+                if (secondsLeft === 0) finishTimer(true);
             } else {
-                pauseTimer();
-                showToast("⏰ Temps écoulé (60 secondes) !");
+                finishTimer(true);
             }
         }, 1000);
     }
@@ -968,20 +982,82 @@
         btn.className = "bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-lg text-sm transition";
     }
 
+    // Fin du chrono : automatique (0 s) ou manuelle (bouton Terminer)
+    function finishTimer(auto) {
+        clearInterval(timerInterval);
+        isTimerRunning = false;
+        timerFinished = true;
+        updateTimerLockUI();
+        showToast(auto ? "⏰ Temps écoulé (60 secondes) ! Vous pouvez maintenant valider." : "⏹ Chrono terminé. Vous pouvez maintenant valider.", 4000);
+    }
+
+    function endTimerManual() {
+        if (timerFinished) return;
+        if (!timerStarted) {
+            showToast("⚠️ Démarrez d'abord le chrono avant de le terminer.", 3500);
+            return;
+        }
+        finishTimer(false);
+    }
+
     function resetTimer() {
         clearInterval(timerInterval);
         isTimerRunning = false;
+        timerStarted = false;
+        timerFinished = false;
         secondsLeft = 60;
         document.getElementById('timer').textContent = "60";
-        const btn = document.getElementById('start-timer-btn');
-        if (btn) {
-            btn.textContent = "▶ Démarrer le Chrono (60s)";
-            btn.className = "bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-lg text-sm transition";
+        updateTimerLockUI();
+    }
+
+    // Met à jour boutons / message / bouton de validation selon l'état du chrono (étape L-P uniquement)
+    function updateTimerLockUI() {
+        const startBtn = document.getElementById('start-timer-btn');
+        const endBtn = document.getElementById('end-timer-btn');
+        const msg = document.getElementById('timer-lock-msg');
+        const validateBtn = document.getElementById('btn-validate-stage');
+        if (!startBtn) return;
+        const isLP = currentStudent && STAGE_KEYS[currentStageIndex] === 'L-P';
+
+        if (timerFinished) {
+            startBtn.textContent = "✔ Chrono terminé";
+            startBtn.className = "bg-slate-400 text-white font-bold px-4 py-2 rounded-lg text-sm cursor-not-allowed";
+            startBtn.disabled = true;
+            endBtn.disabled = true;
+            endBtn.className = "bg-slate-300 text-white font-bold px-3 py-2 rounded-lg text-sm cursor-not-allowed";
+            msg.className = "basis-full text-xs font-bold p-2 rounded-lg border bg-emerald-50 border-emerald-300 text-emerald-800";
+            msg.textContent = "✅ Chrono terminé : vous pouvez maintenant valider et positionner l'élève.";
+        } else {
+            startBtn.disabled = false;
+            endBtn.disabled = false;
+            if (!isTimerRunning) {
+                startBtn.textContent = timerStarted ? "▶ Reprendre" : "▶ Démarrer le Chrono (60s)";
+                startBtn.className = "bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-lg text-sm transition";
+            }
+            endBtn.className = "bg-rose-600 hover:bg-rose-700 text-white font-bold px-3 py-2 rounded-lg text-sm transition";
+            msg.className = "basis-full text-xs font-bold p-2 rounded-lg border bg-amber-50 border-amber-300 text-amber-800";
+            msg.textContent = "🔒 Le positionnement de l'élève sera possible uniquement après la fin du chrono.";
+        }
+
+        if (validateBtn) {
+            const locked = isLP && !timerFinished;
+            validateBtn.style.opacity = locked ? '0.55' : '1';
+            validateBtn.title = locked ? "Disponible après la fin du chrono" : "";
         }
     }
 
     function processStageResult() {
         const stageKey = STAGE_KEYS[currentStageIndex];
+
+        // Étape L-P : le positionnement n'est possible qu'après la fin du chrono
+        if (stageKey === 'L-P' && !timerFinished) {
+            showToast("⚠️ Attention : l'élève ne peut pas être positionné avant la fin du chrono ! Attendez la fin des 60 secondes ou cliquez sur « Terminer le Chrono ».", 5000);
+            const msg = document.getElementById('timer-lock-msg');
+            msg.className = "basis-full text-xs font-bold p-2 rounded-lg border bg-rose-50 border-rose-400 text-rose-700";
+            msg.textContent = "⛔ Positionnement bloqué : le chrono n'est pas encore terminé.";
+            document.getElementById('timer-container').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return;
+        }
         let passed = false;
 
         if (['L-PS', 'L-M', 'L-PE', 'L-P'].includes(stageKey)) {
