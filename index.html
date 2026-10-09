@@ -436,20 +436,19 @@
 
             <!-- Table Layout Conforming to Official Reference Image with Developer Watermark -->
             <div class="overflow-x-auto w-full watermark-grid">
-                <table class="grid-table text-xs md:text-sm w-full">
+                <table class="grid-table text-xs md:text-sm" style="width:auto;margin:0 auto;">
                     <thead>
                         <tr>
                             <th rowspan="2" style="width: 28px;">N°</th>
-                            <th rowspan="2" style="text-align: left; padding-left: 8px;">Nom de l'élève</th>
+                            <th rowspan="2" style="width: 190px;">Nom de l'élève</th>
                             <th rowspan="2" style="width: 70px;">Classe</th>
-                            <th rowspan="2" style="width: 90px;">Code Massar</th>
                             <th>Etape 1</th>
                             <th colspan="2">Etape 2</th>
                             <th>Etape 3</th>
                             <th>Etape 4</th>
                             <th>Etape 5</th>
                             <th rowspan="2" style="width: 60px;">Palier</th>
-                            <th rowspan="2" class="no-print" style="width: 35px;">Suppr.</th>
+                            <th rowspan="2" class="no-print" style="width: 60px;">Actions</th>
                         </tr>
                         <tr>
                             <th style="width: 50px;">L-PS</th>
@@ -497,6 +496,21 @@
                 <button onclick="closeClearModal()" class="bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold px-4 py-2 rounded-xl text-sm transition">
                     Annuler ✖
                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div id="edit-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-white p-5 rounded-2xl max-w-md w-full shadow-xl">
+            <h3 class="text-base font-bold text-pink-900 mb-1">✏️ Modifier les résultats de l'élève</h3>
+            <p id="edit-student-info" dir="rtl" class="text-sm font-semibold text-slate-700 mb-3"></p>
+            <div id="edit-fields" class="grid grid-cols-2 gap-2 mb-3"></div>
+            <p class="text-[11px] text-slate-500 mb-3">Le palier est recalculé automatiquement selon l'arbre de décision. Les étapes non atteintes passent en N/A.</p>
+            <div class="flex flex-wrap gap-2 justify-center">
+                <button onclick="saveEdit()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-xl text-sm">Enregistrer ✔</button>
+                <button onclick="redoTest()" class="bg-amber-500 hover:bg-amber-600 text-white font-bold px-4 py-2 rounded-xl text-sm">Refaire le test 🔄</button>
+                <button onclick="closeEditModal()" class="bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold px-4 py-2 rounded-xl text-sm">Annuler ✖</button>
             </div>
         </div>
     </div>
@@ -979,7 +993,7 @@
 
         if (currentStudent) {
             document.getElementById('latest-student-card').classList.remove('hidden');
-            document.getElementById('student-final-info').textContent = `N° ${currentStudent.rank} - ${currentStudent.name} | Classe: ${currentStudent.class} | Massar: ${currentStudent.code}`;
+            document.getElementById('student-final-info').textContent = `N° ${currentStudent.rank} - ${currentStudent.name} | Classe: ${currentStudent.class}`;
             
             const palierElem = document.getElementById('final-level');
             palierElem.textContent = `Palier ${palLabel(currentStudent)}`;
@@ -1020,9 +1034,8 @@
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td style="font-weight: bold;">${st.rank}</td>
-                <td dir="rtl" style="text-align: right; font-weight: 600; padding-right: 8px;">${st.name}</td>
+                <td dir="rtl" style="text-align: center; font-weight: 600; white-space: nowrap; padding: 6px 8px;">${st.name}</td>
                 <td style="font-weight: bold;">${st.class}</td>
-                <td style="font-size: 0.75rem;">${st.code || ''}</td>
                 <td>${renderScoreBadge(st.scores['L-PS'])}</td>
                 <td>${renderScoreBadge(st.scores['L-M'])}</td>
                 <td>${renderScoreBadge(st.scores['C-PS'])}</td>
@@ -1030,7 +1043,7 @@
                 <td>${renderScoreBadge(st.scores['C-PE'])}</td>
                 <td>${renderScoreBadge(st.scores['L-P'])}</td>
                 <td><strong class="text-pink-900 font-extrabold">Palier ${palLabel(st)}</strong></td>
-                <td class="no-print"><button onclick="deleteStudent('${st.id}')" class="text-rose-600 hover:text-rose-800 font-bold px-1">✕</button></td>`;
+                <td class="no-print" style="white-space: nowrap;"><button onclick="openEditModal('${st.id}')" title="Modifier" class="text-blue-600 hover:text-blue-800 font-bold px-1">✏️</button><button onclick="deleteStudent('${st.id}')" title="Supprimer" class="text-rose-600 hover:text-rose-800 font-bold px-1">✕</button></td>`;
             tbody.appendChild(tr);
         });
         document.getElementById('stat-total').textContent = filtered.length;
@@ -1060,6 +1073,68 @@
         document.getElementById('result-view').classList.add('hidden');
         document.getElementById('assessment-view').classList.add('hidden');
         document.getElementById('student-setup').classList.remove('hidden');
+    }
+
+    let editingId = null;
+
+    function openEditModal(id) {
+        const st = allStudents.find(x => x.id === id);
+        if (!st) return;
+        editingId = id;
+        document.getElementById('edit-student-info').textContent = `${st.rank} - ${st.name} (${st.class})`;
+        document.getElementById('edit-fields').innerHTML = STAGE_KEYS.map(k => {
+            const v = st.scores[k];
+            return `<label class="text-xs font-bold text-slate-700">${k}
+                <select id="edit-${k}" class="w-full mt-1 p-2 border border-pink-200 rounded-lg text-sm bg-white font-bold">
+                    <option value="N/A" ${v === 'N/A' ? 'selected' : ''}>N/A</option>
+                    <option value="0" ${v === 0 ? 'selected' : ''}>0</option>
+                    <option value="1" ${v === 1 ? 'selected' : ''}>1</option>
+                </select></label>`;
+        }).join('');
+        document.getElementById('edit-modal').classList.remove('hidden');
+    }
+
+    function closeEditModal() { document.getElementById('edit-modal').classList.add('hidden'); editingId = null; }
+
+    function saveEdit() {
+        const st = allStudents.find(x => x.id === editingId);
+        if (!st) return;
+        const g = {};
+        STAGE_KEYS.forEach(k => { const v = document.getElementById('edit-' + k).value; g[k] = v === 'N/A' ? 'N/A' : parseInt(v, 10); });
+        const sc = { 'L-PS': 'N/A', 'L-M': 'N/A', 'C-PS': 'N/A', 'L-PE': 'N/A', 'C-PE': 'N/A', 'L-P': 'N/A' };
+        const num = v => (v === 0 || v === 1) ? v : null;
+        if (num(g['L-PS']) === null) { showToast('⚠️ L-PS doit être 0 ou 1.'); return; }
+        sc['L-PS'] = g['L-PS'];
+        let p;
+        if (sc['L-PS'] === 0) {
+            if (num(g['L-M']) === null) { showToast('⚠️ L-M doit être 0 ou 1.'); return; }
+            sc['L-M'] = g['L-M']; p = g['L-M'] === 0 ? 1 : 2;
+        } else {
+            const need = ['C-PS', 'L-PE', 'C-PE'];
+            p = 4;
+            for (const k of need) {
+                if (num(g[k]) === null) { showToast(`⚠️ ${k} doit être 0 ou 1.`); return; }
+                sc[k] = g[k];
+                if (g[k] === 0) { p = (k === 'C-PS') ? 2 : 3; break; }
+            }
+            if (p === 4 && num(g['L-P']) !== null) sc['L-P'] = g['L-P'];
+        }
+        st.scores = sc; st.palier = p;
+        saveData(); closeEditModal(); renderAllStudentsTable(); populateStudents();
+        showToast('✔ Résultats modifiés.');
+    }
+
+    function redoTest() {
+        const st = allStudents.find(x => x.id === editingId);
+        if (!st) return;
+        closeEditModal();
+        currentStudent = JSON.parse(JSON.stringify(st));
+        currentStudent.scores = { 'L-PS': 'N/A', 'L-M': 'N/A', 'C-PS': 'N/A', 'L-PE': 'N/A', 'C-PE': 'N/A', 'L-P': 'N/A' };
+        currentStudent.palier = null;
+        currentStageIndex = 0;
+        document.getElementById('result-view').classList.add('hidden');
+        document.getElementById('assessment-view').classList.remove('hidden');
+        renderStage();
     }
 
     function openClearModal() {
@@ -1104,14 +1179,13 @@
         wsData.push(["Grille de notation : 0 = exercice non validé ; 1 = exercice validé ; N/A = exercice non administré"]);
         wsData.push([]);
 
-        wsData.push(["N°", "Nom de l'élève", "Classe", "Code Massar", "Etape 1 (L-PS)", "Etape 2 (L-M)", "Etape 2 (C-PS)", "Etape 3 (L-PE)", "Etape 4 (C-PE)", "Etape 5 (L-P)", "Palier Final"]);
+        wsData.push(["N°", "Nom de l'élève", "Classe", "Etape 1 (L-PS)", "Etape 2 (L-M)", "Etape 2 (C-PS)", "Etape 3 (L-PE)", "Etape 4 (C-PE)", "Etape 5 (L-P)", "Palier Final"]);
 
         filtered.slice().sort((a, b) => a.class.localeCompare(b.class) || a.rank - b.rank).forEach((st) => {
             const row = [
                 st.rank,
                 st.name,
                 st.class,
-                st.code || '',
                 st.scores['L-PS'] !== undefined ? st.scores['L-PS'] : 'N/A',
                 st.scores['L-M'] !== undefined ? st.scores['L-M'] : 'N/A',
                 st.scores['C-PS'] !== undefined ? st.scores['C-PS'] : 'N/A',
@@ -1131,7 +1205,7 @@
 
         const range = XLSX.utils.decode_range(ws['!ref']);
         for (let R = 5; R <= range.e.r; ++R) {
-            const cellAddress = XLSX.utils.encode_cell({ r: R, c: 3 });
+            const cellAddress = XLSX.utils.encode_cell({ r: R, c: 2 });
             if (ws[cellAddress]) {
                 ws[cellAddress].t = 's';
                 ws[cellAddress].z = '@';
@@ -1142,7 +1216,6 @@
             { wch: 6 },
             { wch: 32 },
             { wch: 12 },
-            { wch: 14 },
             { wch: 14 },
             { wch: 14 },
             { wch: 14 },
