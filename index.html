@@ -274,6 +274,18 @@
             </div>
         </div>
         <p id="class-progress" class="text-xs text-slate-600 font-semibold mt-3"></p>
+        <button onclick="toggleAddForm()" class="mt-2 text-sm font-bold text-pink-700 hover:text-pink-900 underline">➕ Élève absent de la liste ? Ajouter manuellement</button>
+        <div id="add-form" class="hidden mt-3 bg-pink-50 border border-pink-200 rounded-xl p-3">
+            <div class="grid grid-cols-1 sm:grid-cols-4 gap-2">
+                <div><label class="block text-[11px] font-semibold text-slate-700 mb-1">N° (ر.ت)</label><input type="number" id="add-rank" min="1" class="w-full p-2 border border-pink-200 rounded-lg text-sm bg-white"></div>
+                <div class="sm:col-span-3"><label class="block text-[11px] font-semibold text-slate-700 mb-1">Nom et prénom</label><input type="text" id="add-name" dir="auto" class="w-full p-2 border border-pink-200 rounded-lg text-sm bg-white" placeholder="النسب الإسم"></div>
+            </div>
+            <p class="text-[11px] text-slate-500 mt-1">L'élève sera ajouté à la classe sélectionnée ci-dessus et sauvegardé sur cet appareil.</p>
+            <div class="flex gap-2 mt-2">
+                <button onclick="addManualStudent()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-lg text-sm">Ajouter ✔</button>
+                <button onclick="toggleAddForm()" class="bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold px-4 py-2 rounded-lg text-sm">Annuler</button>
+            </div>
+        </div>
         <button onclick="startAssessment()" class="w-full mt-4 bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 rounded-xl shadow-md transition text-lg flex items-center justify-center gap-2"><span>Démarrer le Post-test</span> 🚀</button>
     </div>
 
@@ -546,7 +558,9 @@
     window.onload = function() {
         loadSchoolInfo();
         loadStoredData();
+        loadCustomStudents();
         initClassSelect();
+        history.replaceState({ v: 'setup' }, '');
         updateHeaderStudentCount();
     };
 
@@ -615,6 +629,73 @@
         document.getElementById('plural-s').textContent = count > 1 ? 's' : '';
     }
 
+    const CUSTOM_KEY = 'raez_french_posttest_custom_students';
+    let navLock = false;
+
+    function loadCustomStudents() {
+        try {
+            const c = JSON.parse(localStorage.getItem(CUSTOM_KEY) || '{}');
+            Object.keys(c).forEach(cls => {
+                if (!STUDENTS[cls]) return;
+                c[cls].forEach(x => STUDENTS[cls].push(x));
+                STUDENTS[cls].sort((a, b) => a.n - b.n);
+            });
+        } catch (e) {}
+    }
+
+    function toggleAddForm() {
+        const f = document.getElementById('add-form');
+        f.classList.toggle('hidden');
+        if (!f.classList.contains('hidden')) {
+            const c = document.getElementById('student-class').value;
+            document.getElementById('add-rank').value = Math.max(0, ...STUDENTS[c].map(x => x.n)) + 1;
+            document.getElementById('add-name').value = '';
+        }
+    }
+
+    function addManualStudent() {
+        const c = document.getElementById('student-class').value;
+        const n = parseInt(document.getElementById('add-rank').value, 10);
+        const name = document.getElementById('add-name').value.trim().replace(/\s+/g, ' ');
+        if (!name || !n || n < 1) { showToast('⚠️ Saisir le N° et le nom de l\'élève.'); return; }
+        if (STUDENTS[c].some(x => x.n === n)) { showToast('⚠️ Ce N° existe déjà dans cette classe.'); return; }
+        const stu = { n: n, c: '', l: name, f: '', m: true };
+        STUDENTS[c].push(stu);
+        STUDENTS[c].sort((a, b) => a.n - b.n);
+        try {
+            const all = JSON.parse(localStorage.getItem(CUSTOM_KEY) || '{}');
+            (all[c] = all[c] || []).push(stu);
+            localStorage.setItem(CUSTOM_KEY, JSON.stringify(all));
+        } catch (e) {}
+        populateStudents();
+        document.getElementById('student-pick').value = String(STUDENTS[c].indexOf(stu));
+        document.getElementById('add-form').classList.add('hidden');
+        showToast('✔ Élève ajouté.');
+    }
+
+    function pushNav(state) { if (!navLock) history.pushState(state, ''); }
+
+    window.addEventListener('popstate', function(e) {
+        navLock = true;
+        const st = e.state || { v: 'setup' };
+        const show = id => ['student-setup', 'assessment-view', 'result-view'].forEach(x =>
+            document.getElementById(x).classList.toggle('hidden', x !== id));
+        if (st.v === 'test' && currentStudent) {
+            clearInterval(timerInterval);
+            currentStageIndex = st.s;
+            show('assessment-view');
+            renderStage();
+        } else if (st.v === 'results') {
+            show('result-view');
+            const card = document.getElementById('latest-student-card');
+            if (currentStudent && currentStudent.palier) displayResultsView(); else { card.classList.add('hidden'); renderAllStudentsTable(); }
+        } else {
+            show('student-setup');
+            populateStudents();
+        }
+        navLock = false;
+    });
+
     function initClassSelect() {
         const cls = Object.keys(STUDENTS);
         const sel = document.getElementById('student-class');
@@ -663,6 +744,7 @@
 
     function renderStage() {
         resetTimer();
+        pushNav({ v: 'test', s: currentStageIndex });
         const stageKey = STAGE_KEYS[currentStageIndex];
         
         document.getElementById('current-student-display').textContent = `N° ${currentStudent.rank} - ${currentStudent.name} (${currentStudent.class})`;
@@ -961,10 +1043,7 @@
     }
 
     function goBackStage() {
-        if (currentStageIndex > 0) {
-            currentStageIndex--;
-            renderStage();
-        }
+        if (currentStageIndex > 0) history.back();
     }
 
     function goNextStageManual() {
@@ -987,6 +1066,7 @@
     }
 
     function displayResultsView() {
+        pushNav({ v: 'results' });
         document.getElementById('assessment-view').classList.add('hidden');
         document.getElementById('student-setup').classList.add('hidden');
         document.getElementById('result-view').classList.remove('hidden');
@@ -1013,6 +1093,7 @@
     }
 
     function showCollectiveGridDirectly() {
+        pushNav({ v: 'results' });
         currentStudent = null;
         document.getElementById('student-setup').classList.add('hidden');
         document.getElementById('assessment-view').classList.add('hidden');
@@ -1068,6 +1149,7 @@
     }
 
     function resetForNewStudent() {
+        pushNav({ v: 'setup' });
         currentStudent = null;
         populateStudents();
         document.getElementById('result-view').classList.add('hidden');
