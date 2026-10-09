@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test de Positionnement - Langue Française (Collèges Pionniers 2026-2027)</title>
+    <title>Post-test - Langue Française (Collèges Pionniers 2026-2027)</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- SheetJS for Excel Export -->
@@ -249,7 +249,7 @@
         <div class="inline-block bg-amber-300 text-pink-950 font-extrabold px-3 py-1 rounded-full text-xs mb-2 shadow-sm">
             Version Officielle Conforme 2026-2027 🌸
         </div>
-        <h1 class="text-xl md:text-2xl font-bold mb-1">Programme de Remédiation Intensive - Test de Positionnement (Français)</h1>
+        <h1 class="text-xl md:text-2xl font-bold mb-1">Programme de Remédiation Intensive - Post-test (Français)</h1>
         <p class="text-pink-100 text-sm md:text-base">Année Scolaire 2026-2027 | Collèges Pionniers</p>
         <div id="main-header-school-info" class="mt-2 text-pink-200 font-semibold text-xs md:text-sm">🏫 Collège Pionnier : Saisir les informations ci-dessous</div>
         
@@ -261,27 +261,20 @@
     </header>
 
     <div id="student-setup" class="bg-white p-6 rounded-2xl shadow-md border-t-4 border-pink-600 mb-6">
-        <h2 class="text-lg font-bold text-pink-900 mb-4 border-b pb-2 flex items-center gap-2">
-            <span>👤</span> Identification du Nouvel Élève
-        </h2>
+        <h2 class="text-lg font-bold text-pink-900 mb-4 border-b pb-2 flex items-center gap-2"><span>👤</span> Choix de la classe et de l'élève</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-                <label for="student-name" class="block font-semibold text-slate-700 mb-1">Nom et Prénom de l'élève :</label>
-                <input type="text" id="student-name" class="w-full p-3 border-2 border-pink-100 rounded-xl focus:border-pink-500 outline-none transition text-sm" placeholder="Nom et Prénom...">
-                <div id="name-error" class="text-rose-600 text-xs mt-1 hidden">⚠️ Veuillez saisir le nom de l'élève avant de démarrer le test.</div>
+                <label for="student-class" class="block font-semibold text-slate-700 mb-1">1. Classe :</label>
+                <select id="student-class" onchange="populateStudents()" class="w-full p-3 border-2 border-pink-100 rounded-xl focus:border-pink-500 outline-none bg-white font-semibold text-slate-800 text-sm"></select>
             </div>
             <div>
-                <label for="student-class" class="block font-semibold text-slate-700 mb-1">Classe / Groupe :</label>
-                <select id="student-class" class="w-full p-3 border-2 border-pink-100 rounded-xl focus:border-pink-500 outline-none bg-white font-semibold text-slate-800 text-sm">
-                    <option value="1/1">1/1</option><option value="1/2">1/2</option><option value="1/3">1/3</option><option value="1/4">1/4</option><option value="1/5">1/5</option><option value="1/6">1/6</option><option value="1/7">1/7</option>
-                    <option value="2/1">2/1</option><option value="2/2">2/2</option><option value="2/3">2/3</option><option value="2/4">2/4</option><option value="2/5">2/5</option><option value="2/6">2/6</option><option value="2/7">2/7</option>
-                    <option value="3/1">3/1</option><option value="3/2">3/2</option><option value="3/3">3/3</option><option value="3/4">3/4</option><option value="3/5">3/5</option><option value="3/6">3/6</option><option value="3/7">3/7</option>
-                </select>
+                <label for="student-pick" class="block font-semibold text-slate-700 mb-1">2. Élève (N° de la liste officielle) :</label>
+                <select id="student-pick" onchange="document.getElementById('name-error').classList.add('hidden')" dir="rtl" class="w-full p-3 border-2 border-pink-100 rounded-xl focus:border-pink-500 outline-none bg-white font-semibold text-slate-800 text-sm"></select>
+                <div id="name-error" class="text-rose-600 text-xs mt-1 hidden">⚠️ Veuillez choisir un élève avant de démarrer le test.</div>
             </div>
         </div>
-        <button onclick="startAssessment()" class="w-full mt-6 bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 rounded-xl shadow-md transition text-lg flex items-center justify-center gap-2">
-            <span>Démarrer le Test de Positionnement</span> 🚀
-        </button>
+        <p id="class-progress" class="text-xs text-slate-600 font-semibold mt-3"></p>
+        <button onclick="startAssessment()" class="w-full mt-4 bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 rounded-xl shadow-md transition text-lg flex items-center justify-center gap-2"><span>Démarrer le Post-test</span> 🚀</button>
     </div>
 
     <div id="assessment-view" class="bg-white p-6 rounded-2xl shadow-md border-t-4 border-pink-600 mb-6 hidden">
@@ -393,7 +386,7 @@
 
         <div id="pdf-printable-area" class="print-area">
             <div class="print-header-container border-b-2 border-pink-600 pb-1 mb-2 text-center">
-                <h2 class="print-header-title text-base font-bold text-pink-900">Grille Collective de Positionnement - Langue Française (2026-2027)</h2>
+                <h2 class="print-header-title text-base font-bold text-pink-900">Grille de notation - Post-test Langue Française (2026-2027)</h2>
                 <p class="print-header-info text-xs font-semibold text-slate-700 mt-0.5">
                     Établissement : <span id="display-school">...................</span> | Direction : <span id="display-directorate">...................</span> | Enseignant(e) : <span id="display-teacher">...................</span> | Collèges Pionniers
                 </p>
@@ -432,12 +425,7 @@
                 <h3 class="font-bold text-pink-900 text-xs md:text-sm">Résultats collectifs des élèves enregistrés :</h3>
                 <div class="flex items-center gap-2">
                     <label for="filter-class" class="text-xs font-bold text-slate-700">Filtrer par Classe :</label>
-                    <select id="filter-class" onchange="renderAllStudentsTable()" class="p-1 border border-pink-200 rounded text-xs bg-white font-semibold text-slate-800">
-                        <option value="ALL">Toutes les classes</option>
-                        <option value="1/1">1/1</option><option value="1/2">1/2</option><option value="1/3">1/3</option><option value="1/4">1/4</option><option value="1/5">1/5</option><option value="1/6">1/6</option><option value="1/7">1/7</option>
-                        <option value="2/1">2/1</option><option value="2/2">2/2</option><option value="2/3">2/3</option><option value="2/4">2/4</option><option value="2/5">2/5</option><option value="2/6">2/6</option><option value="2/7">2/7</option>
-                        <option value="3/1">3/1</option><option value="3/2">3/2</option><option value="3/3">3/3</option><option value="3/4">3/4</option><option value="3/5">3/5</option><option value="3/6">3/6</option><option value="3/7">3/7</option>
-                    </select>
+                    <select id="filter-class" onchange="renderAllStudentsTable()" class="p-1 border border-pink-200 rounded text-xs bg-white font-semibold text-slate-800"><option value="ALL">Toutes les classes</option></select>
                 </div>
             </div>
             
@@ -454,6 +442,7 @@
                             <th rowspan="2" style="width: 28px;">N°</th>
                             <th rowspan="2" style="text-align: left; padding-left: 8px;">Nom de l'élève</th>
                             <th rowspan="2" style="width: 70px;">Classe</th>
+                            <th rowspan="2" style="width: 90px;">Code Massar</th>
                             <th>Etape 1</th>
                             <th colspan="2">Etape 2</th>
                             <th>Etape 3</th>
@@ -476,7 +465,7 @@
             </div>
 
             <p class="note-footer text-[10px] text-slate-500 mt-1.5 text-left">
-                * Légende : <strong>[1]</strong> Exercice validé | <strong>[0]</strong> Exercice non validé | <strong>N/A</strong> Exercice non administré à l'élève. L-P = Indicateur complémentaire.
+                * Légende : <strong>[1]</strong> Exercice validé | <strong>[0]</strong> Exercice non validé | <strong>N/A</strong> Exercice non administré à l'élève. L-P = indicateur complémentaire (L-P validé = Palier 4+). Erreur auto-corrigée immédiatement ou répétée dans le texte : non comptée.
             </p>
         </div>
 
@@ -522,164 +511,12 @@
 </div>
 
 <script>
-    const STORAGE_KEY = 'raez_french_official_2026_data';
+    const STORAGE_KEY = 'raez_french_posttest_2026_v2';
     const SCHOOL_INFO_KEY = 'raez_french_school_info_key';
 
     // Official French Database extracted strictly from Official Guide & Test Positionnement FR 2026
-    const OFFICIAL_DATABASE = {
-        L_PS: [
-            {
-                id: 1,
-                title: "Bloc 1: La cuisine en famille (20 mots)",
-                phrases: [
-                    "1. La maman prépare un bon repas.",
-                    "2. Les enfants mettent la table avec soin.",
-                    "3. Ils dégustent le poulet rôti avec plaisir."
-                ],
-                text: "La maman prépare un bon repas. Les enfants mettent la table avec soin. Ils dégustent le poulet rôti avec plaisir.",
-                questions: [
-                    { q: "1. Qui prépare le repas ?", a: "La maman." },
-                    { q: "2. Comment les enfants mettent-ils la table ?", a: "Avec soin." },
-                    { q: "3. Que dégustent les enfants avec plaisir ?", a: "Le poulet rôti." }
-                ]
-            },
-            {
-                id: 2,
-                title: "Bloc 2: Le boulanger (20 mots)",
-                phrases: [
-                    "1. Le boulanger prépare du bon pain frais.",
-                    "2. Son magasin accueille beaucoup de clients.",
-                    "3. Ils achètent des croissants chauds et dorés."
-                ],
-                text: "Le boulanger prépare du bon pain frais. Son magasin accueille beaucoup de clients. Ils achètent des croissants chauds et dorés.",
-                questions: [
-                    { q: "1. Que fait le boulanger ?", a: "Il prépare du bon pain frais." },
-                    { q: "2. Combien de clients son magasin accueille-t-il ?", a: "Beaucoup de clients." },
-                    { q: "3. Les clients achètent quoi au magasin ?", a: "Des croissants chauds et dorés." }
-                ]
-            },
-            {
-                id: 3,
-                title: "Bloc 3: Les pêcheurs (20 mots)",
-                phrases: [
-                    "1. Les pêcheurs portent leurs grands filets solides.",
-                    "2. Ils se dirigent lentement vers le port.",
-                    "3. Le bateau arrive au port le soir."
-                ],
-                text: "Les pêcheurs portent leurs grands filets solides. Ils se dirigent lentement vers le port. Le bateau arrive au port le soir.",
-                questions: [
-                    { q: "1. Que portent les pêcheurs ?", a: "Leurs grands filets solides." },
-                    { q: "2. Vers où se dirigent-ils ?", a: "Lentement vers le port." },
-                    { q: "3. Quand le bateau arrive-t-il au port ?", a: "Le soir." }
-                ]
-            },
-            {
-                id: 4,
-                title: "Bloc 4: Le fermier (20 mots)",
-                phrases: [
-                    "1. Le fermier commence son travail tôt.",
-                    "2. Il élève des vaches dans son champ.",
-                    "3. Sa fille donne à manger aux poules."
-                ],
-                text: "Le fermier commence son travail tôt. Il élève des vaches dans son champ. Sa fille donne à manger aux poules.",
-                questions: [
-                    { q: "1. Quand le fermier commence-t-il son travail ?", a: "Tôt." },
-                    { q: "2. Quels animaux élève-t-il dans son champ ?", a: "Des vaches." },
-                    { q: "3. À quels animaux sa fille donne-t-elle à manger ?", a: "Aux poules." }
-                ]
-            }
-        ],
-
-        L_M: [
-            {
-                id: 1,
-                title: "Liste A (Colonnes 1 et 2 - 10 mots)",
-                words: ["tendresse", "famille", "nez", "papier", "lunettes", "galette", "cendrillon", "assez", "cahier", "robinet"],
-                text: "tendresse famille nez papier lunettes galette cendrillon assez cahier robinet"
-            },
-            {
-                id: 2,
-                title: "Liste B (Colonnes 3 et 4 - 10 mots)",
-                words: ["terre", "fillette", "rentrez", "panier", "bouquet", "belle", "oreiller", "chez", "dernier", "gilet"],
-                text: "terre fillette rentrez panier bouquet belle oreiller chez dernier gilet"
-            }
-        ],
-
-        L_PE: [
-            {
-                id: 1,
-                title: "Bloc 1: Le berger et le troupeau (30 mots)",
-                phrases: [
-                    "1. Le jeune berger ramène du champ un troupeau de moutons fatigués.",
-                    "2. Les autres bergers attendent patiemment près de la bergerie.",
-                    "3. Ensemble, ils ramènent les moutons dans l'enclos avant la nuit."
-                ],
-                text: "Le jeune berger ramène du champ un troupeau de moutons fatigués. Les autres bergers attendent patiemment près de la bergerie. Ensemble, ils ramènent les moutons dans l'enclos avant la nuit.",
-                questions: [
-                    { q: "1. Qui ramène le troupeau du champ ?", a: "Le jeune berger." },
-                    { q: "2. Combien de troupeaux ramène-t-il du champ ?", a: "Un troupeau." },
-                    { q: "3. Où les bergers attendent-ils ?", a: "Près de la bergerie." },
-                    { q: "4. Que font les bergers ?", a: "Ils attendent / ramènent les moutons dans l'enclos." },
-                    { q: "5. Quand les bergers ramènent-ils les moutons dans l'enclos ?", a: "Avant la nuit." }
-                ]
-            },
-            {
-                id: 2,
-                title: "Bloc 2: La bibliothèque du quartier (30 mots)",
-                phrases: [
-                    "1. La bibliothécaire range des livres sur les longues étagères.",
-                    "2. Deux fillettes cherchent des histoires dans le coin des enfants.",
-                    "3. Une jeune maman emprunte deux albums à la bibliothèque du quartier."
-                ],
-                text: "La bibliothécaire range des livres sur les longues étagères. Deux fillettes cherchent des histoires dans le coin des enfants. Une jeune maman emprunte deux albums à la bibliothèque du quartier.",
-                questions: [
-                    { q: "1. Qui range les livres ?", a: "La bibliothécaire." },
-                    { q: "2. Où range-t-elle les livres ?", a: "Sur les longues étagères." },
-                    { q: "3. Comment sont les étagères ?", a: "Longues." },
-                    { q: "4. Qui cherche des histoires ?", a: "Deux fillettes." },
-                    { q: "5. Combien d'albums la jeune maman emprunte-t-elle ?", a: "Deux albums." }
-                ]
-            },
-            {
-                id: 3,
-                title: "Bloc 3: L'histoire de grand-père (30 mots)",
-                phrases: [
-                    "1. Grand-père raconte une belle histoire à toute la famille réunie.",
-                    "2. Les enfants écoutent avec attention leur grand-père raconter une histoire.",
-                    "3. Tous les enfants s'endorment paisiblement après ce moment de tendresse."
-                ],
-                text: "Grand-père raconte une belle histoire à toute la famille réunie. Les enfants écoutent avec attention leur grand-père raconter une histoire. Tous les enfants s'endorment paisiblement après ce moment de tendresse.",
-                questions: [
-                    { q: "1. Qui raconte l'histoire ?", a: "Grand-père." },
-                    { q: "2. Que raconte grand-père ?", a: "Une belle histoire." },
-                    { q: "3. À qui raconte-t-il l'histoire ?", a: "À toute la famille réunie." },
-                    { q: "4. Comment les enfants écoutent-ils ?", a: "Avec attention." },
-                    { q: "5. Quand les enfants s'endorment-ils ?", a: "Après ce moment de tendresse." }
-                ]
-            },
-            {
-                id: 4,
-                title: "Bloc 4: Une journée au grand parc (30 mots)",
-                phrases: [
-                    "1. Les enfants courent joyeusement dans le grand parc.",
-                    "2. Le gardien est assis sur un banc et regarde les enfants attentivement.",
-                    "3. Ils grimpent courageusement tout en haut du grand toboggan coloré."
-                ],
-                text: "Les enfants courent joyeusement dans le grand parc. Le gardien est assis sur un banc et regarde les enfants attentivement. Ils grimpent courageusement tout en haut du grand toboggan coloré.",
-                questions: [
-                    { q: "1. Où courent les enfants ?", a: "Dans le grand parc." },
-                    { q: "2. Comment est le parc ?", a: "Grand." },
-                    { q: "3. Qui observe les enfants ?", a: "Le gardien." },
-                    { q: "4. Où est assis le gardien ?", a: "Sur un banc." },
-                    { q: "5. Comment est le toboggan ?", a: "Grand et coloré." }
-                ]
-            }
-        ],
-
-        L_P: {
-            text: "Ce dimanche, les enfants passent une belle journée au parc. Le soleil brille doucement et les oiseaux chantent dans les arbres. Ils jouent au ballon et partagent un pique-nique sur l'herbe. Ensuite, ils observent les canards près de l'étang. En fin d'après-midi, chacun rentre chez lui heureux d'avoir passé un bon moment dans ce lieu verdoyant et paisible. Le soir, ils s'endorment tôt pour être en forme le lendemain à l'école."
-        }
-    };
+    const OFFICIAL_DATABASE = {"L_PS": [{"id": 1, "title": "Bloc 1 : Le repas (20 mots)", "phrases": ["1. Le grand-père prépare un bon repas.", "2. Les enfants préparent la table avec soin.", "3. Ils partagent le dessert délicieux avec joie."], "text": "Le grand-père prépare un bon repas. Les enfants préparent la table avec soin. Ils partagent le dessert délicieux avec joie.", "questions": [{"q": "1. Qui prépare le repas ?", "a": "Le grand-père."}, {"q": "2. Comment les enfants préparent-ils la table ?", "a": "Avec soin."}, {"q": "3. Que partagent les enfants ?", "a": "Le dessert délicieux."}]}, {"id": 2, "title": "Bloc 2 : Le boulanger (20 mots)", "phrases": ["1. Le boulanger prépare de très bons gâteaux.", "2. Sa boulangerie reçoit beaucoup de clients.", "3. Ils achètent des croissants dorés et croustillants."], "text": "Le boulanger prépare de très bons gâteaux. Sa boulangerie reçoit beaucoup de clients. Ils achètent des croissants dorés et croustillants.", "questions": [{"q": "1. Que fait le boulanger ?", "a": "Il prépare de très bons gâteaux."}, {"q": "2. Combien de clients sa boulangerie reçoit-elle ?", "a": "Beaucoup de clients."}, {"q": "3. Les clients achètent quoi à la boulangerie ?", "a": "Des croissants dorés et croustillants."}]}, {"id": 3, "title": "Bloc 3 : Les pêcheurs (20 mots)", "phrases": ["1. Les pêcheurs portent des filets de pêche.", "2. Ils marchent lentement vers le rivage.", "3. Le voilier quitte le port le matin."], "text": "Les pêcheurs portent des filets de pêche. Ils marchent lentement vers le rivage. Le voilier quitte le port le matin.", "questions": [{"q": "1. Que portent les pêcheurs ?", "a": "Des filets de pêche."}, {"q": "2. Vers où marchent-ils ?", "a": "Vers le rivage."}, {"q": "3. Quand le voilier quitte-t-il le port ?", "a": "Le matin."}]}, {"id": 4, "title": "Bloc 4 : Le paysan (20 mots)", "phrases": ["1. Le paysan commence tôt son travail.", "2. Il plante des arbres dans son jardin.", "3. Sa fille donne à manger aux lapins."], "text": "Le paysan commence tôt son travail. Il plante des arbres dans son jardin. Sa fille donne à manger aux lapins.", "questions": [{"q": "1. Quand le paysan commence-t-il son travail ?", "a": "Tôt."}, {"q": "2. Que plante-t-il dans son jardin ?", "a": "Des arbres."}, {"q": "3. À qui sa fille donne-t-elle à manger ?", "a": "Aux lapins."}]}], "L_M": [{"id": 1, "title": "Colonnes 1 et 2 (10 mots)", "words": ["belle", "cendrillon", "rentrez", "panier", "robinet", "galette", "oreiller", "nez", "papier", "bouquet"], "text": "belle cendrillon rentrez panier robinet galette oreiller nez papier bouquet"}, {"id": 2, "title": "Colonnes 3 et 4 (10 mots)", "words": ["tendresse", "famille", "assez", "cahier", "gilet", "terre", "fillette", "chez", "dernier", "lunettes"], "text": "tendresse famille assez cahier gilet terre fillette chez dernier lunettes"}], "L_PE": [{"id": 1, "title": "Bloc 1 : Le vieux marin (30 mots)", "phrases": ["1. Le vieux marin range soigneusement les filets sur le grand bateau.", "2. Les autres pêcheurs préparent activement leurs cannes à pêche.", "3. Ensemble, ils partent de bonne heure en haute mer."], "text": "Le vieux marin range soigneusement les filets sur le grand bateau. Les autres pêcheurs préparent activement leurs cannes à pêche. Ensemble, ils partent de bonne heure en haute mer.", "questions": [{"q": "1. Qui range les filets ?", "a": "Le vieux marin."}, {"q": "2. Où range-t-il les filets ?", "a": "Sur le grand bateau."}, {"q": "3. Que préparent les autres pêcheurs ?", "a": "Leurs cannes à pêche."}, {"q": "4. Quand partent-ils en haute mer ?", "a": "De bonne heure."}, {"q": "5. Où partent-ils de bonne heure ?", "a": "En haute mer."}]}, {"id": 2, "title": "Bloc 2 : La maîtresse et les albums (30 mots)", "phrases": ["1. La maîtresse range des albums illustrés dans le coin lecture.", "2. Trois élèves cherchent un nouveau livre dans la bibliothèque.", "3. Une jeune éducatrice emprunte plusieurs albums à la bibliothèque du village."], "text": "La maîtresse range des albums illustrés dans le coin lecture. Trois élèves cherchent un nouveau livre dans la bibliothèque. Une jeune éducatrice emprunte plusieurs albums à la bibliothèque du village.", "questions": [{"q": "1. Qui range les albums ?", "a": "La maîtresse."}, {"q": "2. Où range-t-elle les albums ?", "a": "Dans le coin lecture."}, {"q": "3. Combien d'élèves cherchent un nouveau livre ?", "a": "Trois élèves."}, {"q": "4. Où cherchent-ils le livre ?", "a": "Dans la bibliothèque."}, {"q": "5. Combien d'albums l'éducatrice emprunte-t-elle ?", "a": "Plusieurs albums."}]}, {"id": 3, "title": "Bloc 3 : Grand-mère raconte (30 mots)", "phrases": ["1. Grand-mère raconte une belle histoire à toute la famille réunie.", "2. Les enfants écoutent avec attention leur grand-mère raconter une histoire.", "3. Tous les enfants s'endorment paisiblement après ce doux moment partagé."], "text": "Grand-mère raconte une belle histoire à toute la famille réunie. Les enfants écoutent avec attention leur grand-mère raconter une histoire. Tous les enfants s'endorment paisiblement après ce doux moment partagé.", "questions": [{"q": "1. Qui raconte l'histoire ?", "a": "Grand-mère."}, {"q": "2. À qui raconte-t-elle l'histoire ?", "a": "À toute la famille réunie."}, {"q": "3. Comment les enfants écoutent-ils ?", "a": "Avec attention."}, {"q": "4. Quand les enfants s'endorment-ils ?", "a": "Après ce doux moment partagé."}, {"q": "5. Comment s'endorment-ils ?", "a": "Paisiblement."}]}, {"id": 4, "title": "Bloc 4 : Les élèves dans la cour (30 mots)", "phrases": ["1. Les élèves jouent joyeusement dans la grande cour.", "2. Le surveillant est assis sur un banc et observe attentivement les élèves.", "3. Ils grimpent courageusement tout en haut du grand toboggan bleu."], "text": "Les élèves jouent joyeusement dans la grande cour. Le surveillant est assis sur un banc et observe attentivement les élèves. Ils grimpent courageusement tout en haut du grand toboggan bleu.", "questions": [{"q": "1. Où jouent les élèves ?", "a": "Dans la grande cour."}, {"q": "2. Comment jouent-ils ?", "a": "Joyeusement."}, {"q": "3. Qui observe les élèves ?", "a": "Le surveillant."}, {"q": "4. Où est assis le surveillant ?", "a": "Sur un banc."}, {"q": "5. De quelle couleur est le toboggan ?", "a": "Bleu."}]}], "L_P": {"text": "Ce samedi, les enfants passent une belle journée à la montagne. Le soleil brille fort et les oiseaux volent dans le ciel. Ils jouent à cache-cache et partagent un goûter. Ensuite, ils suivent des papillons entre les arbres. En fin d'après-midi, chacun rentre chez lui content d'avoir passé un bon moment dans ce lieu calme et agréable. Le soir, ils s'endorment très tôt pour être en pleine forme le lendemain."}};
+    const STUDENTS = {"1APIC-1": [{"n": 1, "c": "G183028290", "l": "بوالحوت", "f": "آدم"}, {"n": 2, "c": "D150069079", "l": "البوخاري", "f": "وليد"}, {"n": 3, "c": "D191090532", "l": "الأزمي", "f": "رميساء"}, {"n": 4, "c": "E179051580", "l": "اكنشيش", "f": "ايوب"}, {"n": 5, "c": "E206009010", "l": "العسكي", "f": "عائشة"}, {"n": 6, "c": "E209044543", "l": "محمد", "f": "ايت بعلي"}, {"n": 7, "c": "G189131602", "l": "بوسكري", "f": "جمال"}, {"n": 8, "c": "R170010789", "l": "وبده", "f": "فاطمة الزهراء"}, {"n": 9, "c": "R178018387", "l": "اوتوخين", "f": "امين"}, {"n": 10, "c": "R184025142", "l": "حاتم", "f": "بلال"}, {"n": 11, "c": "R187074461", "l": "حيدة", "f": "وليد"}, {"n": 12, "c": "R191046067", "l": "ابرشى", "f": "عبد الواحد"}, {"n": 13, "c": "R192075199", "l": "الفهمي", "f": "فاطمة الزهراء"}, {"n": 14, "c": "R193012606", "l": "المعطاوي", "f": "جمال"}, {"n": 15, "c": "R193075286", "l": "باهرا", "f": "عبد الخالق"}, {"n": 16, "c": "R194039638", "l": "بغاض", "f": "نعيمة"}, {"n": 17, "c": "R195006939", "l": "أوباري", "f": "يوسف"}, {"n": 18, "c": "R195049846", "l": "الريش", "f": "أسامة"}, {"n": 19, "c": "R195049853", "l": "سيعيطي", "f": "نور الدين"}, {"n": 20, "c": "R196012605", "l": "بلوقيد", "f": "زكرياء"}, {"n": 21, "c": "R196055498", "l": "بكاي", "f": "عائشة"}, {"n": 22, "c": "R196076707", "l": "الصالحي", "f": "هدى"}, {"n": 23, "c": "R197017815", "l": "الزاهري", "f": "فاطمة الزهراء"}, {"n": 24, "c": "R197043968", "l": "بومهدي", "f": "مروة"}, {"n": 25, "c": "R197075202", "l": "زماح", "f": "ندى"}, {"n": 26, "c": "R198075156", "l": "حناني", "f": "عمران"}, {"n": 27, "c": "R200022509", "l": "بنعودة", "f": "وليد"}, {"n": 28, "c": "R205009190", "l": "كوس", "f": "دعاء"}, {"n": 29, "c": "R200038471", "l": "مستطيع", "f": "ابتسام"}, {"n": 30, "c": "R201017849", "l": "أبوالعلاء", "f": "عبدالسلام"}, {"n": 31, "c": "R201035843", "l": "اموليد", "f": "خديجة"}, {"n": 32, "c": "R203041390", "l": "قاسمي", "f": "عثمان"}, {"n": 33, "c": "R205026959", "l": "الحابوس", "f": "خديجة"}, {"n": 34, "c": "R205027141", "l": "ايت ميمون", "f": "المهدي"}, {"n": 35, "c": "R206017858", "l": "الغاشي", "f": "عبد الإله"}, {"n": 36, "c": "R209036779", "l": "اوداد", "f": "حفصة"}, {"n": 37, "c": "D195116139", "l": "بنبوسلهام", "f": "فردوس"}], "1APIC-2": [{"n": 1, "c": "D157016514", "l": "فناني", "f": "سعيد"}, {"n": 2, "c": "E174022995", "l": "أزوهري", "f": "أنس"}, {"n": 3, "c": "E190028011", "l": "الضاوي", "f": "وئام"}, {"n": 4, "c": "F201098855", "l": "ضبش", "f": "ادم"}, {"n": 5, "c": "G166045416", "l": "العماري", "f": "كوثر"}, {"n": 6, "c": "R175043693", "l": "كونزار", "f": "عبد الصمد"}, {"n": 7, "c": "R179025403", "l": "فؤاد", "f": "فاطمة"}, {"n": 8, "c": "R179043786", "l": "شاكر", "f": "محمد"}, {"n": 9, "c": "R180025076", "l": "انجار", "f": "الحسن"}, {"n": 10, "c": "R182060274", "l": "بهتاني", "f": "عبد الرحيم"}, {"n": 11, "c": "R184014156", "l": "براكيش", "f": "عبد السميع"}, {"n": 12, "c": "R186023910", "l": "الزيتون", "f": "رضى"}, {"n": 13, "c": "R190017868", "l": "والطاس", "f": "عبد الله"}, {"n": 14, "c": "R190047517", "l": "فاتح", "f": "خديجة"}, {"n": 15, "c": "R191017892", "l": "ضريف", "f": "عبد الله"}, {"n": 16, "c": "R193075988", "l": "ويحيا", "f": "صفوان"}, {"n": 17, "c": "R193075989", "l": "ويحيا", "f": "مروى"}, {"n": 18, "c": "R197015518", "l": "وبدة", "f": "سناء"}, {"n": 19, "c": "R198043856", "l": "القاضي", "f": "حسن"}, {"n": 20, "c": "R200017468", "l": "الغزواني", "f": "صفاء"}, {"n": 21, "c": "R200037441", "l": "اجنكار", "f": "خالد"}, {"n": 22, "c": "R201023077", "l": "زروالي", "f": "ابراهيم"}, {"n": 23, "c": "R202019260", "l": "بريش", "f": "هدى"}, {"n": 24, "c": "R202020076", "l": "ازكاو", "f": "مريم ام العيد"}, {"n": 25, "c": "R202023144", "l": "باعزي", "f": "سلمى"}, {"n": 26, "c": "R204054289", "l": "العيدي", "f": "اسلام"}, {"n": 27, "c": "R205017852", "l": "الكجون", "f": "محمد أمين"}, {"n": 28, "c": "R206017857", "l": "افكر", "f": "هبة"}, {"n": 29, "c": "R206036816", "l": "الرجراجي", "f": "سارة"}, {"n": 30, "c": "R206037631", "l": "صابر", "f": "ياسمين"}, {"n": 31, "c": "R207034888", "l": "هاني", "f": "مريم"}, {"n": 32, "c": "R209019258", "l": "بورجى", "f": "حنان"}, {"n": 33, "c": "R209023123", "l": "اوزايد", "f": "اشرف"}, {"n": 34, "c": "R209047631", "l": "بوعدي", "f": "اسامة"}, {"n": 35, "c": "R203053612", "l": "صبيح", "f": "رحاب"}, {"n": 36, "c": "R208040480", "l": "ايت حمو", "f": "ريان"}, {"n": 37, "c": "B205005480", "l": "ديدي", "f": "اسماء"}], "1APIC-3": [{"n": 1, "c": "C184044320", "l": "البوشبتي", "f": "سيف الدين"}, {"n": 2, "c": "E205008430", "l": "الزمزومي", "f": "فردوس"}, {"n": 3, "c": "G204079162", "l": "لكريمي", "f": "مصعب"}, {"n": 4, "c": "K193007981", "l": "أيت يشو", "f": "وسيم"}, {"n": 5, "c": "R169032683", "l": "الفتيح", "f": "اية"}, {"n": 6, "c": "R172014019", "l": "فاتح", "f": "أمين"}, {"n": 7, "c": "R190012436", "l": "دكاير", "f": "ريان"}, {"n": 8, "c": "R192017823", "l": "الغاشي", "f": "عبد الله"}, {"n": 9, "c": "R192017826", "l": "البلغيتي", "f": "صلاح الدين"}, {"n": 10, "c": "R192017832", "l": "خويا", "f": "ياسين"}, {"n": 11, "c": "R193042510", "l": "بنان", "f": "سلطانة"}, {"n": 12, "c": "R193057550", "l": "غفاري", "f": "الياس"}, {"n": 13, "c": "R194017886", "l": "بوتباوشت", "f": "رضا"}, {"n": 14, "c": "R194048093", "l": "بحسين", "f": "سفيان"}, {"n": 15, "c": "R195017811", "l": "الهاشمي", "f": "هاجر"}, {"n": 16, "c": "R195017853", "l": "حقوق", "f": "زينب"}, {"n": 17, "c": "R196017890", "l": "رفيع", "f": "ريان"}, {"n": 18, "c": "R199043873", "l": "مناصف", "f": "الياس"}, {"n": 19, "c": "R200019257", "l": "ارسمو", "f": "كوثر"}, {"n": 20, "c": "R202023070", "l": "الانواري", "f": "فاطمة"}, {"n": 21, "c": "R203044014", "l": "كجوني", "f": "رضا"}, {"n": 22, "c": "R203044016", "l": "أماين", "f": "أيوب"}, {"n": 23, "c": "R204009191", "l": "دكاير", "f": "سارة"}, {"n": 24, "c": "R204017860", "l": "ادعلا", "f": "لطيفة"}, {"n": 25, "c": "R204021806", "l": "وايدير", "f": "يوسف"}, {"n": 26, "c": "R205032771", "l": "لعجيل", "f": "مريم"}, {"n": 27, "c": "R206010976", "l": "هموزال", "f": "خديجة"}, {"n": 28, "c": "R206017859", "l": "تاشفينت", "f": "الحسين"}, {"n": 29, "c": "R206058265", "l": "اوباك", "f": "أسماء"}, {"n": 30, "c": "R207023122", "l": "بولمنازل", "f": "خديجة"}, {"n": 31, "c": "R207034110", "l": "مجاهد", "f": "مريم"}, {"n": 32, "c": "R207034798", "l": "والحاج", "f": "فاطمة الزهراء"}, {"n": 33, "c": "R208017869", "l": "الماموني", "f": "ياسمين"}, {"n": 34, "c": "R208023090", "l": "حفيض", "f": "وليد"}, {"n": 35, "c": "R209023099", "l": "جوهري", "f": "محمد امين"}, {"n": 36, "c": "R209048153", "l": "مناوي", "f": "فردوس"}, {"n": 37, "c": "R209076445", "l": "الدراجي", "f": "آدم"}], "1APIC-4": [{"n": 1, "c": "R204032209", "l": "وحطي", "f": "معاد"}, {"n": 2, "c": "E183013576", "l": "بوتميت", "f": "عمر"}, {"n": 3, "c": "E204008621", "l": "الواحي", "f": "محسن"}, {"n": 4, "c": "G203085494", "l": "الدرواني", "f": "ياسين"}, {"n": 5, "c": "K182004870", "l": "البدري", "f": "ايمن"}, {"n": 6, "c": "R182002683", "l": "ايت القبا", "f": "اية"}, {"n": 7, "c": "R182002706", "l": "لكلاوي", "f": "ايوب"}, {"n": 8, "c": "R182023943", "l": "بنطالب", "f": "محمد امين"}, {"n": 9, "c": "R182047180", "l": "الساوري", "f": "مريم"}, {"n": 10, "c": "R189047718", "l": "لسام", "f": "المهدي"}, {"n": 11, "c": "R190017855", "l": "ايت شعيب", "f": "ريان"}, {"n": 12, "c": "R190017861", "l": "بنداب", "f": "دعاء"}, {"n": 13, "c": "R190058115", "l": "الشوفي", "f": "ريان"}, {"n": 14, "c": "R190075165", "l": "فؤاد", "f": "فاطمة"}, {"n": 15, "c": "R191048424", "l": "كوطان", "f": "ريان"}, {"n": 16, "c": "R192017878", "l": "اساوي", "f": "كريمة"}, {"n": 17, "c": "R194017885", "l": "امازيغ", "f": "نصر الدن"}, {"n": 18, "c": "R195006938", "l": "أوباري", "f": "يونس"}, {"n": 19, "c": "R195040742", "l": "الطالبي", "f": "رانيا"}, {"n": 20, "c": "R195075155", "l": "جلال", "f": "يحيى"}, {"n": 21, "c": "R197040204", "l": "الواحي", "f": "عبد العالي"}, {"n": 22, "c": "R197047980", "l": "دومية", "f": "امان الله"}, {"n": 23, "c": "R197075198", "l": "بوعلاكا", "f": "أيوب"}, {"n": 24, "c": "R200036899", "l": "الكارح", "f": "كوثر"}, {"n": 25, "c": "R200041379", "l": "اكدان", "f": "محمد"}, {"n": 26, "c": "R200061551", "l": "بوصبون", "f": "رانيا"}, {"n": 27, "c": "R201023059", "l": "رابح", "f": "أنور"}, {"n": 28, "c": "R201051555", "l": "اجوان", "f": "نهال"}, {"n": 29, "c": "R202023076", "l": "العابيدي", "f": "محمد"}, {"n": 30, "c": "R202031297", "l": "اموزك", "f": "هاجر"}, {"n": 31, "c": "R203023074", "l": "مرغاد", "f": "براء"}, {"n": 32, "c": "R204017867", "l": "امغار", "f": "لبنى"}, {"n": 33, "c": "R205034834", "l": "اوعلا", "f": "حكيمة"}, {"n": 34, "c": "R206017452", "l": "اوماست", "f": "الياس"}, {"n": 35, "c": "R208023132", "l": "ابودرار", "f": "آدم"}, {"n": 36, "c": "R209042138", "l": "أبوغي", "f": "سعيدة"}], "1APIC-5": [{"n": 1, "c": "R185048515", "l": "بوتباوشت", "f": "أيوب"}, {"n": 2, "c": "A192013504", "l": "النادي", "f": "غزال"}, {"n": 3, "c": "D137850934", "l": "اموش", "f": "فاطمة"}, {"n": 4, "c": "D182136709", "l": "العثماني", "f": "هبة"}, {"n": 5, "c": "D207114818", "l": "تزي", "f": "مروان"}, {"n": 6, "c": "E195048578", "l": "منوش", "f": "محمد"}, {"n": 7, "c": "E198052149", "l": "اقشى", "f": "مراد"}, {"n": 8, "c": "E200020569", "l": "ايت عيسى", "f": "فرح"}, {"n": 9, "c": "J192009843", "l": "أيت منصور", "f": "وليد"}, {"n": 10, "c": "K207014754", "l": "ياسمين", "f": "أملوك"}, {"n": 11, "c": "R162042060", "l": "أوبايل", "f": "عبدالرحيم"}, {"n": 12, "c": "R176016831", "l": "أولهينت", "f": "معاد"}, {"n": 13, "c": "R178069673", "l": "بهليل", "f": "هشام"}, {"n": 14, "c": "R182002704", "l": "بوفوس", "f": "شيماء"}, {"n": 15, "c": "R187020059", "l": "الهاشمي", "f": "انور"}, {"n": 16, "c": "R187023915", "l": "ايت الجيلالي", "f": "امين"}, {"n": 17, "c": "R190075164", "l": "بلحاج", "f": "فاطمة الزهراء"}, {"n": 18, "c": "R191054597", "l": "العيادي", "f": "امين"}, {"n": 19, "c": "R191062281", "l": "كازو", "f": "هاجر"}, {"n": 20, "c": "R194075186", "l": "شغوغ", "f": "سلمى"}, {"n": 21, "c": "R196012518", "l": "الطالبي", "f": "فاطمة"}, {"n": 22, "c": "R200032628", "l": "اوحميني", "f": "ريان"}, {"n": 23, "c": "R201017473", "l": "ابوري", "f": "محمد"}, {"n": 24, "c": "R201023109", "l": "المالكي", "f": "وليد"}, {"n": 25, "c": "R202040059", "l": "برهاين", "f": "معاد"}, {"n": 26, "c": "R205009658", "l": "حميدي", "f": "أمين"}, {"n": 27, "c": "R205017855", "l": "افكر", "f": "عبد الصمد"}, {"n": 28, "c": "R205022337", "l": "لكلاوي", "f": "يوسف"}, {"n": 29, "c": "R205052213", "l": "الجيد", "f": "حفصة"}, {"n": 30, "c": "R206041612", "l": "الاندلسي", "f": "يسرى"}, {"n": 31, "c": "R207023100", "l": "بداوي", "f": "ياسمين"}, {"n": 32, "c": "R207062949", "l": "ابوالمال", "f": "امينة"}, {"n": 33, "c": "R209023084", "l": "الاندلسي", "f": "يوسف"}, {"n": 34, "c": "R209027140", "l": "الزيات", "f": "ملاك"}, {"n": 35, "c": "R209052200", "l": "ابضار", "f": "محمد امين"}, {"n": 36, "c": "R195012512", "l": "عبوز", "f": "مروى"}, {"n": 37, "c": "R208010977", "l": "المسعودي", "f": "معاذ"}], "1APIC-6": [{"n": 1, "c": "C201069347", "l": "عيادش", "f": "خولة"}, {"n": 2, "c": "E184016536", "l": "أبرشى", "f": "محجوبة"}, {"n": 3, "c": "E188063927", "l": "الناصري", "f": "عبد الهادي"}, {"n": 4, "c": "E196063316", "l": "جلال الدين", "f": "مروان"}, {"n": 5, "c": "E208037650", "l": "عيسوي", "f": "ادم"}, {"n": 6, "c": "R163000046", "l": "بورحيم", "f": "محمد"}, {"n": 7, "c": "R163042215", "l": "اونجار", "f": "نسيمة"}, {"n": 8, "c": "R180048954", "l": "الكزار", "f": "نهيلة"}, {"n": 9, "c": "R187011396", "l": "بورحيم", "f": "وليد"}, {"n": 10, "c": "R190049450", "l": "فناني", "f": "زكرياء"}, {"n": 11, "c": "R190075182", "l": "أومليل", "f": "حفصة"}, {"n": 12, "c": "R192006967", "l": "الكاري", "f": "محمدأمين"}, {"n": 13, "c": "R194017888", "l": "سليماني", "f": "وداد"}, {"n": 14, "c": "R197017814", "l": "المرابطي", "f": "اشرف"}, {"n": 15, "c": "R197075201", "l": "الحنين", "f": "رضا"}, {"n": 16, "c": "R198017856", "l": "صابر", "f": "بشرى"}, {"n": 17, "c": "R199017857", "l": "بوعلاكا", "f": "يوسف"}, {"n": 18, "c": "R200010458", "l": "بوبريك", "f": "هشام"}, {"n": 19, "c": "R200017471", "l": "ايت تزي", "f": "سليمان"}, {"n": 20, "c": "R200036795", "l": "صبري", "f": "مروان"}, {"n": 21, "c": "R201017851", "l": "ايت اومعل", "f": "عمر"}, {"n": 22, "c": "R201023108", "l": "الاشقر", "f": "اخلاص"}, {"n": 23, "c": "R201023111", "l": "حباد", "f": "نجوى"}, {"n": 24, "c": "R204017861", "l": "أزرموح", "f": "سلمى"}, {"n": 25, "c": "R204036833", "l": "اوعلا", "f": "فاطمة الزهراء"}, {"n": 26, "c": "R205017854", "l": "اكدان", "f": "شيماء"}, {"n": 27, "c": "R205025659", "l": "ايت الطالب همو", "f": "يوسف"}, {"n": 28, "c": "R206046163", "l": "لعبوبي", "f": "آية"}, {"n": 29, "c": "R208019256", "l": "ربيع", "f": "يوسف"}, {"n": 30, "c": "R208023120", "l": "وعبلطين", "f": "عبد الواحد"}, {"n": 31, "c": "R209032746", "l": "زوبير", "f": "جهينة"}, {"n": 32, "c": "R209038060", "l": "فتاح", "f": "عبد الواحد"}, {"n": 33, "c": "R209052202", "l": "بحسيس", "f": "حسناء"}, {"n": 34, "c": "R209053441", "l": "المرابط", "f": "عبدالإله"}], "2APIC-1": [{"n": 1, "c": "R177036243", "l": "حنكور", "f": "زكرياء"}, {"n": 2, "c": "R197012589", "l": "خير", "f": "أنس"}, {"n": 3, "c": "D198022883", "l": "أمخلوف", "f": "محمد أنير"}, {"n": 4, "c": "E168019116", "l": "العلجي", "f": "يوسف"}, {"n": 5, "c": "E178036261", "l": "ايت يطو", "f": "عبد الهادي"}, {"n": 6, "c": "E191059631", "l": "بومهدي", "f": "أنوار"}, {"n": 7, "c": "E197031150", "l": "امكراد", "f": "اميرة"}, {"n": 8, "c": "G181031294", "l": "حياة", "f": "مران"}, {"n": 9, "c": "G196019923", "l": "ابن الفاسي", "f": "نهيلة"}, {"n": 10, "c": "J190005765", "l": "سمراوي", "f": "سناء"}, {"n": 11, "c": "L174002028", "l": "المخلوفي", "f": "مروان"}, {"n": 12, "c": "M155038585", "l": "اساكو", "f": "ادم"}, {"n": 13, "c": "R162032688", "l": "ناصف", "f": "ياسين"}, {"n": 14, "c": "R167013136", "l": "أيت لحسن", "f": "ليلى"}, {"n": 15, "c": "R172014548", "l": "ايت تزي", "f": "امينة"}, {"n": 16, "c": "R173018462", "l": "لوكيري", "f": "مروة"}, {"n": 17, "c": "R176018560", "l": "افكر", "f": "اروى"}, {"n": 18, "c": "R180048246", "l": "الشاوني", "f": "غزلان"}, {"n": 19, "c": "R182002668", "l": "البوشواري", "f": "جواد"}, {"n": 20, "c": "R182002681", "l": "علاوي", "f": "نبيل"}, {"n": 21, "c": "R182003844", "l": "ايوب", "f": "محمد امين"}, {"n": 22, "c": "R183024036", "l": "جودير", "f": "ياسين"}, {"n": 23, "c": "R185010630", "l": "اجروض", "f": "محمد"}, {"n": 24, "c": "R185069289", "l": "آيت مزر", "f": "محمد"}, {"n": 25, "c": "R188003856", "l": "احضاضور", "f": "رشيد"}, {"n": 26, "c": "R189014162", "l": "زهنين", "f": "احمد"}, {"n": 27, "c": "R192017833", "l": "زماح", "f": "رضى"}, {"n": 28, "c": "R193012043", "l": "أعروي", "f": "إبتسام"}, {"n": 29, "c": "R193012559", "l": "الباوش", "f": "وسيمة"}, {"n": 30, "c": "R193017838", "l": "ابري", "f": "ياسمين"}, {"n": 31, "c": "R193017847", "l": "الداودي", "f": "سومية"}, {"n": 32, "c": "R194012601", "l": "مادي", "f": "نور الدين"}, {"n": 33, "c": "R194017846", "l": "الريبلي", "f": "فاطمة الزهراء"}, {"n": 34, "c": "R194017848", "l": "ابو زكي", "f": "منال"}, {"n": 35, "c": "R194030870", "l": "البحري", "f": "يونس"}, {"n": 36, "c": "R195051400", "l": "شينان", "f": "سليمان"}, {"n": 37, "c": "R196017894", "l": "بوح", "f": "ريان"}, {"n": 38, "c": "R196047984", "l": "بوفوس", "f": "محمد امين"}, {"n": 39, "c": "R197012656", "l": "أيت ابرايم", "f": "عثمان"}, {"n": 40, "c": "R198012619", "l": "ابو العلاء", "f": "مصطفى"}], "2APIC-2": [{"n": 1, "c": "E185022620", "l": "بصري", "f": "يوسف"}, {"n": 2, "c": "F160082275", "l": "نعوم", "f": "وئام"}, {"n": 3, "c": "F183100879", "l": "الزيتون", "f": "شهيناز"}, {"n": 4, "c": "G176030313", "l": "ميدون", "f": "أيوب"}, {"n": 5, "c": "K152043596", "l": "بولاوراق", "f": "أيوب"}, {"n": 6, "c": "R164000082", "l": "اوباك", "f": "عبد الكريم"}, {"n": 7, "c": "R177018542", "l": "بيقنطارن", "f": "ياسين"}, {"n": 8, "c": "R178060011", "l": "حديدو", "f": "محمد"}, {"n": 9, "c": "R178063603", "l": "الناصري", "f": "فاطمة الزهراء"}, {"n": 10, "c": "R179066863", "l": "لخفيف", "f": "محمد امين"}, {"n": 11, "c": "R181002722", "l": "اوموح", "f": "راضية"}, {"n": 12, "c": "R182002670", "l": "بوضاض", "f": "حسن"}, {"n": 13, "c": "R182002682", "l": "ايت عبد", "f": "الحسين"}, {"n": 14, "c": "R182002705", "l": "بوفوس", "f": "صلاح الدين"}, {"n": 15, "c": "R185012492", "l": "جرادي", "f": "سناء"}, {"n": 16, "c": "R187008260", "l": "مروك", "f": "حنان"}, {"n": 17, "c": "R187046826", "l": "ابو المال", "f": "ياسين"}, {"n": 18, "c": "R188003859", "l": "ازمير", "f": "عبد الرحيم"}, {"n": 19, "c": "R189003884", "l": "ازمير", "f": "عبد اللطيف"}, {"n": 20, "c": "R190011348", "l": "وعدي", "f": "فاطمة الزهراء"}, {"n": 21, "c": "R190017854", "l": "اقلا", "f": "زكرياء"}, {"n": 22, "c": "R190017869", "l": "تعديت", "f": "حنان"}, {"n": 23, "c": "R190017873", "l": "ايوب", "f": "زكرياء"}, {"n": 24, "c": "R190029747", "l": "الفركاني", "f": "عبد الحميد"}, {"n": 25, "c": "R190044209", "l": "دمو", "f": "رضى"}, {"n": 26, "c": "R191017812", "l": "اوبا", "f": "محسين"}, {"n": 27, "c": "R191047504", "l": "الحميدي", "f": "رضوان"}, {"n": 28, "c": "R192017877", "l": "شرف", "f": "غزلان"}, {"n": 29, "c": "R193017834", "l": "رائسي", "f": "أيوب"}, {"n": 30, "c": "R193017836", "l": "بنفراج", "f": "جبريل"}, {"n": 31, "c": "R194017816", "l": "محداش", "f": "هشام"}, {"n": 32, "c": "R196017889", "l": "ابج", "f": "عثمان"}, {"n": 33, "c": "R197026776", "l": "الديني", "f": "فاطمة الزهراء"}, {"n": 34, "c": "R197043268", "l": "اتكنزى", "f": "نورة"}, {"n": 35, "c": "R198012549", "l": "العمراوي", "f": "سحر"}, {"n": 36, "c": "R198017824", "l": "ايت عبد", "f": "سناء"}, {"n": 37, "c": "R198025484", "l": "عثماني", "f": "فاطمة الزهراء"}, {"n": 38, "c": "R199042239", "l": "الناجي", "f": "نور الدين"}, {"n": 39, "c": "R199043357", "l": "العماري", "f": "اسراء"}, {"n": 40, "c": "R192017876", "l": "بلحاج", "f": "عبد الرحيم"}], "2APIC-3": [{"n": 1, "c": "R186002730", "l": "بركي", "f": "عبد الله"}, {"n": 2, "c": "C198043456", "l": "عامري", "f": "عثمان"}, {"n": 3, "c": "D152063427", "l": "بلغزواني", "f": "كريم"}, {"n": 4, "c": "D158016530", "l": "الجود", "f": "علي"}, {"n": 5, "c": "D158041548", "l": "ايت ابراهيم", "f": "ايوب"}, {"n": 6, "c": "E181009989", "l": "وركوش", "f": "سلمى"}, {"n": 7, "c": "G188131588", "l": "بوسكري", "f": "ياسين"}, {"n": 8, "c": "G194075316", "l": "دويش", "f": "اميمة"}, {"n": 9, "c": "R167035426", "l": "حناني", "f": "ايمان"}, {"n": 10, "c": "R170043819", "l": "عمراوي", "f": "نادية"}, {"n": 11, "c": "R173018464", "l": "الخلوقي", "f": "زكرياء"}, {"n": 12, "c": "R175047686", "l": "عصموي", "f": "زكرياء"}, {"n": 13, "c": "R176043719", "l": "رميشا", "f": "نزار"}, {"n": 14, "c": "R177043735", "l": "لعروسي", "f": "محمد"}, {"n": 15, "c": "R178014038", "l": "العلاوي", "f": "أشرف"}, {"n": 16, "c": "R182002687", "l": "ارفوش", "f": "عبد العزيز"}, {"n": 17, "c": "R182003831", "l": "ايت شعيب", "f": "اميمة"}, {"n": 18, "c": "R184057740", "l": "ندار", "f": "حنان"}, {"n": 19, "c": "R185047724", "l": "الفقير", "f": "عبد العالي"}, {"n": 20, "c": "R186023883", "l": "قرشلا", "f": "محمد"}, {"n": 21, "c": "R188003861", "l": "ايت ايزي", "f": "محمد امين"}, {"n": 22, "c": "R188052874", "l": "المزالي", "f": "آية"}, {"n": 23, "c": "R189052908", "l": "اجرار", "f": "عبد الرحمان"}, {"n": 24, "c": "R190006952", "l": "الجيد", "f": "عبد الالاه"}, {"n": 25, "c": "R190017808", "l": "الزراعي", "f": "رتاج"}, {"n": 26, "c": "R192012539", "l": "ازيان", "f": "مريم"}, {"n": 27, "c": "R192017820", "l": "اخوصان", "f": "ادم"}, {"n": 28, "c": "R193017830", "l": "اوعدي", "f": "عبد الحق"}, {"n": 29, "c": "R193017835", "l": "وبها", "f": "وئام"}, {"n": 30, "c": "R193051430", "l": "حباط", "f": "ياسين"}, {"n": 31, "c": "R195005056", "l": "بوزمان", "f": "انور"}, {"n": 32, "c": "R195017810", "l": "بوخريص", "f": "سفيان"}, {"n": 33, "c": "R195017844", "l": "وافي", "f": "مروة"}, {"n": 34, "c": "R196012501", "l": "تاكلا", "f": "صفاء"}, {"n": 35, "c": "R196012581", "l": "زماح", "f": "حمزة"}, {"n": 36, "c": "R197011374", "l": "اعطيك", "f": "خديجة"}, {"n": 37, "c": "R197020918", "l": "العوني", "f": "هبة"}, {"n": 38, "c": "R198012533", "l": "بوجليل", "f": "فاطمة الزهراء"}, {"n": 39, "c": "R199031230", "l": "حنكور", "f": "هجر"}, {"n": 40, "c": "R177046441", "l": "بونعمة", "f": "صلاح الدين"}], "2APIC-4": [{"n": 1, "c": "R167031393", "l": "حنكور", "f": "رضوان"}, {"n": 2, "c": "E174008561", "l": "البلغيتي", "f": "هبة"}, {"n": 3, "c": "E192008416", "l": "مرغو", "f": "رشيدة"}, {"n": 4, "c": "G192039255", "l": "اروى", "f": "هاجر"}, {"n": 5, "c": "R167045782", "l": "البى", "f": "محمد"}, {"n": 6, "c": "R170004513", "l": "اوباك", "f": "سعيد"}, {"n": 7, "c": "R172018549", "l": "مرجان", "f": "فاطمة"}, {"n": 8, "c": "R176043700", "l": "ايكن", "f": "وليد"}, {"n": 9, "c": "R176068242", "l": "اخراز", "f": "محمد علي"}, {"n": 10, "c": "R182002667", "l": "بوطويل", "f": "ملاك"}, {"n": 11, "c": "R182002677", "l": "مساعد", "f": "اسامة"}, {"n": 12, "c": "R182002686", "l": "حمايدان", "f": "السعدية"}, {"n": 13, "c": "R182002693", "l": "عزي", "f": "بلال"}, {"n": 14, "c": "R182002697", "l": "اللباع", "f": "محمد"}, {"n": 15, "c": "R182048222", "l": "عضيضي", "f": "عبد العالي"}, {"n": 16, "c": "R184048906", "l": "بنداب", "f": "ملاك"}, {"n": 17, "c": "R185008624", "l": "بونعمة", "f": "علي"}, {"n": 18, "c": "R186023961", "l": "ارباطي", "f": "مريم"}, {"n": 19, "c": "R186028981", "l": "بوخاتم", "f": "مريم"}, {"n": 20, "c": "R188003862", "l": "بيزنكاض", "f": "الياس"}, {"n": 21, "c": "R188051168", "l": "الصفري", "f": "جمال"}, {"n": 22, "c": "R189069275", "l": "موماد", "f": "لحسن"}, {"n": 23, "c": "R190008199", "l": "دهيبي", "f": "سعد"}, {"n": 24, "c": "R190017866", "l": "المتوكل", "f": "الياس"}, {"n": 25, "c": "R190017870", "l": "زوبي", "f": "محمد"}, {"n": 26, "c": "R190034586", "l": "برتات", "f": "ايمان"}, {"n": 27, "c": "R191006792", "l": "شفيق", "f": "زكرياء"}, {"n": 28, "c": "R191006947", "l": "أونجار", "f": "وئام"}, {"n": 29, "c": "R191017852", "l": "اكني", "f": "عبد الواحد"}, {"n": 30, "c": "R191051389", "l": "الحايل", "f": "ياسمين"}, {"n": 31, "c": "R192012633", "l": "عصموي", "f": "ياسين"}, {"n": 32, "c": "R192017880", "l": "الكاوري", "f": "اروى"}, {"n": 33, "c": "R193012536", "l": "كوزال", "f": "ساجدة"}, {"n": 34, "c": "R194012595", "l": "رفيق", "f": "احمد"}, {"n": 35, "c": "R195006940", "l": "الحنبولي", "f": "سي محمد"}, {"n": 36, "c": "R195039118", "l": "شباب", "f": "محمد أمين"}, {"n": 37, "c": "R195043870", "l": "شرود", "f": "هيبة"}, {"n": 38, "c": "R197012505", "l": "السالمي", "f": "هاجر"}, {"n": 39, "c": "R197017881", "l": "اوعقة", "f": "امين"}, {"n": 40, "c": "F198029655", "l": "بوزاض", "f": "زكرياء"}], "2APIC-5": [{"n": 1, "c": "D152041540", "l": "سلكات", "f": "زكرياء"}, {"n": 2, "c": "D158016510", "l": "وحيى", "f": "معتز"}, {"n": 3, "c": "E179045089", "l": "بومغار", "f": "ياسين"}, {"n": 4, "c": "E189048037", "l": "ابوسعد", "f": "ايمن"}, {"n": 5, "c": "G187039581", "l": "فافا", "f": "محمد"}, {"n": 6, "c": "J163008716", "l": "الفطواكي", "f": "محمد"}, {"n": 7, "c": "R161034122", "l": "افرشاق", "f": "خديجة"}, {"n": 8, "c": "R165053143", "l": "حباد", "f": "لمياء"}, {"n": 9, "c": "R167034176", "l": "البصراوي", "f": "عمر"}, {"n": 10, "c": "R173027292", "l": "الوجاني", "f": "شيماء"}, {"n": 11, "c": "R174018390", "l": "ابوزكي", "f": "انس"}, {"n": 12, "c": "R177025421", "l": "المزالي", "f": "ريان"}, {"n": 13, "c": "R178043775", "l": "الفاضلي", "f": "رهام"}, {"n": 14, "c": "R178048167", "l": "ازويتني", "f": "رضى"}, {"n": 15, "c": "R181060980", "l": "امكارو", "f": "عبد الوهاب"}, {"n": 16, "c": "R183065703", "l": "بوكريم", "f": "فيصل"}, {"n": 17, "c": "R186023951", "l": "اكدان", "f": "يونس"}, {"n": 18, "c": "R187056259", "l": "الشحوض", "f": "صلاح الدين"}, {"n": 19, "c": "R188003853", "l": "اوعلا", "f": "خديجة"}, {"n": 20, "c": "R188003857", "l": "سعدون", "f": "ملاك"}, {"n": 21, "c": "R188003860", "l": "ايت ايزي", "f": "فاطمة الزهراء"}, {"n": 22, "c": "R188007200", "l": "ابن الحكيم", "f": "مروان"}, {"n": 23, "c": "R190006951", "l": "الصوفي", "f": "مروة"}, {"n": 24, "c": "R190019082", "l": "بالفقير", "f": "آسية"}, {"n": 25, "c": "R190062760", "l": "طويل", "f": "مريم"}, {"n": 26, "c": "R191006670", "l": "بلحوس", "f": "سارة"}, {"n": 27, "c": "R191017859", "l": "ليموني", "f": "عزالدين"}, {"n": 28, "c": "R191051566", "l": "أولهينت", "f": "صلاح الدين"}, {"n": 29, "c": "R192044444", "l": "حقيقي", "f": "محمد امين"}, {"n": 30, "c": "R193017843", "l": "المبروكي", "f": "ادم"}, {"n": 31, "c": "R193017849", "l": "تنكيوت", "f": "ابتسام"}, {"n": 32, "c": "R195017839", "l": "العيادي", "f": "زكرياء"}, {"n": 33, "c": "R196017887", "l": "جدي", "f": "عبد الواحد"}, {"n": 34, "c": "R197012610", "l": "اعرابي", "f": "آدم"}, {"n": 35, "c": "R197017813", "l": "اشلو", "f": "مريم"}, {"n": 36, "c": "R197029745", "l": "بومحمد", "f": "ملاك"}, {"n": 37, "c": "R197047376", "l": "مسافر", "f": "ابراهيم"}, {"n": 38, "c": "R198017825", "l": "الحفار", "f": "حليمة"}, {"n": 39, "c": "R199012643", "l": "ايكن", "f": "صلاح الدين"}], "2APIC-6": [{"n": 1, "c": "D150068485", "l": "مومد", "f": "زكرياء"}, {"n": 2, "c": "D157016494", "l": "بوطويل", "f": "محمد امين"}, {"n": 3, "c": "D199024062", "l": "آيت اوبركى", "f": "حمزة"}, {"n": 4, "c": "E175053282", "l": "البولماني", "f": "ليلى"}, {"n": 5, "c": "E179045583", "l": "السكناس", "f": "وسيم"}, {"n": 6, "c": "E181072863", "l": "احمري", "f": "رميساء"}, {"n": 7, "c": "F180105591", "l": "عشاق", "f": "مجدولين"}, {"n": 8, "c": "F182163872", "l": "معراكي", "f": "ملاك"}, {"n": 9, "c": "G177045390", "l": "الإدريسي", "f": "أنس"}, {"n": 10, "c": "H165014368", "l": "ايت حريز", "f": "ياسين"}, {"n": 11, "c": "R171065900", "l": "برشى", "f": "مريم"}, {"n": 12, "c": "R175018394", "l": "والحاج", "f": "ياسين"}, {"n": 13, "c": "R175018396", "l": "لوكيري", "f": "مروان"}, {"n": 14, "c": "R178049809", "l": "أوالقيد", "f": "مينة"}, {"n": 15, "c": "R180011817", "l": "حنكور", "f": "عبد الصمد"}, {"n": 16, "c": "R181012495", "l": "شريعي", "f": "اكرم"}, {"n": 17, "c": "R182002669", "l": "الجهراني", "f": "عبد الله"}, {"n": 18, "c": "R182002679", "l": "اسمماض", "f": "ادم"}, {"n": 19, "c": "R182024827", "l": "الهروش", "f": "سعد"}, {"n": 20, "c": "R182047807", "l": "الحبشي", "f": "يحي"}, {"n": 21, "c": "R185003404", "l": "الاس", "f": "رضوان"}, {"n": 22, "c": "R185007202", "l": "افرشاق", "f": "كريمة"}, {"n": 23, "c": "R190012435", "l": "دكاير", "f": "نور الدين"}, {"n": 24, "c": "R190017845", "l": "اوعرو", "f": "مريم"}, {"n": 25, "c": "R190017862", "l": "الايوبي", "f": "رضا"}, {"n": 26, "c": "R190017872", "l": "بهوش", "f": "منال"}, {"n": 27, "c": "R190017874", "l": "ايت صالح", "f": "اية"}, {"n": 28, "c": "R191006671", "l": "بلحوس", "f": "عبدالوهاب"}, {"n": 29, "c": "R191038648", "l": "المعقول", "f": "محمد"}, {"n": 30, "c": "R192012540", "l": "الكوش", "f": "نسرين"}, {"n": 31, "c": "R193017821", "l": "ليموني", "f": "ريحانة"}, {"n": 32, "c": "R193017840", "l": "المعيزي", "f": "حمزة"}, {"n": 33, "c": "R194012500", "l": "الفهمي", "f": "صافية"}, {"n": 34, "c": "R195042370", "l": "ازنيدي", "f": "امين"}, {"n": 35, "c": "R195045346", "l": "صابر", "f": "عمران"}, {"n": 36, "c": "R197012504", "l": "وزويت", "f": "آية"}, {"n": 37, "c": "R197051574", "l": "أيت تزي", "f": "إلياس"}, {"n": 38, "c": "R199017863", "l": "الشوبي", "f": "سليم"}, {"n": 39, "c": "R199017864", "l": "اعنن", "f": "صفاء"}, {"n": 40, "c": "D157077357", "l": "ايت امغار", "f": "ياسين"}], "3APIC-1": [{"n": 1, "c": "D143093356", "l": "زضوك", "f": "خالد"}, {"n": 2, "c": "D149097323", "l": "حناني", "f": "خليل"}, {"n": 3, "c": "D156047124", "l": "الكزار", "f": "محمد"}, {"n": 4, "c": "D186074626", "l": "اعيسى", "f": "هموشة"}, {"n": 5, "c": "E167043347", "l": "اوكابوض", "f": "عادل"}, {"n": 6, "c": "E167059745", "l": "ليلى", "f": "اوباسو"}, {"n": 7, "c": "E180008900", "l": "أمسكان", "f": "لحسن"}, {"n": 8, "c": "E183011186", "l": "بوستة", "f": "شيماء"}, {"n": 9, "c": "G155034011", "l": "ايت معلي", "f": "اسامة"}, {"n": 10, "c": "H180026840", "l": "ايت حدو", "f": "خديجة"}, {"n": 11, "c": "K147106255", "l": "العيادي", "f": "مريم"}, {"n": 12, "c": "R161032665", "l": "اعلي", "f": "هبة"}, {"n": 13, "c": "R165000037", "l": "افكر", "f": "خديجة"}, {"n": 14, "c": "R166044255", "l": "البوشواري", "f": "يعقوب"}, {"n": 15, "c": "R171018383", "l": "صادق", "f": "فاطمة الزهراء"}, {"n": 16, "c": "R174018399", "l": "اضاف", "f": "مرية"}, {"n": 17, "c": "R175018586", "l": "بورحيم", "f": "اناس"}, {"n": 18, "c": "R175026003", "l": "ياسين", "f": "حنكور"}, {"n": 19, "c": "R176047663", "l": "مرابط", "f": "ريان"}, {"n": 20, "c": "R176047717", "l": "سميني", "f": "أحمد"}, {"n": 21, "c": "R179072640", "l": "دلاج", "f": "رضا"}, {"n": 22, "c": "R181048468", "l": "لقناع", "f": "عبد الإله"}, {"n": 23, "c": "R182002684", "l": "بوفوس", "f": "احلام"}, {"n": 24, "c": "R182002702", "l": "صبري", "f": "اسماء"}, {"n": 25, "c": "R182002709", "l": "السعيدي", "f": "خديجة"}, {"n": 26, "c": "R185012896", "l": "وايدير", "f": "هاجر"}, {"n": 27, "c": "R185015791", "l": "بوعدي", "f": "هشام"}, {"n": 28, "c": "R185024013", "l": "لويس", "f": "علي"}, {"n": 29, "c": "R186014139", "l": "صبري", "f": "عبد الله"}, {"n": 30, "c": "R187014719", "l": "توتوش", "f": "جميلة"}, {"n": 31, "c": "R187049977", "l": "بندموم", "f": "خديجة"}, {"n": 32, "c": "R188037144", "l": "أقشاش", "f": "أنس"}], "3APIC-2": [{"n": 1, "c": "D135782915", "l": "السعيدي", "f": "اسامة"}, {"n": 2, "c": "D156030448", "l": "مكران", "f": "احمد"}, {"n": 3, "c": "D156037758", "l": "بولمنازل", "f": "زكرياء"}, {"n": 4, "c": "D156055336", "l": "ابوالعلاء", "f": "محمد"}, {"n": 5, "c": "D158016512", "l": "البكرين", "f": "حمزة"}, {"n": 6, "c": "D158016537", "l": "اخوصان", "f": "رضا"}, {"n": 7, "c": "E162010175", "l": "بومهدي", "f": "خديجة"}, {"n": 8, "c": "E166006738", "l": "بودجاج", "f": "شيماء"}, {"n": 9, "c": "F168050456", "l": "صابر", "f": "رضى"}, {"n": 10, "c": "G154019081", "l": "الخزوم", "f": "رقية"}, {"n": 11, "c": "J186006178", "l": "ايت الحيان", "f": "سليمان"}, {"n": 12, "c": "K186000859", "l": "ايت يشو", "f": "ريان"}, {"n": 13, "c": "R163043213", "l": "دباب", "f": "مريم"}, {"n": 14, "c": "R164048839", "l": "بوجدي", "f": "يونس"}, {"n": 15, "c": "R167045090", "l": "المارش", "f": "منال"}, {"n": 16, "c": "R170043760", "l": "بوجدي", "f": "فاطمة الزهراء"}, {"n": 17, "c": "R174018563", "l": "الفجري", "f": "ياسمين"}, {"n": 18, "c": "R177004435", "l": "لخفيف", "f": "سعد الدين"}, {"n": 19, "c": "R182002676", "l": "بن جاعة", "f": "ربيعة"}, {"n": 20, "c": "R182002701", "l": "الابيض", "f": "محمد"}, {"n": 21, "c": "R182007198", "l": "الحسناوي", "f": "مريم"}, {"n": 22, "c": "R184051171", "l": "حاتم", "f": "فرح"}, {"n": 23, "c": "R185015796", "l": "المرابط", "f": "سلمى"}, {"n": 24, "c": "R186004032", "l": "امغار", "f": "احمد"}, {"n": 25, "c": "R186018016", "l": "ابو الحنا", "f": "اميمة"}, {"n": 26, "c": "R186023899", "l": "أسالم", "f": "انس"}, {"n": 27, "c": "R186023964", "l": "زماح", "f": "وسيم"}, {"n": 28, "c": "R187012897", "l": "وايدير", "f": "كوثر"}, {"n": 29, "c": "R188004675", "l": "وعزيز", "f": "حمزة"}, {"n": 30, "c": "R188056971", "l": "جموض", "f": "ياسين"}, {"n": 31, "c": "R189003848", "l": "المالكي", "f": "اية"}, {"n": 32, "c": "D162070347", "l": "بنبوسلهام", "f": "رحاب"}], "3APIC-3": [{"n": 1, "c": "D156041495", "l": "الطاقي", "f": "محمد"}, {"n": 2, "c": "D157030494", "l": "بوجليل", "f": "ياسين"}, {"n": 3, "c": "D158016523", "l": "الخلوقي", "f": "مريم"}, {"n": 4, "c": "D158016535", "l": "برهاين", "f": "عبد اللطيف"}, {"n": 5, "c": "D178087592", "l": "البحير", "f": "ياسين"}, {"n": 6, "c": "E168008293", "l": "وركوش", "f": "بلال"}, {"n": 7, "c": "E182053549", "l": "جلال الدين", "f": "هبة"}, {"n": 8, "c": "E188044302", "l": "اخلاوي", "f": "خولة"}, {"n": 9, "c": "F159012575", "l": "سموري", "f": "عبد الغفور"}, {"n": 10, "c": "G176037240", "l": "عبد الحكيم", "f": "الرفاعي"}, {"n": 11, "c": "K157020527", "l": "اجويد", "f": "حمزة"}, {"n": 12, "c": "R163000068", "l": "احماني", "f": "عدنان"}, {"n": 13, "c": "R163042192", "l": "اوضمان", "f": "زكرياء"}, {"n": 14, "c": "R164000038", "l": "ربوح", "f": "مريم"}, {"n": 15, "c": "R170043764", "l": "الفشات", "f": "سارة"}, {"n": 16, "c": "R172018547", "l": "الراجي", "f": "هدى"}, {"n": 17, "c": "R181056286", "l": "الغاشي", "f": "اميمة"}, {"n": 18, "c": "R182002674", "l": "بن طالب", "f": "يونس"}, {"n": 19, "c": "R182002678", "l": "كفاي", "f": "حمزة"}, {"n": 20, "c": "R182002680", "l": "البكرين", "f": "يونس"}, {"n": 21, "c": "R182002695", "l": "اكدان", "f": "عمر"}, {"n": 22, "c": "R182024052", "l": "الحيان", "f": "رشيد"}, {"n": 23, "c": "R183011245", "l": "ايت عابد", "f": "انور"}, {"n": 24, "c": "R183024018", "l": "النصيري", "f": "مليكة"}, {"n": 25, "c": "R183024024", "l": "ايت معلي", "f": "صفاء"}, {"n": 26, "c": "R184056574", "l": "بن طالب", "f": "ريان"}, {"n": 27, "c": "R185003596", "l": "اوزايد", "f": "رقية"}, {"n": 28, "c": "R185012493", "l": "بوعلاكا", "f": "مريم"}, {"n": 29, "c": "R188003851", "l": "هلال", "f": "فاطمة الزهراء"}, {"n": 30, "c": "R188004126", "l": "بوعلي", "f": "هجر"}, {"n": 31, "c": "R188023918", "l": "بحسيس", "f": "عبد الحكيم"}, {"n": 32, "c": "R189048278", "l": "بوملال", "f": "رضى"}, {"n": 33, "c": "R161000263", "l": "ايت بلال", "f": "حسناء"}], "3APIC-4": [{"n": 1, "c": "C155001396", "l": "العلاوي", "f": "رقية"}, {"n": 2, "c": "C161004068", "l": "البوشبتي", "f": "فاطمة"}, {"n": 3, "c": "C175066371", "l": "المرضي", "f": "ريان"}, {"n": 4, "c": "D148147741", "l": "شينان", "f": "عبد اللطيف"}, {"n": 5, "c": "D158016520", "l": "دياب", "f": "يوسف"}, {"n": 6, "c": "D158057389", "l": "ايت علي", "f": "مروان"}, {"n": 7, "c": "E162032815", "l": "التركاوي", "f": "لطيفة"}, {"n": 8, "c": "E182064298", "l": "رافع", "f": "حياة"}, {"n": 9, "c": "E186057410", "l": "العيادي", "f": "حسناء"}, {"n": 10, "c": "G165088470", "l": "الزياني", "f": "يوسف"}, {"n": 11, "c": "G174064688", "l": "الفقير", "f": "زكرياء"}, {"n": 12, "c": "G185010998", "l": "امغاس", "f": "ياسين"}, {"n": 13, "c": "J186005487", "l": "الكريمي", "f": "ايمن"}, {"n": 14, "c": "K144093282", "l": "ازنينة", "f": "سومية"}, {"n": 15, "c": "L152034468", "l": "الكتاني", "f": "سيف الدين"}, {"n": 16, "c": "R174018397", "l": "الداودي", "f": "اميمة"}, {"n": 17, "c": "R176043710", "l": "الحسناوي", "f": "ايمن"}, {"n": 18, "c": "R178026020", "l": "بورحيم", "f": "خديجة"}, {"n": 19, "c": "R180012498", "l": "والطالب", "f": "فاطمة"}, {"n": 20, "c": "R182002699", "l": "السعداوي", "f": "انس"}, {"n": 21, "c": "R182002703", "l": "اكدان", "f": "محمد"}, {"n": 22, "c": "R182024048", "l": "الزعيم", "f": "محمد امين"}, {"n": 23, "c": "R183002696", "l": "فركوك", "f": "عبد الله"}, {"n": 24, "c": "R183003886", "l": "هرميم", "f": "اكرام"}, {"n": 25, "c": "R186003607", "l": "رحيلي", "f": "يونس"}, {"n": 26, "c": "R186003840", "l": "اجنكار", "f": "اكرام"}, {"n": 27, "c": "R186003843", "l": "ايت مبارك", "f": "ليلى"}, {"n": 28, "c": "R186007203", "l": "الشاهد", "f": "سامية"}, {"n": 29, "c": "R186008290", "l": "النهري", "f": "محمد"}, {"n": 30, "c": "J180005189", "l": "بومزكيد", "f": "يوسف"}, {"n": 31, "c": "R187046651", "l": "الصاحب", "f": "ريان"}, {"n": 32, "c": "R188046954", "l": "مري", "f": "يوسف"}, {"n": 33, "c": "R189046825", "l": "اخياض", "f": "اية"}, {"n": 34, "c": "R164006968", "l": "دكير", "f": "محمد"}], "3APIC-5": [{"n": 1, "c": "D157016525", "l": "ايت عدي", "f": "وليد"}, {"n": 2, "c": "D158016546", "l": "بعوش", "f": "محمد امين"}, {"n": 3, "c": "E173014184", "l": "الشلح", "f": "ايمن"}, {"n": 4, "c": "E175054287", "l": "المهدي", "f": "حسناء"}, {"n": 5, "c": "G173065111", "l": "أهمو", "f": "حمزة"}, {"n": 6, "c": "G187076110", "l": "ايت بلا", "f": "حمزة"}, {"n": 7, "c": "G188023422", "l": "باهرا", "f": "اكرام"}, {"n": 8, "c": "R163000050", "l": "لحنين", "f": "بسمة"}, {"n": 9, "c": "R163044930", "l": "البيض", "f": "اميمة"}, {"n": 10, "c": "R166000106", "l": "حوستي", "f": "يوسف"}, {"n": 11, "c": "R167013127", "l": "أساوي", "f": "سلمى"}, {"n": 12, "c": "R167032676", "l": "حمي", "f": "هناء"}, {"n": 13, "c": "R168015798", "l": "العلاوي", "f": "عيسى"}, {"n": 14, "c": "R175064803", "l": "راجي", "f": "زبير"}, {"n": 15, "c": "R176055166", "l": "ازقاضن", "f": "ادم"}, {"n": 16, "c": "R179051006", "l": "البورحيمي", "f": "محمد"}, {"n": 17, "c": "R180052963", "l": "بولاوراق", "f": "ياسين"}, {"n": 18, "c": "R181004196", "l": "أيت سيدي علي", "f": "المهدي"}, {"n": 19, "c": "R182002671", "l": "بويحولين", "f": "مريم"}, {"n": 20, "c": "R182004673", "l": "السعيدي", "f": "ياسين"}, {"n": 21, "c": "R182008645", "l": "البشيري", "f": "الياس"}, {"n": 22, "c": "R182023938", "l": "زريعة", "f": "انس"}, {"n": 23, "c": "R182023944", "l": "اكدان", "f": "سلمى"}, {"n": 24, "c": "R183004128", "l": "ضريف", "f": "كوثر"}, {"n": 25, "c": "R183024028", "l": "مفتاحي", "f": "رضوان"}, {"n": 26, "c": "R185012494", "l": "اريفي", "f": "ضحى"}, {"n": 27, "c": "R185014270", "l": "باني", "f": "يحيي"}, {"n": 28, "c": "R186023891", "l": "الحمادي", "f": "ياسين"}, {"n": 29, "c": "R187048293", "l": "جنان", "f": "حنان"}, {"n": 30, "c": "R187071083", "l": "البرشاوي", "f": "سليمان"}, {"n": 31, "c": "R188014151", "l": "صبري", "f": "فاطمة الزهراء"}, {"n": 32, "c": "R189050968", "l": "احوش", "f": "هبة"}], "3APIC-6": [{"n": 1, "c": "D139801372", "l": "تعديت", "f": "ملاك"}, {"n": 2, "c": "D142098264", "l": "على الله", "f": "زكرياء"}, {"n": 3, "c": "D183030590", "l": "لخضار", "f": "آدم"}, {"n": 4, "c": "E172049259", "l": "رافع", "f": "سميرة"}, {"n": 5, "c": "E183024690", "l": "عيسوي", "f": "مروان"}, {"n": 6, "c": "F172105146", "l": "أوعدي", "f": "عبد الله"}, {"n": 7, "c": "G152028993", "l": "ايت بلا", "f": "عماد"}, {"n": 8, "c": "L141080197", "l": "امن", "f": "ايوب"}, {"n": 9, "c": "R161033724", "l": "الفقير", "f": "حميد"}, {"n": 10, "c": "R167013159", "l": "شهبون", "f": "هاجر"}, {"n": 11, "c": "R170043820", "l": "اكدان", "f": "عبد الاله"}, {"n": 12, "c": "R172018381", "l": "النحكامي", "f": "اميمة"}, {"n": 13, "c": "R174018554", "l": "داودي", "f": "يوسف"}, {"n": 14, "c": "R174019406", "l": "المعقول", "f": "حسناء"}, {"n": 15, "c": "R174056959", "l": "اكصيصيب", "f": "عمران"}, {"n": 16, "c": "R176004438", "l": "امكارو", "f": "محمد"}, {"n": 17, "c": "R176018572", "l": "اوموح", "f": "سلوى"}, {"n": 18, "c": "R176047714", "l": "ابو غي", "f": "عبد الكريم"}, {"n": 19, "c": "R179018391", "l": "الماموني", "f": "اشرف"}, {"n": 20, "c": "R179025414", "l": "الواحي", "f": "اكرام"}, {"n": 21, "c": "R181002211", "l": "السعداني", "f": "اميرة"}, {"n": 22, "c": "R181008271", "l": "على الله", "f": "عمران"}, {"n": 23, "c": "R181011325", "l": "القليلي", "f": "رياض"}, {"n": 24, "c": "R181023973", "l": "بن داوود", "f": "سارة"}, {"n": 25, "c": "R181048945", "l": "اودرى", "f": "سارة"}, {"n": 26, "c": "R182002672", "l": "تغرة", "f": "خديجة"}, {"n": 27, "c": "R182002689", "l": "قاشور", "f": "سارة"}, {"n": 28, "c": "R182002691", "l": "ليموني", "f": "شيماء"}, {"n": 29, "c": "R182002700", "l": "القراشا", "f": "ليان"}, {"n": 30, "c": "R182023949", "l": "اسمغور", "f": "المختار"}, {"n": 31, "c": "R183024038", "l": "ارجدال", "f": "رميساء"}, {"n": 32, "c": "R185025097", "l": "اوضمان", "f": "سارة"}, {"n": 33, "c": "R186023890", "l": "بهوش", "f": "محمد"}, {"n": 34, "c": "R188003854", "l": "اوزايد", "f": "ياسين"}]};
 
     // Application Global State
     let allStudents = [];
@@ -695,6 +532,7 @@
     window.onload = function() {
         loadSchoolInfo();
         loadStoredData();
+        initClassSelect();
         updateHeaderStudentCount();
     };
 
@@ -706,7 +544,7 @@
     }
 
     function loadSchoolInfo() {
-        const saved = localStorage.getItem(SCHOOL_INFO_KEY);
+        const saved = localStorage.getItem(SCHOOL_INFO_KEY) || JSON.stringify({directorate: 'شتوكة آيت باها', school: 'ثإ. أنس بن مالك', teacher: ''});
         if (saved) {
             try {
                 const info = JSON.parse(saved);
@@ -763,44 +601,49 @@
         document.getElementById('plural-s').textContent = count > 1 ? 's' : '';
     }
 
-    function startAssessment() {
-        const nameInput = document.getElementById('student-name');
-        const classSelect = document.getElementById('student-class');
-        const nameErr = document.getElementById('name-error');
+    function initClassSelect() {
+        const cls = Object.keys(STUDENTS);
+        const sel = document.getElementById('student-class');
+        sel.innerHTML = cls.map(c => `<option value="${c}">${c} (${STUDENTS[c].length})</option>`).join('');
+        const f = document.getElementById('filter-class');
+        cls.forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = c; f.appendChild(o); });
+        populateStudents();
+    }
 
-        const name = nameInput.value.trim();
-        if (!name) {
-            nameErr.classList.remove('hidden');
-            return;
-        }
-        nameErr.classList.add('hidden');
+    function populateStudents() {
+        const c = document.getElementById('student-class').value;
+        const pick = document.getElementById('student-pick');
+        const list = STUDENTS[c] || [];
+        let done = 0;
+        pick.innerHTML = '<option value="">— Sélectionner un élève —</option>' + list.map((s, i) => {
+            const r = allStudents.find(x => x.id === c + '|' + s.n);
+            if (r) done++;
+            return `<option value="${i}">${s.n} - ${s.l} ${s.f}${r ? '  ✅ P' + palLabel(r) : ''}</option>`;
+        }).join('');
+        document.getElementById('class-progress').textContent = `📋 ${c} : ${done} / ${list.length} élèves évalués.`;
+    }
+
+    function palLabel(st) { return (st.palier === 4 && st.scores['L-P'] === 1) ? '4+' : st.palier; }
+
+    function startAssessment() {
+        const c = document.getElementById('student-class').value;
+        const idx = document.getElementById('student-pick').value;
+        if (idx === '') { document.getElementById('name-error').classList.remove('hidden'); return; }
+        document.getElementById('name-error').classList.add('hidden');
+        const s = STUDENTS[c][parseInt(idx, 10)];
 
         currentStudent = {
-            id: Date.now(),
-            name: name,
-            class: classSelect.value,
-            scores: {
-                'L-PS': 'N/A',
-                'L-M': 'N/A',
-                'C-PS': 'N/A',
-                'L-PE': 'N/A',
-                'C-PE': 'N/A',
-                'L-P': 'N/A'
-            },
-            selectedSubIndex: {
-                'L-PS': 0,
-                'L-M': 0,
-                'L-PE': 0
-            },
-            palier: null,
-            completed: false
+            id: c + '|' + s.n, rank: s.n, code: s.c,
+            name: s.l + ' ' + s.f, class: c,
+            scores: { 'L-PS': 'N/A', 'L-M': 'N/A', 'C-PS': 'N/A', 'L-PE': 'N/A', 'C-PE': 'N/A', 'L-P': 'N/A' },
+            selectedSubIndex: { 'L-PS': 0, 'L-M': 0, 'L-PE': 0 },
+            palier: null, completed: false
         };
 
         currentStageIndex = 0;
         document.getElementById('student-setup').classList.add('hidden');
         document.getElementById('result-view').classList.add('hidden');
         document.getElementById('assessment-view').classList.remove('hidden');
-
         renderStage();
     }
 
@@ -808,7 +651,7 @@
         resetTimer();
         const stageKey = STAGE_KEYS[currentStageIndex];
         
-        document.getElementById('current-student-display').textContent = `Élève : ${currentStudent.name} (${currentStudent.class})`;
+        document.getElementById('current-student-display').textContent = `N° ${currentStudent.rank} - ${currentStudent.name} (${currentStudent.class})`;
         document.getElementById('stage-badge').textContent = `Étape ${currentStageIndex + 1} / 6 : ${stageKey}`;
 
         const stageTitle = document.getElementById('stage-title');
@@ -883,12 +726,12 @@
 
         } else if (stageKey === 'L-P') {
             stageTitle.textContent = "Étape 6 : Lecture de Paragraphe (L-P)";
-            stageInstruction.innerHTML = "🎯 <strong>Consigne :</strong> Lis le paragraphe suivant en 1 minute (60s).<br>• <strong>Indicateur complémentaire :</strong> Réussir au moins <strong>60 mots sur 70</strong> en 1 min.";
+            stageInstruction.innerHTML = "🎯 <strong>Consigne :</strong> Lis le paragraphe suivant en 1 minute (60s).<br>• <strong>Seuil :</strong> au moins <strong>60 mots sur 70</strong> en <strong>1 minute maximum</strong> (indicateur complémentaire, sans impact sur le positionnement).";
             textSelectorBox.classList.add('hidden');
             timerContainer.classList.remove('hidden');
             readingSection.classList.remove('hidden');
             compSection.classList.add('hidden');
-            targetHint.textContent = "📌 Seuil NMCLM : 60/70 mots. Cet exercice n'impacte pas le positionnement (élève reste au Palier 4).";
+            targetHint.textContent = "📌 Seuil NMCLM : 60/70 mots. Si validé (1) ➔ Palier 4+ ; sinon Palier 4. N'impacte pas le positionnement.";
 
             renderWordInteractive(OFFICIAL_DATABASE.L_P.text);
         }
@@ -1136,10 +979,10 @@
 
         if (currentStudent) {
             document.getElementById('latest-student-card').classList.remove('hidden');
-            document.getElementById('student-final-info').textContent = `${currentStudent.name} | Classe: ${currentStudent.class}`;
+            document.getElementById('student-final-info').textContent = `N° ${currentStudent.rank} - ${currentStudent.name} | Classe: ${currentStudent.class} | Massar: ${currentStudent.code}`;
             
             const palierElem = document.getElementById('final-level');
-            palierElem.textContent = `Palier ${currentStudent.palier}`;
+            palierElem.textContent = `Palier ${palLabel(currentStudent)}`;
 
             const descMap = {
                 1: "Élève orienté vers le Palier 1 (Besoins prioritaires en lecture élémentaire).",
@@ -1168,38 +1011,28 @@
         const filterClass = document.getElementById('filter-class').value;
         const tbody = document.getElementById('all-students-tbody');
         tbody.innerHTML = '';
-
-        const filtered = filterClass === 'ALL' 
-            ? allStudents 
-            : allStudents.filter(s => s.class === filterClass);
+        const filtered = (filterClass === 'ALL' ? allStudents : allStudents.filter(s => s.class === filterClass))
+            .slice().sort((a, b) => a.class.localeCompare(b.class) || a.rank - b.rank);
 
         let p1 = 0, p2 = 0, p3 = 0, p4 = 0;
-
-        filtered.forEach((st, idx) => {
-            if (st.palier === 1) p1++;
-            else if (st.palier === 2) p2++;
-            else if (st.palier === 3) p3++;
-            else if (st.palier === 4) p4++;
-
+        filtered.forEach(st => {
+            if (st.palier === 1) p1++; else if (st.palier === 2) p2++; else if (st.palier === 3) p3++; else if (st.palier === 4) p4++;
             const tr = document.createElement('tr');
             tr.innerHTML = `
-                <td style="font-weight: bold;">${idx + 1}</td>
-                <td style="text-align: left; font-weight: 600; padding-left: 8px;">${st.name}</td>
+                <td style="font-weight: bold;">${st.rank}</td>
+                <td dir="rtl" style="text-align: right; font-weight: 600; padding-right: 8px;">${st.name}</td>
                 <td style="font-weight: bold;">${st.class}</td>
+                <td style="font-size: 0.75rem;">${st.code || ''}</td>
                 <td>${renderScoreBadge(st.scores['L-PS'])}</td>
                 <td>${renderScoreBadge(st.scores['L-M'])}</td>
                 <td>${renderScoreBadge(st.scores['C-PS'])}</td>
                 <td>${renderScoreBadge(st.scores['L-PE'])}</td>
                 <td>${renderScoreBadge(st.scores['C-PE'])}</td>
                 <td>${renderScoreBadge(st.scores['L-P'])}</td>
-                <td><strong class="text-pink-900 font-extrabold">Palier ${st.palier}</strong></td>
-                <td class="no-print">
-                    <button onclick="deleteStudent(${st.id})" class="text-rose-600 hover:text-rose-800 font-bold px-1">✕</button>
-                </td>
-            `;
+                <td><strong class="text-pink-900 font-extrabold">Palier ${palLabel(st)}</strong></td>
+                <td class="no-print"><button onclick="deleteStudent('${st.id}')" class="text-rose-600 hover:text-rose-800 font-bold px-1">✕</button></td>`;
             tbody.appendChild(tr);
         });
-
         document.getElementById('stat-total').textContent = filtered.length;
         document.getElementById('stat-p1').textContent = p1;
         document.getElementById('stat-p2').textContent = p2;
@@ -1217,12 +1050,13 @@
         allStudents = allStudents.filter(s => s.id !== id);
         saveData();
         renderAllStudentsTable();
+        populateStudents();
         showToast("Élève supprimé de la liste.");
     }
 
     function resetForNewStudent() {
-        document.getElementById('student-name').value = '';
         currentStudent = null;
+        populateStudents();
         document.getElementById('result-view').classList.add('hidden');
         document.getElementById('assessment-view').classList.add('hidden');
         document.getElementById('student-setup').classList.remove('hidden');
@@ -1240,6 +1074,7 @@
         allStudents = [];
         saveData();
         closeClearModal();
+        populateStudents();
         renderAllStudentsTable();
         showToast("La grille collective a été intégralement vidée.");
     }
@@ -1264,33 +1099,26 @@
 
         const wsData = [];
 
-        wsData.push(["GRILLE COLLECTIVE DE POSITIONNEMENT - LANGUE FRANÇAISE (2026-2027)"]);
-        wsData.push([`Établissement : ${schoolName}`]);
-        wsData.push([`Direction Provinciale : ${directorateName}`]);
-        wsData.push([`Enseignant(e) : ${teacherName}`]);
+        wsData.push(["GRILLE DE NOTATION - POST-TEST LANGUE FRANÇAISE (2026-2027)"]);
+        wsData.push([`Établissement : ${schoolName}`, `Direction : ${directorateName}`, `Enseignant(e) : ${teacherName}`]);
         wsData.push(["Grille de notation : 0 = exercice non validé ; 1 = exercice validé ; N/A = exercice non administré"]);
         wsData.push([]);
 
-        wsData.push(["N°", "Nom de l'élève", "Classe", "Etape 1 (L-PS)", "Etape 2 (L-M)", "Etape 2 (C-PS)", "Etape 3 (L-PE)", "Etape 4 (C-PE)", "Etape 5 (L-P)", "Palier Final"]);
+        wsData.push(["N°", "Nom de l'élève", "Classe", "Code Massar", "Etape 1 (L-PS)", "Etape 2 (L-M)", "Etape 2 (C-PS)", "Etape 3 (L-PE)", "Etape 4 (C-PE)", "Etape 5 (L-P)", "Palier Final"]);
 
-        filtered.forEach((st, idx) => {
-            const formatScore = (val) => {
-                if (val === 1 || val === '1') return "1";
-                if (val === 0 || val === '0') return "0";
-                return "N/A";
-            };
-
+        filtered.slice().sort((a, b) => a.class.localeCompare(b.class) || a.rank - b.rank).forEach((st) => {
             const row = [
-                idx + 1,
-                st.name || '',
-                st.class || '',
-                formatScore(st.scores ? st.scores['L-PS'] : undefined),
-                formatScore(st.scores ? st.scores['L-M'] : undefined),
-                formatScore(st.scores ? st.scores['C-PS'] : undefined),
-                formatScore(st.scores ? st.scores['L-PE'] : undefined),
-                formatScore(st.scores ? st.scores['C-PE'] : undefined),
-                formatScore(st.scores ? st.scores['L-P'] : undefined),
-                st.palier ? `Palier ${st.palier}` : 'N/A'
+                st.rank,
+                st.name,
+                st.class,
+                st.code || '',
+                st.scores['L-PS'] !== undefined ? st.scores['L-PS'] : 'N/A',
+                st.scores['L-M'] !== undefined ? st.scores['L-M'] : 'N/A',
+                st.scores['C-PS'] !== undefined ? st.scores['C-PS'] : 'N/A',
+                st.scores['L-PE'] !== undefined ? st.scores['L-PE'] : 'N/A',
+                st.scores['C-PE'] !== undefined ? st.scores['C-PE'] : 'N/A',
+                st.scores['L-P'] !== undefined ? st.scores['L-P'] : 'N/A',
+                `Palier ${palLabel(st)}`
             ];
             wsData.push(row);
         });
@@ -1301,22 +1129,32 @@
         const wb = XLSX.utils.book_new();
         const ws = XLSX.utils.aoa_to_sheet(wsData);
 
+        const range = XLSX.utils.decode_range(ws['!ref']);
+        for (let R = 5; R <= range.e.r; ++R) {
+            const cellAddress = XLSX.utils.encode_cell({ r: R, c: 3 });
+            if (ws[cellAddress]) {
+                ws[cellAddress].t = 's';
+                ws[cellAddress].z = '@';
+            }
+        }
+
         ws['!cols'] = [
-            { wch: 8 },
-            { wch: 30 },
+            { wch: 6 },
+            { wch: 32 },
+            { wch: 12 },
             { wch: 14 },
-            { wch: 16 },
-            { wch: 16 },
-            { wch: 16 },
-            { wch: 16 },
-            { wch: 16 },
-            { wch: 16 },
+            { wch: 14 },
+            { wch: 14 },
+            { wch: 14 },
+            { wch: 14 },
+            { wch: 14 },
+            { wch: 14 },
             { wch: 16 }
         ];
 
         XLSX.utils.book_append_sheet(wb, ws, "Grille_Positionnement");
 
-        const fileName = `Grille_Français_Pionniers_${filterClass.replace('/', '-')}_2026.xlsx`;
+        const fileName = `Grille_Français_Pionniers_${filterClass}_2026.xlsx`;
         XLSX.writeFile(wb, fileName);
         showToast("📊 Fichier Excel téléchargé avec succès !");
     }
