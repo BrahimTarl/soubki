@@ -347,6 +347,20 @@
                 <div>Mots corrects (NMCLM) : <span id="correct-count" class="text-emerald-600 font-bold text-base">0</span></div>
             </div>
             <p id="stage-target-hint" class="text-xs text-pink-700 font-bold mt-2"></p>
+
+            <!-- L-P : l'élève a-t-il terminé la lecture ? (affiché après la fin du chrono) -->
+            <div id="lp-finish-box" class="hidden mt-3 p-3 rounded-xl border-2 border-pink-300 bg-white">
+                <p class="text-sm font-black text-pink-900 mb-2">📖 L'élève a-t-il terminé la lecture du texte ?</p>
+                <div class="flex flex-wrap gap-2">
+                    <button type="button" id="lp-yes-btn" onclick="setLPFinished(true)" class="flex-1 min-w-[200px] border-2 border-emerald-300 bg-emerald-50 text-emerald-800 font-bold px-3 py-2 rounded-lg text-sm transition">
+                        ✅ Oui, il a terminé la lecture <span class="block text-[11px] font-semibold">(candidat au statut « Maîtrisant »)</span>
+                    </button>
+                    <button type="button" id="lp-no-btn" onclick="setLPFinished(false)" class="flex-1 min-w-[200px] border-2 border-rose-300 bg-rose-50 text-rose-800 font-bold px-3 py-2 rounded-lg text-sm transition">
+                        ❌ Non, le temps est écoulé et il lit encore <span class="block text-[11px] font-semibold">(« Non maîtrisant »)</span>
+                    </button>
+                </div>
+                <p id="lp-verdict" class="text-xs font-bold mt-2 p-2 rounded-lg hidden"></p>
+            </div>
         </div>
 
         <div id="comprehension-section" class="hidden bg-pink-50/70 p-4 rounded-xl border-l-4 border-pink-600 mb-4">
@@ -565,6 +579,7 @@
     let isTimerRunning = false;
     let timerStarted = false;
     let timerFinished = false;
+    let lpFinishedReading = null; // null = non renseigné, true = a terminé la lecture, false = lecture inachevée
     let toastTimeout = null;
 
     const STAGE_KEYS = ['L-PS', 'L-M', 'C-PS', 'L-PE', 'C-PE', 'L-P'];
@@ -837,12 +852,12 @@
 
         } else if (stageKey === 'L-P') {
             stageTitle.textContent = "Étape 6 : Lecture de Paragraphe (L-P)";
-            stageInstruction.innerHTML = "🎯 <strong>Consigne :</strong> Lis le paragraphe suivant en 1 minute (60s).<br>• <strong>Seuil :</strong> au moins <strong>60 mots sur 70</strong> en <strong>1 minute maximum</strong> (indicateur complémentaire, sans impact sur le positionnement).<br>⏱️ <strong>Important :</strong> le chrono doit être terminé (60 s écoulées ou bouton « Terminer ») avant de valider le positionnement de l'élève.";
+            stageInstruction.innerHTML = "🎯 <strong>Consigne :</strong> Lis le paragraphe suivant en 1 minute (60s).<br>• <strong>Seuil :</strong> au moins <strong>60 mots sur 70</strong> en <strong>1 minute maximum</strong> (indicateur complémentaire, sans impact sur le positionnement).<br>⏱️ <strong>Important :</strong> le chrono doit être terminé (60 s écoulées ou bouton « Terminer »), puis indiquez si l'élève a terminé la lecture ou non avant de valider.";
             textSelectorBox.classList.add('hidden');
             timerContainer.classList.remove('hidden');
             readingSection.classList.remove('hidden');
             compSection.classList.add('hidden');
-            targetHint.textContent = "📌 Seuil NMCLM : 60/70 mots. Si validé (1) ➔ Palier 4+ ; sinon Palier 4. N'impacte pas le positionnement.";
+            targetHint.textContent = "📌 Seuil NMCLM : 60/70 mots. Si validé (1) ➔ Palier 4+ ; sinon Palier 4. N'impacte pas le positionnement. (Maîtrisant = l'élève a terminé la lecture dans le temps ET lit au moins 60 mots corrects.)";
 
             renderWordInteractive(OFFICIAL_DATABASE.L_P.text);
         }
@@ -909,6 +924,7 @@
 
         document.getElementById('error-count').textContent = totalErrors;
         document.getElementById('correct-count').textContent = correct;
+        if (typeof updateLPChoiceUI === 'function') updateLPChoiceUI();
     }
 
     function renderQuestionsList(questions) {
@@ -1010,9 +1026,46 @@
         isTimerRunning = false;
         timerStarted = false;
         timerFinished = false;
+        lpFinishedReading = null;
         secondsLeft = 60;
         document.getElementById('timer').textContent = "60";
         updateTimerLockUI();
+    }
+
+    // Réponse « L'élève a-t-il terminé la lecture ? »
+    function setLPFinished(val) {
+        lpFinishedReading = val;
+        updateLPChoiceUI();
+        updateTimerLockUI();
+    }
+
+    function lpIsMastered() {
+        const correct = parseInt(document.getElementById('correct-count').textContent, 10) || 0;
+        return lpFinishedReading === true && correct >= 60;
+    }
+
+    function updateLPChoiceUI() {
+        const yes = document.getElementById('lp-yes-btn');
+        const no = document.getElementById('lp-no-btn');
+        const verdict = document.getElementById('lp-verdict');
+        if (!yes || !no || !verdict) return;
+        const base = "flex-1 min-w-[200px] border-2 font-bold px-3 py-2 rounded-lg text-sm transition ";
+        yes.className = base + (lpFinishedReading === true ? "border-emerald-600 bg-emerald-600 text-white ring-2 ring-emerald-300" : "border-emerald-300 bg-emerald-50 text-emerald-800");
+        no.className = base + (lpFinishedReading === false ? "border-rose-600 bg-rose-600 text-white ring-2 ring-rose-300" : "border-rose-300 bg-rose-50 text-rose-800");
+
+        if (lpFinishedReading === null) { verdict.classList.add('hidden'); return; }
+        const correct = parseInt(document.getElementById('correct-count').textContent, 10) || 0;
+        verdict.classList.remove('hidden');
+        if (lpIsMastered()) {
+            verdict.className = "text-xs font-bold mt-2 p-2 rounded-lg bg-emerald-50 border border-emerald-300 text-emerald-800";
+            verdict.textContent = "✅ Maîtrisant (L-P = 1) : lecture terminée et " + correct + " mots corrects (≥ 60) ➔ Palier 4+";
+        } else if (lpFinishedReading === false) {
+            verdict.className = "text-xs font-bold mt-2 p-2 rounded-lg bg-rose-50 border border-rose-300 text-rose-800";
+            verdict.textContent = "❌ Non maîtrisant (L-P = 0) : lecture non terminée dans le temps imparti ➔ Palier 4";
+        } else {
+            verdict.className = "text-xs font-bold mt-2 p-2 rounded-lg bg-rose-50 border border-rose-300 text-rose-800";
+            verdict.textContent = "❌ Non maîtrisant (L-P = 0) : lecture terminée mais seulement " + correct + " mots corrects (< 60) ➔ Palier 4";
+        }
     }
 
     // Met à jour boutons / message / bouton de validation selon l'état du chrono (étape L-P uniquement)
@@ -1044,8 +1097,14 @@
             msg.textContent = "🔒 Le positionnement de l'élève sera possible uniquement après la fin du chrono.";
         }
 
+        const lpBox = document.getElementById('lp-finish-box');
+        if (lpBox) {
+            lpBox.classList.toggle('hidden', !(isLP && timerFinished));
+            updateLPChoiceUI();
+        }
+
         if (validateBtn) {
-            const locked = isLP && !timerFinished;
+            const locked = isLP && !(timerFinished && lpFinishedReading !== null);
             validateBtn.style.opacity = locked ? '0.55' : '1';
             validateBtn.title = locked ? "Disponible après la fin du chrono" : "";
         }
@@ -1063,6 +1122,13 @@
             document.getElementById('timer-container').scrollIntoView({ behavior: 'smooth', block: 'center' });
             return;
         }
+        if (stageKey === 'L-P' && lpFinishedReading === null) {
+            showToast("⚠️ Indiquez d'abord si l'élève a terminé la lecture du texte (Oui / Non).", 4500);
+            const box = document.getElementById('lp-finish-box');
+            box.classList.remove('hidden');
+            box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return;
+        }
         let passed = false;
 
         if (['L-PS', 'L-M', 'L-PE', 'L-P'].includes(stageKey)) {
@@ -1071,7 +1137,7 @@
             if (stageKey === 'L-PS') passed = correctWords >= 14;
             else if (stageKey === 'L-M') passed = correctWords >= 7;
             else if (stageKey === 'L-PE') passed = correctWords >= 24;
-            else if (stageKey === 'L-P') passed = correctWords >= 60;
+            else if (stageKey === 'L-P') passed = lpIsMastered(); // maîtrisant = lecture terminée ET ≥ 60 mots corrects
 
             currentStudent.scores[stageKey] = passed ? 1 : 0;
 
